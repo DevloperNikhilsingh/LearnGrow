@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "courseId": 1,
+    "courseSlug": "digital-marketing-mastery",
+    "title": "Digital Marketing Mastery — Live Session",
+    "category": "Digital Marketing",
+    "instructor": "Priya Sharma",
+    "instructorId": 1,
+    "date": "2026-07-25",
+    "time": "6:00 PM IST",
+    "zoomLink": "https://zoom.us/j/dummy-dm-123",
+    "status": "upcoming",
+    "isActive": true
+  },
+  {
+    "id": 2,
+    "courseId": 2,
+    "courseSlug": "physiotherapy-foundations",
+    "title": "Physiotherapy Foundations — Clinical Demo",
+    "category": "Physiotherapy",
+    "instructor": "Dr. Arvind Patel",
+    "instructorId": 2,
+    "date": "2026-07-26",
+    "time": "5:00 PM IST",
+    "zoomLink": "https://zoom.us/j/dummy-pt-456",
+    "status": "upcoming",
+    "isActive": false
+  },
+  {
+    "id": 3,
+    "courseId": 4,
+    "courseSlug": "figma-ui-ux-bootcamp",
+    "title": "UI/UX Bootcamp — Live Design Review",
+    "category": "UI/UX Design",
+    "instructor": "Neha Kapoor",
+    "instructorId": 4,
+    "date": "2026-07-28",
+    "time": "7:00 PM IST",
+    "zoomLink": "https://zoom.us/j/dummy-ux-789",
+    "status": "upcoming",
+    "isActive": false
+  }
+]

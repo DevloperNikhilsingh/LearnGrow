@@ -1,0 +1,150 @@
+import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { Target, Lightbulb, Users, Shield, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import Navbar from '../components/layout/Navbar';
+import Footer from '../components/layout/Footer';
+import WhyChooseUs from '../components/WhyChooseUs';
+import CountUp from '../components/CountUp';
+import TeamCarousel from '../components/TeamCarousel';
+
+export default function About() {
+  const values = [
+    { icon: Target, title: 'Excellence', desc: 'We deliver top-tier, industry-relevant content curated by experts.' },
+    { icon: Lightbulb, title: 'Innovation', desc: 'Constantly evolving our platform with cutting-edge learning tools.' },
+    { icon: Users, title: 'Community', desc: 'Fostering a global network of learners and mentors.' },
+    { icon: Shield, title: 'Integrity', desc: 'Transparent, honest, and committed to your success.' },
+  ];
+
+  const team = [
+    { name: 'Sarah Jenkins', role: 'Founder & CEO', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80' },
+    { name: 'David Chen', role: 'Head of Education', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80' },
+    { name: 'Priya Patel', role: 'Chief Product Officer', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80' },
+    { name: 'Marcus Johnson', role: 'Lead Instructor', img: '/Student_2.png' },
+    { name: 'Marcus Johnson', role: 'SEO Expert', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80' },
+    { name: 'Marcus Johnson', role: 'Lead Instructor', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80' },
+    { name: 'Marcus Johnson', role: 'Lead Instructor', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80' },
+  ];
+
+  return (
+    <div className="min-h-screen flex flex-col bg-surface font-sans">
+      <Helmet>
+        <title>About Us | LearnGrow</title>
+        <meta name="description" content="Learn about our mission to empower learners worldwide." />
+      </Helmet>
+
+      <Navbar />
+
+      <main className="flex-1 w-full">
+        {/* Hero Section */}
+        <section className="bg-navy py-20 md:py-20 px-4 relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary rounded-full blur-[100px]"></div>
+            <div className="absolute bottom-0 right-0 w-96 h-96 bg-amber rounded-full blur-[100px]"></div>
+          </div>
+          <div className="max-w-4xl mx-auto text-center relative z-10">
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+              Empowering the World to <span className="text-amber">Learn</span> & <span className="text-primary">Grow</span>
+            </h1>
+            <p className="text-lg md:text-xl text-white/80 leading-relaxed max-w-2xl mx-auto">
+              We are on a mission to democratize education by providing accessible, high-quality, and industry-relevant courses for everyone, everywhere.
+            </p>
+          </div>
+        </section>
+
+        {/* Our Story & Mission */}
+        <section className="py-20 px-4 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="order-2 lg:order-1 relative">
+              <div className="absolute inset-0 bg-primary/5 rounded-3xl transform -rotate-3 scale-105 -z-10"></div>
+              <img
+                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80"
+                alt="Team working together"
+                className="rounded-3xl shadow-2xl object-cover w-full h-auto aspect-video lg:aspect-[4/3]"
+              />
+            </div>
+            <div className="order-1 lg:order-2 space-y-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-navy">Our Story</h2>
+              <p className="text-muted leading-relaxed text-lg">
+                Founded in 2025, LearnGrow started with a simple belief: traditional education isn't adapting fast enough to the modern world. We saw a gap between what is taught and what employers actually need.
+              </p>
+              <p className="text-muted leading-relaxed text-lg">
+                Today, we partner with industry leaders to craft practical, hands-on courses that bridge that gap. Whether you're pivoting your career or upskilling for a promotion, we are here to guide you every step of the way.
+              </p>
+              <div className="pt-4 flex gap-4">
+                <div className="bg-white p-4 rounded-xl border border-border flex-1 shadow-sm text-center">
+                  <div className="text-3xl font-bold text-primary mb-1">
+                    <CountUp end={25000} suffix="+" />
+                  </div>
+                  <div className="text-sm font-medium text-navy">Active Learners</div>
+                </div>
+                <div className="bg-white p-4 rounded-xl border border-border flex-1 shadow-sm text-center">
+                  <div className="text-3xl font-bold text-primary mb-1">
+                    <CountUp end={110} suffix="+" />
+                  </div>
+                  <div className="text-sm font-medium text-navy">Expert Courses</div>
+                </div>
+                <div className="bg-white p-4 rounded-xl border border-border flex-1 shadow-sm text-center">
+                  <div className="text-3xl font-bold text-primary mb-1">
+                    <CountUp end={1500} suffix="+" />
+                  </div>
+                  <div className="text-sm font-medium text-navy">Success Stories</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Core Values */}
+        <section className="bg-white py-20 px-4 border-y border-border">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">Our Core Values</h2>
+              <p className="text-lg text-muted max-w-2xl mx-auto">The principles that guide everything we do and build.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {values.map((val, idx) => (
+                <div key={idx} className="bg-surface p-8 rounded-card border border-border hover:shadow-card-hover transition-all duration-300 group">
+                  <div className="h-14 w-14 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all">
+                    <val.icon size={28} />
+                  </div>
+                  <h3 className="text-xl font-bold text-navy mb-3">{val.title}</h3>
+                  <p className="text-muted leading-relaxed">{val.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Why Choose Us */}
+
+        <WhyChooseUs />
+
+        {/* Team Section */}
+        
+        <section className="py-20 px-4 max-w-7xl mx-auto text-center">
+          <div className="mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-navy mb-4">Meet The Team</h2>
+            <p className="text-lg text-muted max-w-2xl mx-auto">The passionate educators and engineers behind LearnGrow.</p>
+          </div>
+         <TeamCarousel team = {team}/>
+        </section>
+
+        {/* CTA */}
+        <section className="bg-navy py-20 px-4 text-center border-t border-white/10">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to transform your career?</h2>
+            <p className="text-lg text-white/80 mb-10 max-w-2xl mx-auto">
+              Join thousands of students who have already accelerated their careers with LearnGrow. Your journey starts today.
+            </p>
+            <Link to="/courses" className="inline-flex items-center gap-2 bg-amber hover:bg-white text-navy px-8 py-4 rounded-btn font-bold transition-colors shadow-lg">
+              Explore Our Courses <ArrowRight size={20} />
+            </Link>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
