@@ -8,8 +8,8 @@ import { Star, Users, PlayCircle, Linkedin, Twitter, Globe } from 'lucide-react'
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import CourseCard from '../components/course/CourseCard';
-import { getInstructors } from '../api/adminService';
-import { getCourses } from '../api/courseService';
+import { getInstructors } from '../services/adminService';
+import { getCourses } from '../services/courseService';
 
 export default function InstructorProfile() {
   const { id } = useParams();

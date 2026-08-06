@@ -7,8 +7,8 @@ import { Helmet } from 'react-helmet-async';
 import { Plus, Tag, BookOpen, Upload, Link2, Trash2 } from 'lucide-react';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import Modal from '../components/ui/Modal';
-import categoriesData from '../data/categories.json';
-import coursesData from '../data/courses.json';
+import categoriesData from '../data/categories';
+import coursesData from '../data/courses';
 
 function buildInitialCategories() {
   return categoriesData.map((cat) => ({

@@ -1,4 +1,4 @@
-[
+const liveClasses = [
   {
     "id": 1,
     "courseId": 1,
@@ -41,4 +41,6 @@
     "status": "upcoming",
     "isActive": false
   }
-]
+];
+
+export default liveClasses;

@@ -7,8 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, Trash2, ArrowLeft, X, Info, Upload, Film } from 'lucide-react';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import Button from '../components/ui/Button';
-import { getDynamicCategories } from '../api/courseService';
-import { addCourse } from '../api/adminService';
+import { getDynamicCategories } from '../services/courseService';
+import { addCourse } from '../services/adminService';
 
 export default function AdminAddCourse() {
   const navigate = useNavigate();

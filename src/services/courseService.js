@@ -1,13 +1,12 @@
 /**
- * api/courseService.js
+ * services/courseService.js
  * -------------------------------------------------
- * Course-related API service.
- * Currently: resolves from mock JSON.
+ * Course-related service.
  * -------------------------------------------------
  */
 
-import coursesData from '../data/courses.json';
-import categoriesData from '../data/categories.json';
+import coursesData from '../data/courses';
+import categoriesData from '../data/categories';
 
 // Centralized mock data store for courses
 export let mockCourses = [...coursesData];

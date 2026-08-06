@@ -10,7 +10,7 @@ import CategoryTabs from '../components/course/CategoryTabs';
 import CourseCard from '../components/course/CourseCard';
 import WhyChooseUs from '../components/WhyChooseUs';
 import Button from '../components/ui/Button';
-import { getCourses, getDynamicCategories } from '../api/courseService';
+import { getCourses, getDynamicCategories } from '../services/courseService';
 import { ArrowRight, Star, Shield, PlayCircle, BookOpen, HelpCircle, Headset, Cross, Send, CircleX, X, Check, Activity, Code, Palette, TrendingUp, Megaphone, PenTool } from 'lucide-react';
 import CountUp from '../components/CountUp';
 import Faq from '../components/Faq';
@@ -71,32 +71,33 @@ const heroStats = [
   { label: 'Active Students', value: '1000+' }
 ];
 
-const categoryMeta = {
-  'digital-marketing': {
-    icon: '/Digital Marketing.svg',
-    bgColor: 'bg-blue-600',
-    hoverBorder: 'hover:border-t-blue-600',
-    students: '1,420 students'
-  },
-  'physiotherapy': {
-    icon: Activity,
-    bgColor: 'bg-emerald-600',
-    hoverBorder: 'hover:border-t-emerald-600',
-    students: '850 students'
-  },
-  'web-development': {
-    icon: '/Coding.svg',
-    bgColor: 'bg-orange-500',
-    hoverBorder: 'hover:border-t-orange-500',
-    students: '2,150 students'
-  },
-  'ui-ux-design': {
-    icon: '/Designer.svg',
-    bgColor: 'bg-purple-600',
-    hoverBorder: 'hover:border-t-purple-600',
-    students: '1,120 students'
-  }
-};
+// const categoryMeta = {
+//   'digital-marketing': {
+//     icon: '/Digital Marketing.svg',
+//     bgColor: 'bg-blue-600',
+//     hoverBorder: 'hover:border-t-blue-600',
+//     students: '1,420 students'
+//   },
+//   'physiotherapy': {
+//     icon: Activity,
+//     bgColor: 'bg-emerald-600',
+//     hoverBorder: 'hover:border-t-emerald-600',
+//     students: '850 students'
+//   },
+//   'web-development': {
+//     icon: '/Coding.svg',
+//     bgColor: 'bg-orange-500',
+//     hoverBorder: 'hover:border-t-orange-500',
+//     students: '2,150 students'
+//   },
+//   'ui-ux-design': {
+//     icon: '/Designer.svg',
+//     bgColor: 'bg-purple-600',
+//     hoverBorder: 'hover:border-t-purple-600',
+//     students: '1,120 students'
+//   },
+  
+// };
 
 const skillCards = [
   {
@@ -362,9 +363,6 @@ export default function Home() {
     currentPage * coursesPerPage
   );
 
-
-
-
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Helmet>
@@ -452,9 +450,9 @@ export default function Home() {
                     {/* Soft glow behind image */}
                     <div className="absolute inset-0 rounded-full bg-green-300/20 blur-2xl scale-110 pointer-events-none" />
                     <img
-                      src="/Student-1-real.png"
+                      src="/Student-1-real (4).png"
                       alt="Hero_img"
-                      className="relative z-10 h-52 sm:h-64 w-auto object-contain object-bottom drop-shadow-xl select-none"
+                      className="relative z-10 h-52 sm:h-72 w-auto object-contain object-bottom drop-shadow-xl select-none"
                       draggable={false}
                     />
                     {/* Mini floating badges on mobile/tablet */}
@@ -525,7 +523,7 @@ export default function Home() {
 
                 {/* Person image — user apni image /hero-person.png pe rakh sakta hai */}
                 <img
-                  src="/Student-1-real.png"
+                  src="/Student-1-real (4).png"
                   alt="Student"
                   onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&q=80'; }}
                   className="relative z-10 h-[460px] w-auto object-contain object-bottom drop-shadow-2xl select-none"
@@ -808,7 +806,6 @@ export default function Home() {
         </section>
 
         {/* Categories Section — now a swipeable carousel so it stays compact as categories are added */}
-        {/* Categories Section — now a swipeable carousel so it stays compact as categories are added */}
         <section className="py-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center max-w-2xl mx-auto mb-12">
@@ -836,40 +833,34 @@ export default function Home() {
                 ref={categoryTrackRef}
                 className="flex justify-start gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth border-border pb-2 -mx-4 px-4 sm:mx-0 sm:px-6 lg:px-8 scroll-px-4 sm:scroll-px-6 lg:scroll-px-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
               >
-                {categories.map((cat) => {
-                  const meta = categoryMeta[cat.slug] || {
-                    icon: '/Coding.svg',
-                    hoverBorder: 'hover:border-t-primary',
-                    students: '1,000+ students'
-                  };
-
-                  return (
-                    <Link
-                      key={cat.id}
-                      to={`/courses?category=${cat.slug}`}
-                      data-category-card
-                      className={`snap-start shrink-0 w-[220px] sm:w-[240px] bg-white p-6 rounded-card shadow-[0_0_15px_rgba(0,0,0,0.08)] transition-[border-color] duration-200 ease-in-out group text-center border-t-4 border-t-transparent ${meta.hoverBorder}`}
-                    >
-                      <div className="h-20 w-20 sm:h-32 sm:w-32 mx-auto flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-[1.08] group-hover:rotate-[-2deg]">
-                        <img
-                          src={meta.icon}
-                          alt={cat.name}
-                          className="w-full h-full object-contain"
-                          draggable={false}
-                        />
-                      </div>
-                      <h3 className="font-semibold text-lg text-[#1F1F1F] mb-2">{cat.name}</h3>
-                      <p className="text-sm text-muted line-clamp-2 mb-3">{cat.description}</p>
-                      <div className="text-xs text-muted font-medium">
-                        {meta.students}
-                      </div>
-                    </Link>
-                  );
-                })}
+                {categories.map((cat) => (
+  <Link
+    key={cat.id}
+    to={`/courses?category=${cat.slug}`}
+    data-category-card
+    className="snap-start shrink-0 w-[220px] sm:w-[240px] bg-white p-6 rounded-card shadow-[0_0_15px_rgba(0,0,0,0.08)] transition-[border-color] duration-200 ease-in-out group text-center border-t-4 border-t-transparent hover:border-t-[color:var(--cat-color)]"
+    style={{ '--cat-color': cat.color }}
+  >
+    <div className="h-20 w-20 sm:h-32 sm:w-32 mx-auto flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-[1.08] group-hover:rotate-[-2deg]">
+      <img
+        src={cat.icon}
+        alt={cat.name}
+        className="w-full h-full object-contain"
+        draggable={false}
+      />
+    </div>
+    <h3 className="font-semibold text-lg text-[#1F1F1F] mb-2">{cat.name}</h3>
+    <p className="text-sm text-muted line-clamp-2 mb-3">{cat.description}</p>
+    <div className="text-xs text-muted font-medium">
+      {cat.students}
+    </div>
+  </Link>
+))}
               </div>
             </div>
           </div>
         </section>
+
         {/* Learn Essential Skills */}
         <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -878,8 +869,8 @@ export default function Home() {
               {/* Left Text */}
               <div className="lg:col-span-1">
                 <h2 className="text-3xl font-bold text-[#1F1F1F] mb-4 leading-snug">
-                  Learn <em className="italic">essential</em><br />
-                  career and life skills
+                  Learn <em className="italic">In-Demand</em><br />
+                  Skills and get ahead in your Career
                 </h2>
                 <p className="text-muted text-[15px] leading-relaxed">
                   LearnGrow helps you build in-demand skills fast and advance your career in a changing job market.
@@ -1036,14 +1027,14 @@ export default function Home() {
             </div>
 
             {loading ? (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
                 {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
                   <div key={i} className="animate-pulse bg-gray-200 rounded-card aspect-[3/4]" />
                 ))}
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 fade-in">
+                <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 fade-in">
                   {paginatedCourses.length > 0 ? (
                     paginatedCourses.map((course) => (
                       <CourseCard key={course.id} course={course} />
@@ -1054,12 +1045,12 @@ export default function Home() {
                 </div>
 
                 {totalCoursePages > 1 && (
-                  <div className="flex items-center justify-center flex-wrap gap-2 mt-10">
+                  <div className="flex items-center justify-center flex-wrap gap-1.5 sm:gap-2 mt-10">
                     <button
                       onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                       disabled={currentPage === 1}
                       aria-label="Previous page"
-                      className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 hover:bg-navy hover:border-navy hover:text-white text-[#1F1F1F] disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-[#1F1F1F] disabled:cursor-not-allowed transition-colors"
+                      className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full border border-gray-300 hover:bg-navy hover:border-navy hover:text-white text-[#1F1F1F] disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-[#1F1F1F] disabled:cursor-not-allowed transition-colors"
                     >
                       <ArrowRight size={16} className="rotate-180" />
                     </button>
@@ -1072,7 +1063,7 @@ export default function Home() {
                           onClick={() => setCurrentPage(page)}
                           aria-label={`Page ${page}`}
                           aria-current={currentPage === page ? 'page' : undefined}
-                          className={`w-9 h-9 flex items-center justify-center rounded-full text-sm font-semibold border transition-colors ${currentPage === page
+                          className={`w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full text-sm font-semibold border transition-colors ${currentPage === page
                             ? 'bg-navy border-navy text-white'
                             : 'border-gray-300 text-[#1F1F1F] hover:bg-navy hover:border-navy hover:text-white'
                             }`}
@@ -1086,7 +1077,7 @@ export default function Home() {
                       onClick={() => setCurrentPage((p) => Math.min(totalCoursePages, p + 1))}
                       disabled={currentPage === totalCoursePages}
                       aria-label="Next page"
-                      className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 hover:bg-navy hover:border-navy hover:text-white text-[#1F1F1F] disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-[#1F1F1F] disabled:cursor-not-allowed transition-colors"
+                      className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full border border-gray-300 hover:bg-navy hover:border-navy hover:text-white text-[#1F1F1F] disabled:opacity-30 disabled:hover:bg-white disabled:hover:text-[#1F1F1F] disabled:cursor-not-allowed transition-colors"
                     >
                       <ArrowRight size={16} />
                     </button>
@@ -1157,15 +1148,56 @@ export default function Home() {
           <Faq />
         </section>
         {/* CTA Section */}
-        <section className="py-20 bg-navy text-center border-t border-white/10">
-          <div className="max-w-3xl mx-auto px-4">
-            <h2 className="text-3xl font-bold text-white mb-6">Ready to start your journey?</h2>
-            <p className="text-white/80 mb-8 text-lg">Join thousands of learners achieving their goals with LearnGrow.</p>
-            <Link to="/signup" className="btn-amber text-lg">
-              Create a Free Account
-            </Link>
-          </div>
-        </section>
+<section className="relative py-20 bg-navy overflow-hidden">
+  
+  {/* Grid pattern overlay */}
+  <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
+
+  <div className="max-w-4xl mx-auto px-4 relative z-10 text-center">
+    {/* Eyebrow tag */}
+    <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 mb-6">
+      <span className="w-2 h-2 bg-amber rounded-full animate-ping"></span>
+      <span className="text-white/70 text-sm-caption">Join 50,000+ learners today</span>
+    </div>
+
+    <h2 className="text-h1 text-white mb-4 tracking-tight">
+      Your future starts
+      <br />
+      <span className="text-amber">
+        with one click.
+      </span>
+    </h2>
+
+    <p className="text-white/60 mb-8 text-base max-w-md mx-auto">
+      No credit card. No commitment. Just growth — at your own pace.
+    </p>
+
+    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <Link
+        to="/signup"
+        className="group relative inline-flex items-center gap-2 bg-amber hover:opacity-90 text-navy font-semibold px-8 py-3.5 rounded-btn text-base transition-all duration-300 hover:shadow-[0_0_40px_rgba(249,171,0,0.5)] hover:-translate-y-0.5"
+      >
+        Create a Free Account
+        <span className="transition-transform group-hover:translate-x-1">→</span>
+      </Link>
+
+      <Link
+        to="/courses"
+        className="inline-flex items-center gap-2 text-white/70 hover:text-white px-8 py-3.5 rounded-btn text-base transition group"
+      >
+        Explore courses
+        <span className="text-white/40 group-hover:text-amber transition">↗</span>
+      </Link>
+    </div>
+
+    {/* Trust strip */}
+    <div className="mt-12 pt-6 border-t border-white/10 flex flex-wrap justify-center gap-x-8 gap-y-2 text-white/40 text-sm-caption">
+      <span>✓ Free forever plan</span>
+      <span>✓ Cancel anytime</span>
+      <span>✓ 4.9/5 rating</span>
+    </div>
+  </div>
+</section>
       </main>
       <Footer />
     </div>

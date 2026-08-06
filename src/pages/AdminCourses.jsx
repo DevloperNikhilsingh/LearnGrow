@@ -8,7 +8,7 @@ import { Plus, Edit2, Trash2, Search } from 'lucide-react';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
-import { getAdminCourses, deleteCourse } from '../api/adminService';
+import { getAdminCourses, deleteCourse } from '../services/adminService';
 
 export default function AdminCourses() {
   const [courses, setCourses] = useState([]);

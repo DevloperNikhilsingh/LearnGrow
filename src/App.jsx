@@ -25,7 +25,7 @@ import AdminLiveClasses from './pages/AdminLiveClasses';
 import AdminCategories from './pages/AdminCategories';
 
 // Auth Guard Helpers
-import { isAuthenticated, isAdmin } from './api/authService';
+import { isAuthenticated, isAdmin } from './services/authService';
 import Contact from './pages/Contact';
 import Checkout from './pages/Checkout';
 

@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import { BookOpen, Mail, Lock, User, Eye, EyeOff, ArrowRight, CheckCircle } from 'lucide-react';
-import { register } from '../api/authService';
+import { register } from '../services/authService';
 
 export default function Signup() {
   const navigate = useNavigate();

@@ -1,5 +1,5 @@
 /**
- * api/adminService.js
+ * services/adminService.js
  * -------------------------------------------------
  * Admin-related service.
  * Currently: mock in-memory operations.
@@ -7,8 +7,8 @@
  */
 
 import { mockCourses } from './courseService';
-import instructorsData from '../data/instructors.json';
-import liveClassesData from '../data/liveClasses.json';
+import instructorsData from '../data/instructors';
+import liveClassesData from '../data/liveClasses';
 
 /** Get admin overview stats */
 export async function getAdminStats() {
@@ -20,8 +20,19 @@ export async function getAdminStats() {
   });
 }
 
-export const getCourseById = (id) => { /* API call jo single course fetch kare */ };
-export const updateCourse = (id, data) => { /* API call jo course update kare */ };
+export const getCourseById = (id) => {
+  const course = mockCourses.find((c) => c.id === Number(id));
+  return Promise.resolve(course);
+};
+
+export const updateCourse = (id, data) => {
+  const index = mockCourses.findIndex((c) => c.id === Number(id));
+  if (index !== -1) {
+    mockCourses[index] = { ...mockCourses[index], ...data };
+    return Promise.resolve(mockCourses[index]);
+  }
+  return Promise.reject(new Error('Course not found'));
+};
 
 /** Get all courses for admin table */
 export async function getAdminCourses() {
@@ -70,17 +81,14 @@ export async function getStudents() {
     { id: 4, name: 'Sonal Desai', email: 'sonal@example.com', enrolledCourses: 4, joinedAt: '2025-11-12' },
     { id: 5, name: 'Arjun Das', email: 'arjun@example.com', enrolledCourses: 2, joinedAt: '2025-12-05' },
   ]);
-  // return apiFetch('/api/admin/students');
 }
 
 /** Get all live classes for admin */
 export async function getAdminLiveClasses() {
   return Promise.resolve(liveClassesData);
-  // return apiFetch('/api/admin/live-classes');
 }
 
 /** Get all instructors */
 export async function getInstructors() {
   return Promise.resolve(instructorsData);
-  // return apiFetch('/api/admin/instructors');
 }

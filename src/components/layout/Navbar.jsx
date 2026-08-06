@@ -2,11 +2,11 @@
  * components/layout/Navbar.jsx
  * Main navigation bar
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingCart, Menu, X, BookOpen, ChevronDown } from 'lucide-react';
-import { isAuthenticated, getCurrentUser, logout } from '../../api/authService';
-import { getDynamicCategories } from '../../api/courseService';
+import { isAuthenticated, getCurrentUser, logout } from '../../services/authService';
+import { getDynamicCategories } from '../../services/courseService';
 import { useCart } from '../../context/CartContext';
 
 export default function Navbar() {
@@ -15,11 +15,30 @@ export default function Navbar() {
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isExploreOpen, setIsExploreOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
   const [searchQuery, setSearchQuery] = useState('');
+  const exploreRef = useRef(null);
   const user = getCurrentUser();
   const isLoggedIn = isAuthenticated();
   
   const categories = getDynamicCategories();
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (isDesktop || !isExploreOpen) return;
+    const handleOutsideClick = (e) => {
+      if (exploreRef.current && !exploreRef.current.contains(e.target)) {
+        setIsExploreOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [isDesktop, isExploreOpen]);
 
   const handleSearch = (e) => {
     if (e.key === 'Enter' && searchQuery.trim()) {
@@ -45,16 +64,21 @@ export default function Navbar() {
             </Link>
 
             {/* Explore Dropdown (Desktop) */}
-            <div className="hidden md:relative md:block" onMouseLeave={() => setIsExploreOpen(false)}>
+            <div
+              ref={exploreRef}
+              className="hidden md:relative md:block"
+              onMouseEnter={() => { if (isDesktop) setIsExploreOpen(true); }}
+              onMouseLeave={() => { if (isDesktop) setIsExploreOpen(false); }}
+            >
               <button
-                onMouseEnter={() => setIsExploreOpen(true)}
+                onClick={() => { if (!isDesktop) setIsExploreOpen(prev => !prev); }}
                 className="flex items-center gap-1 text-white/90 hover:text-white font-medium text-sm transition-colors py-2"
               >
                 Explore <ChevronDown size={16} className={`transition-transform duration-200 ${isExploreOpen ? 'rotate-180' : ''}`} />
               </button>
               
               {isExploreOpen && (
-                <div className="absolute top-full left-0 w-64 bg-white rounded-b-card shadow-card-hover border border-border overflow-hidden fade-in py-2">
+                <div className="absolute top-full left-0 w-64 bg-white rounded-b-card shadow-card-hover border border-border overflow-hidden fade-in py-2 z-20">
                   {categories.map((cat) => (
                     <Link
                       key={cat.slug}

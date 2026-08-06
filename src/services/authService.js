@@ -1,13 +1,10 @@
 /**
- * api/authService.js
+ * services/authService.js
  * -------------------------------------------------
  * Authentication service.
  * Currently: mock localStorage-based auth.
- * Laravel swap: replace with real fetch to /api/auth/login, /api/auth/register
  * -------------------------------------------------
  */
-
-// import { apiFetch } from './config'; // ← uncomment when backend is ready
 
 // Static admin credentials (admin register nahi karega)
 const ADMIN_CREDENTIALS = {
@@ -55,8 +52,6 @@ export async function login({ email, password }) {
   localStorage.setItem('lg_user', JSON.stringify(safeUser));
   localStorage.setItem('lg_token', 'mock-jwt-token-' + safeUser.id);
   return Promise.resolve(safeUser);
-
-  // return apiFetch('/api/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
 }
 
 /** Register a new user */
@@ -86,8 +81,6 @@ export async function register({ name, email, password }) {
 
   // Do NOT auto-login after register — redirect to login page
   return Promise.resolve({ name: newUser.name, email: newUser.email });
-
-  // return apiFetch('/api/auth/register', { method: 'POST', body: JSON.stringify({ name, email, password }) });
 }
 
 /** Log out the current user */

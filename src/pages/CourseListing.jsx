@@ -4,12 +4,12 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams, Link } from 'react-router-dom';
-import { SearchX } from 'lucide-react';
+import { SearchX, ChevronDown } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import FilterSidebar from '../components/course/FilterSidebar';
 import CourseCard from '../components/course/CourseCard';
-import { getFilteredCourses } from '../api/courseService';
+import { getFilteredCourses } from '../services/courseService';
 
 export default function CourseListing() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -27,6 +27,10 @@ export default function CourseListing() {
 
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // NEW: controls whether the filter panel is open on mobile/tablet (lg and below).
+  // On lg+ screens this is ignored (filters always visible) via CSS classes below.
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   // Sync state changes to URL params
   const handleFilterChange = (newFilters) => {
@@ -88,12 +92,33 @@ export default function CourseListing() {
           
           {/* Sidebar */}
           <div className="w-full lg:w-64 flex-shrink-0">
-            <div className="bg-white p-5 rounded-card shadow-sm border border-border lg:sticky lg:top-24">
-              <FilterSidebar 
-                filters={filters} 
-                onChange={handleFilterChange} 
-                onReset={handleReset} 
-              />
+            <div className="bg-white rounded-card shadow-sm border border-border lg:sticky lg:top-24 lg:p-5">
+              {/* NEW: Toggle header - visible only below lg breakpoint */}
+              <button
+                type="button"
+                onClick={() => setIsFilterOpen((prev) => !prev)}
+                className="w-full flex items-center justify-between p-5 lg:hidden"
+                aria-expanded={isFilterOpen}
+                aria-controls="filter-sidebar-content"
+              >
+                <span className="font-bold text-[#1F1F1F]">Filters</span>
+                <ChevronDown
+                  size={20}
+                  className={`text-[#1F1F1F] transition-transform duration-200 ${isFilterOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
+
+              {/* Filter content - collapsible on <lg, always open on lg+ */}
+              <div
+                id="filter-sidebar-content"
+                className={`${isFilterOpen ? 'block' : 'hidden'} lg:block px-5 pb-5 lg:p-0`}
+              >
+                <FilterSidebar 
+                  filters={filters} 
+                  onChange={handleFilterChange} 
+                  onReset={handleReset} 
+                />
+              </div>
             </div>
           </div>
 

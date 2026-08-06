@@ -8,7 +8,7 @@ import AdminSidebar from '../components/admin/AdminSidebar';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
 import Modal from '../components/ui/Modal';
-import { getAdminLiveClasses } from '../api/adminService';
+import { getAdminLiveClasses } from '../services/adminService';
 
 const EMPTY_FORM = {
   title: '',

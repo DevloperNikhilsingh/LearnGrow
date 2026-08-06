@@ -4,7 +4,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Instagram, Twitter, Linkedin, BookOpen, Facebook } from 'lucide-react';
-import categories from '../../data/categories.json';
+import categories from '../../data/categories';
 
 export default function Footer() {
   const navigate = useNavigate();

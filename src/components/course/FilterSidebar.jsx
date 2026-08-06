@@ -3,7 +3,7 @@
  * Left sidebar filters for Course Listing page
  */
 import React from 'react';
-import categories from '../../data/categories.json';
+import categories from '../../data/categories';
 
 const levels = ['Beginner', 'Intermediate', 'Advanced'];
 const languages = ['English', 'Hindi + English', 'Hindi'];

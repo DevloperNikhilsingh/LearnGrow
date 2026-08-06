@@ -7,10 +7,10 @@ import { Helmet } from 'react-helmet-async';
 import { ChevronLeft, CheckCircle2, Circle, Video, Radio, Menu, X, Check } from 'lucide-react';
 import VideoPlayer from '../components/course/VideoPlayer';
 import ProgressBar from '../components/ui/ProgressBar';
-import { getCourseBySlug } from '../api/courseService';
-import { getCurrentUser } from '../api/authService';
-import { getCourseProgress, updateProgress } from '../api/userService';
-import liveClassesData from '../data/liveClasses.json';
+import { getCourseBySlug } from '../services/courseService';
+import { getCurrentUser } from '../services/authService';
+import { getCourseProgress, updateProgress } from '../services/userService';
+import liveClassesData from '../data/liveClasses';
 
 export default function CoursePlayer() {
   const { slug } = useParams();
@@ -104,7 +104,7 @@ export default function CoursePlayer() {
             <ChevronLeft size={20} /> <span className="hidden sm:inline font-medium">Dashboard</span>
           </Link>
           <div className="h-6 w-px bg-white/20 mx-2 hidden sm:block"></div>
-          <h1 className="font-semibold truncate max-w-[200px] sm:max-w-md">{course.title}</h1>
+          {/* <h1 className="font-semibold truncate max-w-[200px] sm:max-w-md">{course.title}</h1> */}
         </div>
         
         <div className="flex items-center gap-6">

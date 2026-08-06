@@ -13,23 +13,21 @@ import ReviewCard from '../components/course/ReviewCard';
 import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
 import Modal from '../components/ui/Modal';
-import { getCourseBySlug } from '../api/courseService';
-import { isAuthenticated, getCurrentUser } from '../api/authService';
-import { enrollCourse } from '../api/userService';
-import { updateCourseReviews } from '../api/adminService';
+import { getCourseBySlug } from '../services/courseService';
+import { isAuthenticated, getCurrentUser } from '../services/authService';
+import { enrollCourse } from '../services/userService';
+import { updateCourseReviews } from '../services/adminService';
 import { useCart } from '../context/CartContext';
 
-
-
 export default function CourseDetail() {
-
-  const {addToCart} = useCart();
+  const { addToCart } = useCart();
   const { slug } = useParams();
   const navigate = useNavigate();
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const [enrolling, setEnrolling] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
 
   // Review form state
   const [reviewRating, setReviewRating] = useState(0);
@@ -42,7 +40,6 @@ export default function CourseDetail() {
     getCourseBySlug(slug).then((data) => {
       setCourse(data);
       setLoading(false);
-      // scroll to top on load
       window.scrollTo(0, 0);
     });
   }, [slug]);
@@ -52,11 +49,10 @@ export default function CourseDetail() {
       navigate('/login', { state: { returnTo: `/course/${slug}` } });
       return;
     }
-    
+
     try {
       setEnrolling(true);
       await enrollCourse(course.id);
-      // Simulate slight delay for UX
       setTimeout(() => {
         navigate(`/dashboard/course/${slug}`);
       }, 800);
@@ -67,7 +63,6 @@ export default function CourseDetail() {
   };
 
   const handleAddToCart = () => {
-    // Mock cart functionality
     alert("Added to cart! (Mock)");
   };
 
@@ -94,8 +89,14 @@ export default function CourseDetail() {
     );
   }
 
+  const tabs = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'curriculum', label: 'Curriculum' },
+    { id: 'reviews', label: `Reviews${course.reviewCount ? ` (${course.reviewCount.toLocaleString()})` : ''}` },
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col bg-surface">
+    <div className="min-h-screen flex flex-col bg-surface overflow-x-hidden">
       <Helmet>
         <title>{course.title} | LearnGrow</title>
         <meta name="description" content={course.shortDescription} />
@@ -103,11 +104,10 @@ export default function CourseDetail() {
 
       <Navbar />
 
-      {/* Dark Header Section */}
-      <div className="bg-navy text-white pt-12 pb-24 lg:pb-32 px-4 sm:px-6 lg:px-8">
+      {/* Dark Header / Hero Strip */}
+      <div className="bg-navy text-white pt-8 sm:pt-10 pb-12 sm:pb-16 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          {/* Breadcrumb */}
-          <nav className="flex items-center gap-2 text-sm text-white/60 mb-6">
+          <nav className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/60 mb-4 sm:mb-5 flex-wrap">
             <Link to="/" className="hover:text-white">Home</Link>
             <span>/</span>
             <Link to="/courses" className="hover:text-white">Courses</Link>
@@ -115,226 +115,237 @@ export default function CourseDetail() {
             <Link to={`/courses?category=${course.category}`} className="hover:text-white">{course.categoryName}</Link>
           </nav>
 
-          <div className="grid lg:grid-cols-[2fr_1fr] gap-12">
-            <div className="space-y-6 max-w-3xl">
-              <h1 className="text-3xl lg:text-4xl font-bold leading-tight">{course.title}</h1>
-              <p className="text-lg text-white/80">{course.shortDescription}</p>
-              
-              <div className="flex items-center gap-4 text-sm font-medium flex-wrap">
-                {course.badge && <Badge label={course.badge} />}
-                <div className="flex items-center gap-1 text-amber">
-                  <Star size={16} className="fill-amber" />
-                  <span>{course.rating.toFixed(1)}</span>
-                </div>
-                <span className="text-white/60">({course.reviewCount.toLocaleString()} ratings)</span>
-                <span className="text-white/60 flex items-center gap-1"><Users size={16}/> {course.studentsEnrolled.toLocaleString()} students</span>
+          <div className="max-w-3xl space-y-2.5 sm:space-y-3">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">{course.title}</h1>
+            <p className="text-base sm:text-lg text-white/80">{course.shortDescription}</p>
+
+            <div className="flex items-center gap-x-3 gap-y-1.5 sm:gap-x-4 text-xs sm:text-sm font-medium flex-wrap pt-1">
+              {course.badge && <Badge label={course.badge} />}
+              <div className="flex items-center gap-1 text-amber">
+                <Star size={15} className="fill-amber" />
+                <span>{course.rating.toFixed(1)}</span>
               </div>
-              
-              <div className="flex items-center gap-6 text-sm text-white/80">
-                <span>Created by <Link to={`/instructor/${course.instructorId}`} className="text-primary hover:underline">{course.instructor}</Link></span>
-                <span className="flex items-center gap-1"><Clock size={16}/> Last updated {new Date(course.lastUpdated).toLocaleDateString()}</span>
-                <span className="flex items-center gap-1"><Globe size={16}/> {course.language}</span>
-              </div>
+              <span className="text-white/60">({course.reviewCount.toLocaleString()} ratings)</span>
+              <span className="text-white/60 flex items-center gap-1"><Users size={15}/> {course.studentsEnrolled.toLocaleString()} students</span>
+              <span>Created by <Link to={`/instructor/${course.instructorId}`} className="text-primary hover:underline">{course.instructor}</Link></span>
+              <span className="text-white/60 flex items-center gap-1"><Clock size={15}/> Last updated {new Date(course.lastUpdated).toLocaleDateString()}</span>
+              <span className="text-white/60 flex items-center gap-1"><Globe size={15}/> {course.language}</span>
             </div>
-            
-            {/* Empty div for layout on lg screens (Sticky card goes here visually, but is absolutely positioned below) */}
-            <div className="hidden lg:block"></div>
           </div>
         </div>
       </div>
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full -mt-16 lg:-mt-24 pb-28 lg:pb-20 relative">
-        <div className="grid lg:grid-cols-[2fr_1fr] gap-12 items-start">
-          
-          {/* Left Content */}
-          <div className="space-y-10">
-            
-            {/* Demo Video (Mobile only - Desktop has it in sticky card) */}
-            <div className="lg:hidden bg-white rounded-card shadow-card p-1">
-              <div className="relative cursor-pointer group rounded-lg overflow-hidden" onClick={() => setIsDemoModalOpen(true)}>
-                <img src={course.thumbnail} alt={course.title} className="w-full aspect-video object-cover" />
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/50 transition-colors">
-                  <PlayCircle size={64} className="text-white opacity-90 group-hover:scale-110 transition-transform" />
-                </div>
-                <div className="absolute bottom-4 inset-x-0 text-center font-semibold text-white">Preview this course</div>
+      {/* Body: middle sticky (instructor + tabs) | right sticky (buy card) */}
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full -mt-6 pb-28 lg:pb-16 relative">
+        <div className="grid lg:grid-cols-[1fr_320px] gap-5 sm:gap-6 items-start">
+
+          {/* MIDDLE COLUMN: instructor mini card + tabs card, sticky as one unit */}
+          <div className="lg:sticky lg:top-5 flex flex-col lg:max-h-[calc(100vh-2.5rem)]">
+
+            {/* Instructor mini strip */}
+            <div className="bg-white rounded-card shadow-sm border border-border p-4 sm:p-5 mb-3 sm:mb-3.5 flex flex-wrap items-center gap-3 sm:gap-4 flex-shrink-0">
+              <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-primary text-white flex items-center justify-center text-base sm:text-lg font-bold flex-shrink-0">
+                {(course.instructor || 'IN').slice(0, 2).toUpperCase()}
+              </div>
+              <div>
+                <h3 className="font-bold text-[#1F1F1F] leading-tight text-sm sm:text-base">{course.instructor}</h3>
+                <p className="text-xs text-muted">{course.instructorTitle || 'Expert Instructor'}</p>
+              </div>
+              <div className="flex gap-3 sm:gap-4 text-xs text-muted sm:ml-auto flex-wrap">
+                {course.rating > 0 && (
+                  <span className="flex items-center gap-1"><Star size={14} className="text-amber fill-amber"/> {course.rating.toFixed(1)} Rating</span>
+                )}
+                <span className="flex items-center gap-1"><Users size={14}/> {(course.studentsEnrolled || 0).toLocaleString()} Students</span>
               </div>
             </div>
 
-            {/* What you'll learn */}
-            <section className="bg-white p-6 md:p-8 rounded-card shadow-sm border border-border">
-              <h2 className="text-2xl font-bold text-[#1F1F1F] mb-6">What you'll learn</h2>
-              <ul className="grid sm:grid-cols-2 gap-4">
-                {course.whatYouLearn.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <CheckCircle2 size={20} className="text-success flex-shrink-0 mt-0.5" />
-                    <span className="text-sm text-[#1F1F1F] leading-relaxed">{item}</span>
-                  </li>
+            {/* Tabs card */}
+            <div className="bg-white rounded-card shadow-card border border-border overflow-y-auto lg:flex-1">
+              <div className="flex border-b border-border px-4 sm:px-7 sticky top-0 bg-white z-10 overflow-x-auto whitespace-nowrap">
+                {tabs.map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-1 mr-4 sm:mr-7 py-3.5 sm:py-4 font-semibold text-xs sm:text-sm transition-colors border-b-[3px] ${
+                      activeTab === tab.id
+                        ? 'border-primary text-primary'
+                        : 'border-transparent text-muted hover:text-[#1F1F1F]'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
                 ))}
-              </ul>
-            </section>
-
-            {/* Description */}
-            <section>
-              <h2 className="text-2xl font-bold text-[#1F1F1F] mb-4">Course Content</h2>
-              <p className="text-[#1F1F1F] whitespace-pre-line leading-relaxed">
-                {course.description}
-              </p>
-            </section>
-
-            {/* Curriculum */}
-            <section>
-              <h2 className="text-2xl font-bold text-[#1F1F1F] mb-4">Curriculum</h2>
-              <CurriculumAccordion curriculum={course.curriculum} />
-            </section>
-
-            {/* Instructor */}
-            <section>
-              <h2 className="text-2xl font-bold text-[#1F1F1F] mb-4">Instructor</h2>
-              <div className="bg-white p-6 rounded-card shadow-sm border border-border flex flex-col sm:flex-row gap-6 items-start">
-                <div className="h-24 w-24 rounded-full bg-primary text-white flex items-center justify-center text-3xl font-bold flex-shrink-0">
-                  {(course.instructor || 'IN').slice(0, 2).toUpperCase()}
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-[#1F1F1F] hover:text-primary cursor-pointer mb-1">{course.instructor}</h3>
-                  <p className="text-muted text-sm mb-4">
-                    {course.instructorTitle || 'Expert Instructor'}
-                  </p>
-                  <div className="flex gap-4 text-sm text-muted mb-4">
-                    {course.rating > 0 && (
-                      <span className="flex items-center gap-1"><Star size={16} className="text-amber fill-amber"/> {course.rating.toFixed(1)} Rating</span>
-                    )}
-                    <span className="flex items-center gap-1"><Users size={16}/> {(course.studentsEnrolled || 0).toLocaleString()} Students</span>
-                  </div>
-                  <p className="text-sm text-[#1F1F1F] leading-relaxed">
-                    {course.instructorBio || 'Passionate about teaching and helping students achieve their career goals. Dedicated to providing high-quality, practical content that you can apply immediately.'}
-                  </p>
-                </div>
               </div>
-            </section>
 
-            {/* Reviews */}
-            <section>
-              <h2 className="text-2xl font-bold text-[#1F1F1F] mb-4 flex items-center gap-2">
-                <Star className="text-amber fill-amber" size={24} />
-                {course.rating > 0
-                  ? <>{course.rating.toFixed(1)} course rating • {course.reviewCount.toLocaleString()} reviews</>
-                  : <>No reviews yet</>}
-              </h2>
+              {/* OVERVIEW TAB */}
+              {activeTab === 'overview' && (
+                <div className="p-4 sm:p-7 space-y-6 sm:space-y-8">
+                  <section>
+                    <h2 className="text-lg sm:text-xl font-bold text-[#1F1F1F] mb-4 sm:mb-5">What you'll learn</h2>
+                    <ul className="grid sm:grid-cols-2 gap-3 sm:gap-4">
+                      {course.whatYouLearn.map((item, i) => (
+                        <li key={i} className="flex items-start gap-2.5 sm:gap-3">
+                          <CheckCircle2 size={19} className="text-success flex-shrink-0 mt-0.5" />
+                          <span className="text-sm text-[#1F1F1F] leading-relaxed">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
 
-              {/* Existing reviews list */}
-              {course.reviews && course.reviews.length > 0 && (
-                <div className="bg-white p-6 rounded-card shadow-sm border border-border mb-6">
-                  {course.reviews.map((review, i) => (
-                    <ReviewCard key={i} review={review} />
-                  ))}
+                  <section>
+                    <h2 className="text-lg sm:text-xl font-bold text-[#1F1F1F] mb-3">Course Content</h2>
+                    <p className="text-[#1F1F1F] whitespace-pre-line leading-relaxed text-sm">
+                      {course.description}
+                    </p>
+                  </section>
+
+                  <section>
+                    <h2 className="text-lg sm:text-xl font-bold text-[#1F1F1F] mb-4">Instructor</h2>
+                    <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 items-start">
+                      <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-primary text-white flex items-center justify-center text-xl sm:text-2xl font-bold flex-shrink-0">
+                        {(course.instructor || 'IN').slice(0, 2).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-base sm:text-lg font-bold text-[#1F1F1F] hover:text-primary cursor-pointer mb-1">{course.instructor}</h3>
+                        <p className="text-muted text-sm mb-3">
+                          {course.instructorTitle || 'Expert Instructor'}
+                        </p>
+                        <div className="flex gap-3 sm:gap-4 text-sm text-muted mb-3 flex-wrap">
+                          {course.rating > 0 && (
+                            <span className="flex items-center gap-1"><Star size={16} className="text-amber fill-amber"/> {course.rating.toFixed(1)} Rating</span>
+                          )}
+                          <span className="flex items-center gap-1"><Users size={16}/> {(course.studentsEnrolled || 0).toLocaleString()} Students</span>
+                        </div>
+                        <p className="text-sm text-[#1F1F1F] leading-relaxed">
+                          {course.instructorBio || 'Passionate about teaching and helping students achieve their career goals. Dedicated to providing high-quality, practical content that you can apply immediately.'}
+                        </p>
+                      </div>
+                    </div>
+                  </section>
                 </div>
               )}
 
-              {/* Student Review Submit Form */}
-              <div className="bg-white p-6 rounded-card shadow-sm border border-border">
-                <h3 className="text-lg font-bold text-[#1F1F1F] mb-4">Leave a Review</h3>
+              {/* CURRICULUM TAB */}
+              {activeTab === 'curriculum' && (
+                <div className="p-4 sm:p-7">
+                  <h2 className="text-lg sm:text-xl font-bold text-[#1F1F1F] mb-4">Curriculum</h2>
+                  <CurriculumAccordion curriculum={course.curriculum} />
+                </div>
+              )}
 
-                {!isAuthenticated() ? (
-                  <p className="text-sm text-muted">
-                    <Link to="/login" className="text-primary font-semibold hover:underline">Log in</Link> to leave a review.
-                  </p>
-                ) : reviewSuccess ? (
-                  <div className="flex items-center gap-2 text-success font-medium text-sm">
-                    <CheckCircle2 size={18} /> Thank you! Your review has been submitted.
-                  </div>
-                ) : (
-                  <form
-                    onSubmit={async (e) => {
-                      e.preventDefault();
-                      if (reviewRating === 0) { alert('Please select a star rating.'); return; }
-                      setReviewSubmitting(true);
+              {/* REVIEWS TAB */}
+              {activeTab === 'reviews' && (
+                <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
+                  <h2 className="text-base sm:text-lg font-bold text-[#1F1F1F] flex items-center gap-2 flex-wrap">
+                    <Star className="text-amber fill-amber" size={20} />
+                    {course.rating > 0
+                      ? <>{course.rating.toFixed(1)} course rating • {course.reviewCount.toLocaleString()} reviews</>
+                      : <>No reviews yet</>}
+                  </h2>
 
-                      const user = getCurrentUser();
-                      const initials = (user?.name || 'User')
-                        .split(' ')
-                        .map(w => w[0])
-                        .join('')
-                        .toUpperCase()
-                        .slice(0, 2);
+                  {course.reviews && course.reviews.length > 0 && (
+                    <div className="space-y-4">
+                      {course.reviews.map((review, i) => (
+                        <ReviewCard key={i} review={review} />
+                      ))}
+                    </div>
+                  )}
 
-                      const review = {
-                        user: user?.name || 'Anonymous',
-                        avatar: initials,
-                        rating: reviewRating,
-                        comment: reviewComment.trim(),
-                        date: new Date().toISOString().split('T')[0],
-                      };
+                  <div className="border-t border-border pt-5 sm:pt-6">
+                    <h3 className="text-sm sm:text-base font-bold text-[#1F1F1F] mb-4">Leave a Review</h3>
 
-                      // Mutate mockCourses in-place and re-read updated course
-                      updateCourseReviews(course.id, review);
-                      const updated = await getCourseBySlug(slug);
-                      setCourse(updated);
-
-                      setReviewComment('');
-                      setReviewRating(0);
-                      setReviewSubmitting(false);
-                      setReviewSuccess(true);
-                    }}
-                    className="space-y-4"
-                  >
-                    {/* Star picker */}
-                    <div>
-                      <label className="block text-sm font-medium text-[#1F1F1F] mb-2">Your Rating *</label>
-                      <div className="flex gap-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <button
-                            key={star}
-                            type="button"
-                            onClick={() => setReviewRating(star)}
-                            onMouseEnter={() => setReviewHover(star)}
-                            onMouseLeave={() => setReviewHover(0)}
-                            className="p-0.5 transition-transform hover:scale-110"
-                          >
-                            <Star
-                              size={28}
-                              className={
-                                star <= (reviewHover || reviewRating)
-                                  ? 'text-amber fill-amber'
-                                  : 'text-gray-300 fill-gray-300'
-                              }
-                            />
-                          </button>
-                        ))}
+                    {!isAuthenticated() ? (
+                      <p className="text-sm text-muted">
+                        <Link to="/login" className="text-primary font-semibold hover:underline">Log in</Link> to leave a review.
+                      </p>
+                    ) : reviewSuccess ? (
+                      <div className="flex items-center gap-2 text-success font-medium text-sm">
+                        <CheckCircle2 size={18} /> Thank you! Your review has been submitted.
                       </div>
-                    </div>
+                    ) : (
+                      <form
+                        onSubmit={async (e) => {
+                          e.preventDefault();
+                          if (reviewRating === 0) { alert('Please select a star rating.'); return; }
+                          setReviewSubmitting(true);
 
-                    {/* Comment */}
-                    <div>
-                      <label className="block text-sm font-medium text-[#1F1F1F] mb-1">Your Review</label>
-                      <textarea
-                        value={reviewComment}
-                        onChange={(e) => setReviewComment(e.target.value)}
-                        rows={3}
-                        placeholder="Share your experience with this course..."
-                        className="w-full border border-border rounded-btn px-3 py-2 text-sm focus:border-primary focus:outline-none"
-                      />
-                    </div>
+                          const user = getCurrentUser();
+                          const initials = (user?.name || 'User')
+                            .split(' ')
+                            .map(w => w[0])
+                            .join('')
+                            .toUpperCase()
+                            .slice(0, 2);
 
-                    <Button
-                      type="submit"
-                      variant="primary"
-                      size="sm"
-                      loading={reviewSubmitting}
-                    >
-                      <Send size={15} /> Submit Review
-                    </Button>
-                  </form>
-                )}
-              </div>
-            </section>
+                          const review = {
+                            user: user?.name || 'Anonymous',
+                            avatar: initials,
+                            rating: reviewRating,
+                            comment: reviewComment.trim(),
+                            date: new Date().toISOString().split('T')[0],
+                          };
 
+                          updateCourseReviews(course.id, review);
+                          const updated = await getCourseBySlug(slug);
+                          setCourse(updated);
+
+                          setReviewComment('');
+                          setReviewRating(0);
+                          setReviewSubmitting(false);
+                          setReviewSuccess(true);
+                        }}
+                        className="space-y-4"
+                      >
+                        <div>
+                          <label className="block text-sm font-medium text-[#1F1F1F] mb-2">Your Rating *</label>
+                          <div className="flex gap-1">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <button
+                                key={star}
+                                type="button"
+                                onClick={() => setReviewRating(star)}
+                                onMouseEnter={() => setReviewHover(star)}
+                                onMouseLeave={() => setReviewHover(0)}
+                                className="p-0.5 transition-transform hover:scale-110"
+                              >
+                                <Star
+                                  size={26}
+                                  className={
+                                    star <= (reviewHover || reviewRating)
+                                      ? 'text-amber fill-amber'
+                                      : 'text-gray-300 fill-gray-300'
+                                  }
+                                />
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-[#1F1F1F] mb-1">Your Review</label>
+                          <textarea
+                            value={reviewComment}
+                            onChange={(e) => setReviewComment(e.target.value)}
+                            rows={3}
+                            placeholder="Share your experience with this course..."
+                            className="w-full border border-border rounded-btn px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                          />
+                        </div>
+
+                        <Button type="submit" variant="primary" size="sm" loading={reviewSubmitting}>
+                          <Send size={15} /> Submit Review
+                        </Button>
+                      </form>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Right Sidebar (Sticky Enroll Card) */}
-          <div className="hidden lg:block lg:sticky lg:top-24 z-10">
+          {/* RIGHT COLUMN: Sticky Buy Card */}
+          <div className="hidden lg:block lg:sticky lg:top-5">
             <div className="bg-white rounded-card shadow-2xl border border-border overflow-hidden">
-              
-              {/* Video Preview Trigger */}
               <div className="relative cursor-pointer group" onClick={() => setIsDemoModalOpen(true)}>
                 <img src={course.thumbnail} alt={course.title} className="w-full aspect-video object-cover" />
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/50 transition-colors">
@@ -365,7 +376,7 @@ export default function CourseDetail() {
                       <Button variant="primary" className="w-full py-4 text-lg" onClick={() => addToCart(course)}>
                         Add to Cart
                       </Button>
-                      <Button variant="outline" onClick={() => navigate(`/checkout/${course.id}`, {state:{course}})} className="w-full py-3"  >
+                      <Button variant="outline" onClick={() => navigate(`/checkout/${course.id}`, { state: { course } })} className="w-full py-3">
                         Buy Now
                       </Button>
                     </>
@@ -391,33 +402,31 @@ export default function CourseDetail() {
         </div>
       </main>
 
-      {/* ── Mobile / Tablet sticky buy bar (hidden on lg+) ── */}
-      <div className="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.08)] px-4 py-3">
-        <div className="flex items-center gap-3 max-w-lg mx-auto">
-          {/* Price */}
+      {/* Mobile / Tablet sticky buy bar */}
+      <div className="lg:hidden fixed bottom-0 inset-x-0 z-50 bg-white border-t border-border shadow-[0_-4px_20px_rgba(0,0,0,0.08)] px-3 sm:px-4 py-2.5 sm:py-3">
+        <div className="flex items-center gap-2 sm:gap-3 max-w-lg mx-auto">
           <div className="flex-shrink-0">
             {course.isFree ? (
-              <span className="text-xl font-bold text-[#1F1F1F]">Free</span>
+              <span className="text-lg sm:text-xl font-bold text-[#1F1F1F]">Free</span>
             ) : (
-              <div className="flex items-baseline gap-1.5">
-                <span className="text-xl font-bold text-[#1F1F1F]">₹{course.price.toLocaleString()}</span>
-                <span className="text-sm text-muted line-through">₹{course.originalPrice.toLocaleString()}</span>
+              <div className="flex flex-col leading-tight sm:flex-row sm:items-baseline sm:gap-1.5">
+                <span className="text-base sm:text-xl font-bold text-[#1F1F1F]">₹{course.price.toLocaleString()}</span>
+                <span className="text-[10px] sm:text-sm text-muted line-through">₹{course.originalPrice.toLocaleString()}</span>
               </div>
             )}
           </div>
 
-          {/* Buttons */}
-          <div className="flex flex-1 gap-2 justify-end">
+          <div className="flex flex-1 gap-2 justify-end min-w-0">
             {course.isFree ? (
-              <Button variant="primary" className="flex-1 py-3 text-base" onClick={handleEnroll} loading={enrolling}>
+              <Button variant="primary" className="flex-1 py-2.5 sm:py-3 text-xs sm:text-base px-2 sm:px-4" onClick={handleEnroll} loading={enrolling}>
                 Enroll for Free
               </Button>
             ) : (
               <>
-                <Button variant="outline" className="flex-1 py-3 text-base" onClick={() => addToCart(course)}>
+                <Button variant="outline" className="flex-1 py-2.5 sm:py-3 text-xs sm:text-base px-2 sm:px-4" onClick={() => addToCart(course)}>
                   Add to Cart
                 </Button>
-                <Button variant="primary" className="flex-1 py-3 text-base" onClick={() => navigate(`/checkout/${course.id}`, { state: { course } })}>
+                <Button variant="primary" className="flex-1 py-2.5 sm:py-3 text-xs sm:text-base px-2 sm:px-4" onClick={() => navigate(`/checkout/${course.id}`, { state: { course } })}>
                   Buy Now
                 </Button>
               </>
@@ -428,7 +437,6 @@ export default function CourseDetail() {
 
       <Footer />
 
-      {/* Demo Video Modal */}
       <Modal isOpen={isDemoModalOpen} onClose={() => setIsDemoModalOpen(false)} title="Course Preview" size="lg">
         <div className="p-1">
           <VideoPlayer src={course.demoVideo} poster={course.thumbnail} title={course.title} />
@@ -438,5 +446,4 @@ export default function CourseDetail() {
   );
 }
 
-// Quick inline icon component to avoid huge lucide import list above
 const VideoPlayerIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>;

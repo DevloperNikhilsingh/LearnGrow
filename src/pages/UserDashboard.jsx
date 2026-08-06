@@ -15,11 +15,12 @@ import {
   MessageCircle,
   Phone,
   ImagePlus,
-  TimerIcon
+  TimerIcon,
+  AlertCircle
 } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import ProgressBar from '../components/ui/ProgressBar';
-import { getCurrentUser, logout } from '../api/authService';
+import { getCurrentUser, logout } from '../services/authService';
 import { BsWhatsapp } from 'react-icons/bs';
 import { MdEmail, MdOtherHouses } from 'react-icons/md';
 import { SiRapid } from 'react-icons/si';
@@ -146,6 +147,9 @@ export default function UserDashboard() {
   const [helpDesk, setHelpDesk] = useState();
   const [screenshot, setScreenshot] = useState(null);
   const fileInputRef = useRef(null);
+  const [ticketForm, setTicketForm] = useState({ name: '', email: '', phone: '', issuecategory: 'Paymentissue', message: '' });
+  const [ticketErrors, setTicketErrors] = useState({});
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     if (!user) {
@@ -198,17 +202,68 @@ export default function UserDashboard() {
     : 0;
 
 
-    // File handle karne ke liye aur fir jaise image upload karne ke liye 
-    const handleFileChange = (e) => {
-      const file = e.target.files[0];
-      if(file) setScreenshot(file);
-    };
+  // File handle karne ke liye aur fir jaise image upload karne ke liye 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) setScreenshot(file);
+  };
 
-    const handleDrag = (e) => {
-      const file = e.dataTransfer.files[0];
-      if(file) setScreenshot(file);
-    };
+  const handleDrag = (e) => {
+    const file = e.dataTransfer.files[0];
+    if (file) setScreenshot(file);
+  };
 
+  // Helpdesk Form Validation 
+
+  const handleTicketChange = (e) => {
+    const { name, value } = e.target;
+    setTicketForm(prev => ({ ...prev, [name]: value }));
+    if (ticketErrors[name]) {
+      setTicketErrors(prev => ({ ...prev, [name]: "" }));
+    }
+  }
+
+  const validateTicketForm = () => {
+    const errors = {};
+    const { name, email, phone, message } = ticketForm;
+
+    if (!name.trim()) errors.name = "Name is Required";
+    else if (name.trim().length < 3) errors.name = "Name must be atleast 3 Character";
+
+    if (!email.trim()) errors.email = "Email is Required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) errors.email = 'Enter a valid email address';
+
+    if (!phone.trim()) errors.phone = "Plz Enter your Contact Number";
+    else if (!/^\+?[\d\s-]{10,15}$/.test(phone.trim())) errors.phone = 'Enter a valid phone number';
+
+    if (!message.trim()) errors.message = "Plz Discribe Your Issue.....";
+    else if (message.trim().length < 10) errors.message = "Please provide more detail (Min 10 Character)";
+
+    return errors;
+  };
+
+  const showToast = (type, text) => {
+    setToast({ type, text });
+    setTimeout(() => setToast(null), 3500);
+  };
+
+  const handleTicketSubmit = (e) => {
+    e.preventDefault();
+    const errors = validateTicketForm();
+    setTicketErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
+      showToast('error', 'Please fix the errors in the form');
+      return;
+    }
+
+    // Dummy submit — no backend
+    showToast('success', 'Ticket submitted successfully! We\'ll get back to you soon.');
+    setTicketForm({ name: '', email: '', phone: '', issuecategory: 'Paymentissue', message: '' });
+    setTicketErrors({});
+    setScreenshot(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
 
 
   // ── Tab: Overview ─────────────────────────────────────────────────────────
@@ -532,7 +587,7 @@ export default function UserDashboard() {
     );
   };
 
-   // ── Tab: Settings ─────────────────────────────────────────────────────
+  // ── Tab: Settings ─────────────────────────────────────────────────────
   const renderSettings = () => (
     <div className="fade-in max-w-2xl">
       <h2 className="text-2xl font-bold text-[#1F1F1F] mb-6">Account Settings</h2>
@@ -727,87 +782,87 @@ export default function UserDashboard() {
 
         <div className='space-y-3'>
 
-  <div className='flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all'>
-    <div className='flex items-center gap-3'>
-      <div className='w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0'
-        style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}>
-        PS
-      </div>
-      <div>
-        <p className='text-sm font-semibold text-[#1a1a2e]'>Priya Sharma</p>
-        <p className='text-xs text-gray-400'>Joined on 25 Jul 2026</p>
-      </div>
-    </div>
-    <span className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-green-700 bg-green-100'>
-      <CheckCircle size={12} />200 point Earned
-    </span>
-  </div>
+          <div className='flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all'>
+            <div className='flex items-center gap-3'>
+              <div className='w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0'
+                style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}>
+                PS
+              </div>
+              <div>
+                <p className='text-sm font-semibold text-[#1a1a2e]'>Priya Sharma</p>
+                <p className='text-xs text-gray-400'>Joined on 25 Jul 2026</p>
+              </div>
+            </div>
+            <span className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-green-700 bg-green-100'>
+              <CheckCircle size={12} />200 point Earned
+            </span>
+          </div>
 
-  <div className='flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all'>
-    <div className='flex items-center gap-3'>
-      <div className='w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0'
-        style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}>
-        RY
-      </div>
-      <div>
-        <p className='text-sm font-semibold text-[#1a1a2e]'>Rohan Yadav</p>
-        <p className='text-xs text-gray-400'>Joined on 23 Jul 2026</p>
-      </div>
-    </div>
-    <span className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-green-700 bg-green-100'>
-      <CheckCircle size={12} />200 point Earned
-    </span>
-  </div>
+          <div className='flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all'>
+            <div className='flex items-center gap-3'>
+              <div className='w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0'
+                style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}>
+                RY
+              </div>
+              <div>
+                <p className='text-sm font-semibold text-[#1a1a2e]'>Rohan Yadav</p>
+                <p className='text-xs text-gray-400'>Joined on 23 Jul 2026</p>
+              </div>
+            </div>
+            <span className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-green-700 bg-green-100'>
+              <CheckCircle size={12} />200 point Earned
+            </span>
+          </div>
 
-  <div className='flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all'>
-    <div className='flex items-center gap-3'>
-      <div className='w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0'
-        style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
-        AB
-      </div>
-      <div>
-        <p className='text-sm font-semibold text-[#1a1a2e]'>Akhilesh Bhardwaj</p>
-        <p className='text-xs text-gray-400'>Joined on 20 Jul 2026</p>
-      </div>
-    </div>
-    <span className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-amber-700 bg-amber-100'>
-      <Clock size={12} />Pending
-    </span>
-  </div>
+          <div className='flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all'>
+            <div className='flex items-center gap-3'>
+              <div className='w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0'
+                style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
+                AB
+              </div>
+              <div>
+                <p className='text-sm font-semibold text-[#1a1a2e]'>Akhilesh Bhardwaj</p>
+                <p className='text-xs text-gray-400'>Joined on 20 Jul 2026</p>
+              </div>
+            </div>
+            <span className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-amber-700 bg-amber-100'>
+              <Clock size={12} />Pending
+            </span>
+          </div>
 
-  <div className='flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all'>
-    <div className='flex items-center gap-3'>
-      <div className='w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0'
-        style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}>
-        AK
-      </div>
-      <div>
-        <p className='text-sm font-semibold text-[#1a1a2e]'>Amit Kumar</p>
-        <p className='text-xs text-gray-400'>Joined on 18 Jul 2026</p>
-      </div>
-    </div>
-    <span className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-green-700 bg-green-100'>
-      <CheckCircle size={12} />200 Point Earned
-    </span>
-  </div>
+          <div className='flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all'>
+            <div className='flex items-center gap-3'>
+              <div className='w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0'
+                style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}>
+                AK
+              </div>
+              <div>
+                <p className='text-sm font-semibold text-[#1a1a2e]'>Amit Kumar</p>
+                <p className='text-xs text-gray-400'>Joined on 18 Jul 2026</p>
+              </div>
+            </div>
+            <span className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-green-700 bg-green-100'>
+              <CheckCircle size={12} />200 Point Earned
+            </span>
+          </div>
 
-  <div className='flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all'>
-    <div className='flex items-center gap-3'>
-      <div className='w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0'
-        style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
-        SV
-      </div>
-      <div>
-        <p className='text-sm font-semibold text-[#1a1a2e]'>Sneha Verma</p>
-        <p className='text-xs text-gray-400'>Joined on 16 Jul 2026</p>
-      </div>
-    </div>
-    <span className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-amber-700 bg-amber-100'>
-      <Clock size={12} />Pending
-    </span>
-  </div>
+          <div className='flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all'>
+            <div className='flex items-center gap-3'>
+              <div className='w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0'
+                style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)' }}>
+                SV
+              </div>
+              <div>
+                <p className='text-sm font-semibold text-[#1a1a2e]'>Sneha Verma</p>
+                <p className='text-xs text-gray-400'>Joined on 16 Jul 2026</p>
+              </div>
+            </div>
+            <span className='inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-amber-700 bg-amber-100'>
+              <Clock size={12} />Pending
+            </span>
+          </div>
 
-</div>
+        </div>
       </div>
     </div>
   );
@@ -869,27 +924,56 @@ export default function UserDashboard() {
           <h3 className='text-base font-bold text-[#1a1a2e] mb-1'>Raise a New Ticket</h3>
           <p className='text-xs text-gray-400 mb-5'>Fill in your details and our team will get back to you.</p>
 
-          <form action='' className='space-y-4'>
+          <form onSubmit={handleTicketSubmit} noValidate className='space-y-4'>
             <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor='name' className='text-xs font-semibold text-gray-600 uppercase tracking-wide'>Full Name</label>
-                <input type='text' name='name' placeholder='Rahul Sharma'
-                  className='w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all' />
+                <input
+                  type='text'
+                  name='name'
+                  value={ticketForm.name}
+                  onChange={handleTicketChange}
+                  placeholder='Rahul Sharma'
+                  className={`w-full px-4 py-2.5 text-sm border rounded-xl bg-gray-50 focus:outline-none focus:ring-2 transition-all ${ticketErrors.name ? 'border-red-300 focus:ring-red-500/30 focus:border-red-400' : 'border-gray-200 focus:ring-blue-500/30 focus:border-blue-400'
+                    }`}
+                />
+                {ticketErrors.name && <p className='text-xs text-red-500 mt-0.5'>{ticketErrors.name}</p>}
               </div>
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor='email' className='text-xs font-semibold text-gray-600 uppercase tracking-wide'>Email</label>
-                <input type='email' name='email' placeholder='rahul@email.com'
-                  className='w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all' />
+                <input
+                  type='email'
+                  name='email'
+                  value={ticketForm.email}
+                  onChange={handleTicketChange}
+                  placeholder='rahul@email.com'
+                  className={`w-full px-4 py-2.5 text-sm border rounded-xl bg-gray-50 focus:outline-none focus:ring-2 transition-all ${ticketErrors.email ? 'border-red-300 focus:ring-red-500/30 focus:border-red-400' : 'border-gray-200 focus:ring-blue-500/30 focus:border-blue-400'
+                    }`}
+                />
+                {ticketErrors.email && <p className='text-xs text-red-500 mt-0.5'>{ticketErrors.email}</p>}
               </div>
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor='PhoneNumber' className='text-xs font-semibold text-gray-600 uppercase tracking-wide'>Phone Number</label>
-                <input type='tel' name='phone' placeholder='+91 9876543210'
-                  className='w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all' />
+                <input
+                  type='tel'
+                  name='phone'
+                  value={ticketForm.phone}
+                  onChange={handleTicketChange}
+                  placeholder='+91 9876543210'
+                  className={`w-full px-4 py-2.5 text-sm border rounded-xl bg-gray-50 focus:outline-none focus:ring-2 transition-all ${ticketErrors.phone ? 'border-red-300 focus:ring-red-500/30 focus:border-red-400' : 'border-gray-200 focus:ring-blue-500/30 focus:border-blue-400'
+                    }`}
+                />
+                {ticketErrors.phone && <p className='text-xs text-red-500 mt-0.5'>{ticketErrors.phone}</p>}
               </div>
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor='issuecategory' className='text-xs font-semibold text-gray-600 uppercase tracking-wide'>Issue Category</label>
-                <select name='issuecategory' id='issuecategory'
-                  className='w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all'>
+                <select
+                  name='issuecategory'
+                  id='issuecategory'
+                  value={ticketForm.issuecategory}
+                  onChange={handleTicketChange}
+                  className='w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all'
+                >
                   <option value='Paymentissue'>Payment Issue</option>
                   <option value='accountissue'>Account Issue</option>
                   <option value='classissue'>Classes Issue</option>
@@ -900,8 +984,17 @@ export default function UserDashboard() {
 
             <div className='flex flex-col gap-1.5'>
               <label htmlFor='describeyourissue' className='text-xs font-semibold text-gray-600 uppercase tracking-wide'>Describe Your Issue</label>
-              <textarea name='message' id='message' rows={4} placeholder='Tell us what happened…'
-                className='w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all resize-none' />
+              <textarea
+                name='message'
+                id='message'
+                rows={4}
+                value={ticketForm.message}
+                onChange={handleTicketChange}
+                placeholder='Tell us what happened…'
+                className={`w-full px-4 py-2.5 text-sm border rounded-xl bg-gray-50 focus:outline-none focus:ring-2 transition-all resize-none ${ticketErrors.message ? 'border-red-300 focus:ring-red-500/30 focus:border-red-400' : 'border-gray-200 focus:ring-blue-500/30 focus:border-blue-400'
+                  }`}
+              />
+              {ticketErrors.message && <p className='text-xs text-red-500 mt-0.5'>{ticketErrors.message}</p>}
             </div>
 
             <div className='flex flex-col gap-1.5'>
@@ -942,9 +1035,9 @@ export default function UserDashboard() {
 
           <div className='space-y-3 flex-1'>
             {[
-              { title: 'Payment Failed during checkout', id: '#1042', time: 'Today',      status: 'progress' },
-              { title: 'Website keeps crashing',         id: '#1039', time: '2 days ago', status: 'resolved' },
-              { title: 'Unable to log in',               id: '#1035', time: '4 days ago', status: 'pending'  },
+              { title: 'Payment Failed during checkout', id: '#1042', time: 'Today', status: 'progress' },
+              { title: 'Website keeps crashing', id: '#1039', time: '2 days ago', status: 'resolved' },
+              { title: 'Unable to log in', id: '#1035', time: '4 days ago', status: 'pending' },
             ].map((ticket, i) => (
               <div key={i} className='p-4 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-200 hover:shadow-sm transition-all'>
                 <div className='flex items-start justify-between gap-3'>
@@ -995,7 +1088,7 @@ export default function UserDashboard() {
     </div>
   )
 
- 
+
 
 
   // ── Sidebar ───────────────────────────────────────────────────────────────
@@ -1076,6 +1169,22 @@ export default function UserDashboard() {
         <title>Dashboard | LearnGrow</title>
       </Helmet>
 
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed top-20 right-4 z-[100] fade-in">
+          <div className={`flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-lg border max-w-sm ${toast.type === 'success'
+              ? 'bg-white border-green-200 text-green-700'
+              : 'bg-white border-red-200 text-red-700'
+            }`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${toast.type === 'success' ? 'bg-green-100' : 'bg-red-100'
+              }`}>
+              {toast.type === 'success' ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
+            </div>
+            <p className="text-sm font-medium">{toast.text}</p>
+          </div>
+        </div>
+      )}
+
       <Navbar />
 
       <div className="flex flex-1 overflow-hidden w-full">
@@ -1120,7 +1229,7 @@ export default function UserDashboard() {
               renderReferal()}
             {activeTab === 'helpDesk' &&
               renderhelpDesk()}
-              {activeTab === 'settings' && renderSettings()}
+            {activeTab === 'settings' && renderSettings()}
           </div>
         </main>
       </div>

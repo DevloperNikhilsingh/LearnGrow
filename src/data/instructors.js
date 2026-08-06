@@ -1,4 +1,4 @@
-[
+const instructors = [
   {
     "id": 1,
     "slug": "priya-sharma",
@@ -71,4 +71,6 @@
       "website": "#"
     }
   }
-]
+];
+
+export default instructors;

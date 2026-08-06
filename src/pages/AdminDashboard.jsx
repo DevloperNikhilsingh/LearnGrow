@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet-async';
 import { Users, Book, DollarSign, Video, TrendingUp } from 'lucide-react';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import StatCard from '../components/ui/StatCard';
-import { getAdminStats } from '../api/adminService';
+import { getAdminStats } from '../services/adminService';
 import Navbar from '../components/layout/Navbar'; // Reuse mobile navbar conceptually if needed
 
 export default function AdminDashboard() {

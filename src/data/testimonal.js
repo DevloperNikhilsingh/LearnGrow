@@ -1,0 +1,63 @@
+const testimonials = [
+  {
+    name: 'Mohit Sharma',
+    role: 'Software Engineer',
+    company: 'TCS',
+    course: 'Full Stack Web Development',
+    avatar: '/testimonal.png',
+    video: '/Video_editing_2.mp4'
+  },
+  {
+    name: 'Rashneet Singh',
+    role: 'Marketing Executive',
+    company: 'Aashirvaad, B Natural',
+    course: 'Digital Marketing',
+    avatar: '/testimonal_3.png',
+    video: '/SEO_2.mp4'
+  },
+  {
+    name: 'Akhilesh Bhardwaj',
+    role: 'Full Stack Web Development',
+    company: 'IPTECH',
+    course: 'Web Development',
+    quote: 'LearnGrow Platform was truly a game-changer for me as I brought my design & Creativity skills to a professional level.',
+    avatar: '/Akhilesh_4.png',
+    video: '/Video_editing_2.mp4',
+  },
+  {
+    name: 'Kunal Gwari',
+    role: 'Content Marketer',
+    company: 'boAt',
+    course: 'Content Marketing',
+    quote: 'Learning Platform gives you the ability to be persistent. I learned exactly what I needed to get a new role.',
+    avatar: '/testimonal.png',
+    video: '/SEO_2.mp4',
+  },
+  {
+    name: 'Riddhi Kalantari',
+    role: 'Assistant Manager',
+    company: "McDonald's",
+    course: 'Web Development',
+    quote: 'I loved the web development course. Within weeks, I had the skills to build real projects for my team.',
+    avatar: '/testimonal.png',
+    video: '/Video_editing_2.mp4',
+  },
+  {
+    name: 'Priya Sharma',
+    role: 'Digital Marketing Executive',
+    company: 'Nykaa',
+    course: 'Digital Marketing',
+    quote: 'Within 24 hours of finishing the course, I had a working strategy for my business.',
+    avatar: '/testimonal.png',
+    video: '/SEO_2.mp4',
+  },
+  {
+    name: 'Karan Verma',
+    role: 'Web Developer',
+    company: 'Zomato',
+    course: 'Web Development',
+    quote: 'The hands-on projects made it easy to apply everything I learned directly at my job.',
+    avatar: '/testimonal.png',
+    video: '/Video_editing_2.mp4',
+  },
+];

@@ -11,13 +11,12 @@ export default {
       },
       colors: {
         primary:  '#0056D2',
-        navy:     '#00234B',
+        navy:     '#0a1128',
         amber:    '#F9AB00',
         success:  '#00822B',
         muted:    '#6B7280',
         border:   '#E5E7EB',
         surface:  '#F5F5F5',
-        navy:     '#0a1128',
       },
       fontSize: {
         'h1': ['40px', { lineHeight: '1.15', fontWeight: '700' }],

@@ -7,7 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Save, ArrowLeft } from 'lucide-react';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import Button from '../components/ui/Button';
-import { getCourseById, updateCourse } from '../api/adminService';
+import { getCourseById, updateCourse } from '../services/adminService';
 
 export default function AdminEditCourse() {
   const { id } = useParams();

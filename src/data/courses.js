@@ -1,4 +1,4 @@
-[
+const courses = [
   {
     "id": 1,
     "slug": "digital-marketing-mastery",
@@ -422,4 +422,6 @@
       { "user": "Ravi Kumar", "avatar": "RK", "rating": 5, "comment": "Dr. Patel's clinical experience really shines through. Game-changer for my practice.", "date": "2026-01-10" }
     ]
   }
-]
+];
+
+export default courses;

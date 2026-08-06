@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Search, Mail } from 'lucide-react';
 import AdminSidebar from '../components/admin/AdminSidebar';
-import { getStudents } from '../api/adminService';
+import { getStudents } from '../services/adminService';
 
 export default function AdminStudents() {
   const [students, setStudents] = useState([]);

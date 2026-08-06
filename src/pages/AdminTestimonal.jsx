@@ -116,9 +116,9 @@ const AdminTestimonal = () => {
 
             <main className="flex-1 overflow-y-auto">
                 {/* Header */}
-                <div className="bg-white border-b border-border h-16 flex items-center justify-between pl-16 pr-8 lg:px-8 shadow-sm">
-                    <h1 className="text-xl font-bold text-[#1F1F1F]">Manage Testimonials</h1>
-                    <Button variant="primary" size="sm" className="gap-1" onClick={handleOpenModal}>
+                <div className="bg-white border-b border-border h-16 flex items-center justify-between pl-16 pr-2 lg:px-8 shadow-sm">
+                    <h1 className="text-[18px] sm:text-xl font-bold text-[#1F1F1F]">Manage Testimonials</h1>
+                    <Button  variant="primary" size='[44px]'  className="gap-1 h-10 w-[177px]" onClick={handleOpenModal}>
                         <Plus size={16} /> Add Testimonial
                     </Button>
                 </div>
@@ -153,9 +153,7 @@ const AdminTestimonal = () => {
                                     <th className="text-left text-xs font-bold text-gray-500 uppercase tracking-wide px-6 py-4">
                                         Course
                                     </th>
-                                    <th className="text-left text-xs font-bold text-gray-500 uppercase tracking-wide px-6 py-4">
-                                        Status
-                                    </th>
+                                    
                                     <th className="text-left text-xs font-bold text-gray-500 uppercase tracking-wide px-6 py-4">
                                         Actions
                                     </th>
@@ -188,17 +186,10 @@ const AdminTestimonal = () => {
                                         <td className="px-6 py-4 text-sm text-[#1F1F1F]">
                                             {item.course}
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <StatusBadge status={item.status} />
-                                        </td>
+                                        
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
-                                                <button
-                                                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 transition-colors"
-                                                    aria-label="Edit"
-                                                >
-                                                    <Pencil size={15} />
-                                                </button>
+                                                
                                                 <button
                                                     className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-red-100 hover:text-red-600 text-gray-600 transition-colors"
                                                     aria-label="Delete"
@@ -300,11 +291,15 @@ const AdminTestimonal = () => {
                             </div>
 
                             <div>
+                                {/* <label>
+                                    Upload Image
+                                </label> */}
                                 <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">
                                     Avatar Image Path
                                 </label>
                                 <input
-                                    type="text"
+                                    type="file"
+                                    accept='image*/'
                                     name="avatar"
                                     value={formData.avatar}
                                     onChange={handleChange}
@@ -333,20 +328,7 @@ const AdminTestimonal = () => {
                                 />
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">
-                                    Status
-                                </label>
-                                <select
-                                    name="status"
-                                    value={formData.status}
-                                    onChange={handleChange}
-                                    className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white"
-                                >
-                                    <option value="DRAFT">Draft</option>
-                                    <option value="PUBLISHED">Published</option>
-                                </select>
-                            </div>
+                            
 
                             {/* Modal Footer */}
                             <div className="flex items-center justify-end gap-3 pt-2">
