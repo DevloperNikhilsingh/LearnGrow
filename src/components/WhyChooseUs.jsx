@@ -7,7 +7,7 @@ const FEATURES = [
     id: 1,
     tag: '01',
     label: 'Lifetime access',
-    to:'/courese',
+    to:'/courses',
     title: 'Learn once, own it forever',
     desc: 'Buy once, learn forever. Every future update to your course comes at zero extra cost.',
     stats: [

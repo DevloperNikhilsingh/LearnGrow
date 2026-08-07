@@ -96,7 +96,7 @@ const heroStats = [
 //     hoverBorder: 'hover:border-t-purple-600',
 //     students: '1,120 students'
 //   },
-  
+
 // };
 
 const skillCards = [
@@ -138,6 +138,7 @@ const testimonials = [
     role: 'Marketing Executive',
     company: 'Aashirvaad, B Natural',
     course: 'Digital Marketing',
+    quote: 'LearnGrow Platform was truly a game-changer for me as I brought my design & Creativity skills to a professional level.',
     avatar: '/testimonal_3.png',
     video: '/SEO_2.mp4'
   },
@@ -834,28 +835,28 @@ export default function Home() {
                 className="flex justify-start gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth border-border pb-2 -mx-4 px-4 sm:mx-0 sm:px-6 lg:px-8 scroll-px-4 sm:scroll-px-6 lg:scroll-px-8 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
               >
                 {categories.map((cat) => (
-  <Link
-    key={cat.id}
-    to={`/courses?category=${cat.slug}`}
-    data-category-card
-    className="snap-start shrink-0 w-[220px] sm:w-[240px] bg-white p-6 rounded-card shadow-[0_0_15px_rgba(0,0,0,0.08)] transition-[border-color] duration-200 ease-in-out group text-center border-t-4 border-t-transparent hover:border-t-[color:var(--cat-color)]"
-    style={{ '--cat-color': cat.color }}
-  >
-    <div className="h-20 w-20 sm:h-32 sm:w-32 mx-auto flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-[1.08] group-hover:rotate-[-2deg]">
-      <img
-        src={cat.icon}
-        alt={cat.name}
-        className="w-full h-full object-contain"
-        draggable={false}
-      />
-    </div>
-    <h3 className="font-semibold text-lg text-[#1F1F1F] mb-2">{cat.name}</h3>
-    <p className="text-sm text-muted line-clamp-2 mb-3">{cat.description}</p>
-    <div className="text-xs text-muted font-medium">
-      {cat.students}
-    </div>
-  </Link>
-))}
+                  <Link
+                    key={cat.id}
+                    to={`/courses?category=${cat.slug}`}
+                    data-category-card
+                    className="snap-start shrink-0 w-[220px] sm:w-[240px] bg-white p-6 rounded-card shadow-[0_0_15px_rgba(0,0,0,0.08)] transition-[border-color] duration-200 ease-in-out group text-center border-t-4 border-t-transparent hover:border-t-[color:var(--cat-color)]"
+                    style={{ '--cat-color': cat.color }}
+                  >
+                    <div className="h-20 w-20 sm:h-32 sm:w-32 mx-auto flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-[1.08] group-hover:rotate-[-2deg]">
+                      <img
+                        src={cat.icon}
+                        alt={cat.name}
+                        className="w-full h-full object-contain"
+                        draggable={false}
+                      />
+                    </div>
+                    <h3 className="font-semibold text-lg text-[#1F1F1F] mb-2">{cat.name}</h3>
+                    <p className="text-sm text-muted line-clamp-2 mb-3">{cat.description}</p>
+                    <div className="text-xs text-muted font-medium">
+                      {cat.students}
+                    </div>
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
@@ -957,53 +958,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Certification/Featured Categories Banner */}
-        <section className="py-14 bg-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-navy rounded-2xl p-8 lg:p-12 grid lg:grid-cols-2 gap-10 items-center">
-              {/* Left side text */}
-              <div>
-                <TypewriterHeading
-                  lines={['Learn in-demand skills', 'and get ahead in your career']}
-                  className="text-3xl lg:text-4xl font-bold text-white mb-4 leading-tight"
-                  speed={120}
-                  lineGap={400}
-                />
-                <p className="text-white/70 text-lg mb-6">
-                  Explore expert-led courses in digital marketing, physiotherapy, and web development — designed to build real, job-ready skills.
-                </p>
-                <Link to="/courses" className="text-amber font-semibold flex items-center gap-2 hover:underline w-fit">
-                  Explore all courses <ArrowRight size={18} />
-                </Link>
-              </div>
-
-              {/* Right side cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {categories
-                  .filter((cat) =>
-                    ['digital-marketing', 'physiotherapy', 'web-development'].includes(cat.slug)
-                  )
-                  .map((item) => (
-                    <Link
-                      key={item.slug}
-                      to={`/courses?category=${item.slug}`}
-                      className="bg-white/10 hover:bg-white/20 transition-colors rounded-xl p-5 flex flex-col items-start"
-                    >
-                      <div className="h-24 w-full rounded-lg bg-white/90 flex items-center justify-center mb-4 overflow-hidden">
-                        <img
-                          src={item.icon}
-                          alt={item.name}
-                          className="h-20 w-20 object-contain"
-                        />
-                      </div>
-                      <h3 className="text-white font-bold text-lg mb-1">{item.name}</h3>
-                      <p className="text-white/60 text-sm line-clamp-1">{item.description}</p>
-                    </Link>
-                  ))}
-              </div>
-            </div>
-          </div>
-        </section>
+        
 
         {/* Featured Courses */}
         <section className="py-16 bg-white">
@@ -1132,9 +1087,7 @@ export default function Home() {
                     <p className="font-bold text-[#1F1F1F] text-[15px] leading-tight">{item.name}</p>
                     <p className="text-indigo-600 text-[11px] leading-tight mb-1">{item.course}</p>
                     <div className="border-t border-gray-100 my-1.5"></div>
-                    <p className="text-[#1F1F1F] text-[11px] leading-tight">
-                      Placed at <span className="font-semibold">{item.company}</span> as {item.role}
-                    </p>
+                    <p className="text-black text-[10px] leading-tight mb-1">"{item.quote}"</p>
                   </div>
                 </div>
               ))}
@@ -1148,56 +1101,56 @@ export default function Home() {
           <Faq />
         </section>
         {/* CTA Section */}
-<section className="relative py-20 bg-navy overflow-hidden">
-  
-  {/* Grid pattern overlay */}
-  <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
+        <section className="relative py-20 bg-navy overflow-hidden">
 
-  <div className="max-w-4xl mx-auto px-4 relative z-10 text-center">
-    {/* Eyebrow tag */}
-    <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 mb-6">
-      <span className="w-2 h-2 bg-amber rounded-full animate-ping"></span>
-      <span className="text-white/70 text-sm-caption">Join 50,000+ learners today</span>
-    </div>
+          {/* Grid pattern overlay */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
 
-    <h2 className="text-h1 text-white mb-4 tracking-tight">
-      Your future starts
-      <br />
-      <span className="text-amber">
-        with one click.
-      </span>
-    </h2>
+          <div className="max-w-4xl mx-auto px-4 relative z-10 text-center">
+            {/* Eyebrow tag */}
+            <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 mb-6">
+              <span className="w-2 h-2 bg-amber rounded-full animate-ping"></span>
+              <span className="text-white/70 text-sm-caption">Join 50,000+ learners today</span>
+            </div>
 
-    <p className="text-white/60 mb-8 text-base max-w-md mx-auto">
-      No credit card. No commitment. Just growth — at your own pace.
-    </p>
+            <h2 className="text-h1 text-white mb-4 tracking-tight">
+              Your future starts
+              <br />
+              <span className="text-amber">
+                with one click.
+              </span>
+            </h2>
 
-    <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-      <Link
-        to="/signup"
-        className="group relative inline-flex items-center gap-2 bg-amber hover:opacity-90 text-navy font-semibold px-8 py-3.5 rounded-btn text-base transition-all duration-300 hover:shadow-[0_0_40px_rgba(249,171,0,0.5)] hover:-translate-y-0.5"
-      >
-        Create a Free Account
-        <span className="transition-transform group-hover:translate-x-1">→</span>
-      </Link>
+            <p className="text-white/60 mb-8 text-base max-w-md mx-auto">
+              No credit card. No commitment. Just growth — at your own pace.
+            </p>
 
-      <Link
-        to="/courses"
-        className="inline-flex items-center gap-2 text-white/70 hover:text-white px-8 py-3.5 rounded-btn text-base transition group"
-      >
-        Explore courses
-        <span className="text-white/40 group-hover:text-amber transition">↗</span>
-      </Link>
-    </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link
+                to="/signup"
+                className="group relative inline-flex items-center gap-2 bg-amber hover:opacity-90 text-navy font-semibold px-8 py-3.5 rounded-btn text-base transition-all duration-300 hover:shadow-[0_0_40px_rgba(249,171,0,0.5)] hover:-translate-y-0.5"
+              >
+                Create a Free Account
+                <span className="transition-transform group-hover:translate-x-1">→</span>
+              </Link>
 
-    {/* Trust strip */}
-    <div className="mt-12 pt-6 border-t border-white/10 flex flex-wrap justify-center gap-x-8 gap-y-2 text-white/40 text-sm-caption">
-      <span>✓ Free forever plan</span>
-      <span>✓ Cancel anytime</span>
-      <span>✓ 4.9/5 rating</span>
-    </div>
-  </div>
-</section>
+              <Link
+                to="/courses"
+                className="inline-flex items-center gap-2 text-white/70 hover:text-white px-8 py-3.5 rounded-btn text-base transition group"
+              >
+                Explore courses
+                <span className="text-white/40 group-hover:text-amber transition">↗</span>
+              </Link>
+            </div>
+
+            {/* Trust strip */}
+            <div className="mt-12 pt-6 border-t border-white/10 flex flex-wrap justify-center gap-x-8 gap-y-2 text-white/40 text-sm-caption">
+              <span>✓ Free forever plan</span>
+              <span>✓ Cancel anytime</span>
+              <span>✓ 4.9/5 rating</span>
+            </div>
+          </div>
+        </section>
       </main>
       <Footer />
     </div>

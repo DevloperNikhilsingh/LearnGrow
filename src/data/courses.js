@@ -116,7 +116,7 @@ const courses = [
     ],
     "reviews": [
       { "user": "Sonal Desai", "avatar": "SD", "rating": 5, "comment": "Excellent clinical content. Dr. Patel explains complex concepts brilliantly.", "date": "2026-01-05" }
-    ]
+    ],
   },
   {
     "id": 3,

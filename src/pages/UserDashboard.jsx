@@ -142,7 +142,11 @@ export default function UserDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [settingsSaved, setSettingsSaved] = useState(false);
   const [userName, setUserName] = useState(user?.name || '');
-  const [notifications, setNotifications] = useState(true);
+  const [notifications, setNotifications] = useState({
+    email: true,
+    liveClasses: true,
+    newCourses: true,
+  });
   const [referal, setReferal] = useState();
   const [helpDesk, setHelpDesk] = useState();
   const [screenshot, setScreenshot] = useState(null);
@@ -150,6 +154,13 @@ export default function UserDashboard() {
   const [ticketForm, setTicketForm] = useState({ name: '', email: '', phone: '', issuecategory: 'Paymentissue', message: '' });
   const [ticketErrors, setTicketErrors] = useState({});
   const [toast, setToast] = useState(null);
+
+  // Setting me (notifications, liveclasses, newCourses) ye sab notification on of karne ka logic hai  
+  const toggleNotif = (key) => {
+      setNotifications((prev) => ({...prev, [key] : !prev[key]}));
+  }
+
+
 
   useEffect(() => {
     if (!user) {
@@ -639,16 +650,26 @@ export default function UserDashboard() {
         {/* Password */}
         <div className="bg-white rounded-2xl shadow-sm border border-border p-6">
           <h3 className="text-base font-bold text-[#1F1F1F] border-b border-border pb-3 mb-5">Change Password</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <form onSubmit={(e) => e.preventDefault()} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-[#1F1F1F] mb-1.5">New Password</label>
-              <input type="password" placeholder="••••••••" className="w-full border border-border rounded-xl px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 bg-surface text-sm transition-all" />
+              <input
+                type="password"
+                placeholder="••••••••"
+                autoComplete="new-password"
+                className="w-full border border-border rounded-xl px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 bg-surface text-sm transition-all"
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-[#1F1F1F] mb-1.5">Confirm Password</label>
-              <input type="password" placeholder="••••••••" className="w-full border border-border rounded-xl px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 bg-surface text-sm transition-all" />
+              <input
+                type="password"
+                placeholder="••••••••"
+                autoComplete="new-password"
+                className="w-full border border-border rounded-xl px-4 py-2.5 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/10 bg-surface text-sm transition-all"
+              />
             </div>
-          </div>
+          </form>
         </div>
 
         {/* Notifications */}
@@ -656,20 +677,20 @@ export default function UserDashboard() {
           <h3 className="text-base font-bold text-[#1F1F1F] border-b border-border pb-3 mb-5">Notifications</h3>
           <div className="space-y-4">
             {[
-              { label: 'Email notifications', desc: 'Receive updates about your courses via email' },
-              { label: 'Live class reminders', desc: 'Get notified 30 minutes before a live session' },
-              { label: 'New course announcements', desc: 'Be the first to know about new courses' },
-            ].map((notif, i) => (
-              <div key={i} className="flex items-center justify-between py-2">
+              { key: 'email', label: 'Email notifications', desc: 'Receive updates about your courses via email' },
+              { key: 'liveClasses', label: 'Live class reminders', desc: 'Get notified 30 minutes before a live session' },
+              { key: 'newCourses', label: 'New course announcements', desc: 'Be the first to know about new courses' },
+            ].map((notif) => (
+              <div key={notif.key} className="flex items-center justify-between py-2">
                 <div>
                   <p className="text-sm font-medium text-[#1F1F1F]">{notif.label}</p>
                   <p className="text-xs text-muted mt-0.5">{notif.desc}</p>
                 </div>
                 <button
-                  onClick={() => setNotifications(n => !n)}
-                  className={`w-11 h-6 rounded-full transition-colors relative ${i === 0 ? (notifications ? 'bg-primary' : 'bg-gray-200') : 'bg-primary'}`}
+                  onClick={() => toggleNotif(notif.key)}
+                  className={`w-11 h-6 rounded-full transition-colors relative ${notifications[notif.key] ? 'bg-primary' : 'bg-gray-200'}`}
                 >
-                  <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all ${i === 0 ? (notifications ? 'left-6' : 'left-1') : 'left-6'} shadow-sm`} />
+                  <div className={`w-4 h-4 bg-white rounded-full absolute top-1 transition-all ${notifications[notif.key] ? 'left-6' : 'left-1'} shadow-sm`} />
                 </button>
               </div>
             ))}
@@ -743,12 +764,12 @@ export default function UserDashboard() {
         <h3 className='text-base font-bold text-[#1a1a2e] mb-1'>Your Referral Link</h3>
         <p className='text-xs text-gray-400 mb-4'>Share this link with your friends to start earning</p>
 
-        <div className='flex gap-2'>
+        <div className='w-full flex gap-2'>
           <div className='flex-1 flex items-center gap-3 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3'>
             <span className='w-2 h-2 rounded-full bg-green-500 flex-shrink-0' />
-            <span className='text-sm text-gray-600 font-mono truncate'>myapp.com/ref/rahul90</span>
+            <span className='w-[110px] sm:w-auto text-sm text-gray-600 font-mono truncate'>myapp.com/ref/rahul90</span>
           </div>
-          <button className='flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:brightness-90 active:scale-95 flex-shrink-0' style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}>
+          <button className='flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:brightness-90 active:scale-95 flex-shrink-0' style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}>
             <Copy size={15} />
             Copy
           </button>
