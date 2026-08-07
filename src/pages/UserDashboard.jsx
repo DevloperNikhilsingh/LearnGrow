@@ -7,7 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   BookOpen, PlayCircle, Award, Calendar, Video, Settings as SettingsIcon, User,
-  LayoutDashboard, LogOut, Menu, X, ChevronRight, Target,
+  LayoutDashboard, LogOut, Menu, X, ChevronRight, Target, Gift,
   HelpCircle,
   MessageCircle,
   Phone,
@@ -15,15 +15,18 @@ import {
   TimerIcon,
   AlertCircle
 } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import { getCurrentUser, logout } from '../services/authService';
-import Setting from '../components/UserDashboard/Setting';
-import LiveClasses from '../components/UserDashboard/LiveClasses';
-import MyCourses from '../components/UserDashboard/MyCourses';
-import Overview from '../components/UserDashboard/Overview';
-import Certificates from '../components/UserDashboard/Certificate';
-import Referal from '../components/UserDashboard/Referal';
-import HelpDesk from '../components/UserDashboard/HelpDesk';
+import Setting from '../components/UserDashboardUI/Setting';
+import LiveClasses from '../components/UserDashboardUI/LiveClasses';
+import MyCourses from '../components/UserDashboardUI/MyCourses';
+import Overview from '../components/UserDashboardUI/Overview';
+import Certificates from '../components/UserDashboardUI/Certificate';
+import Referal from '../components/UserDashboardUI/Referal';
+import HelpDesk from '../components/UserDashboardUI/HelpDesk';
+import Sidebar from '../components/UserDashboardUI/Sidebar';
+import { DUMMY_LIVE_CLASSES } from '../data/dummyLiveClassesData';
 
 // ─── Dummy Data ──────────────────────────────────────────────────────────────
 const DUMMY_COURSES = [
@@ -66,42 +69,6 @@ const DUMMY_COURSES = [
 ];
 
 const DUMMY_PROGRESS = { 1: 50, 3: 30, 4: 10 };
-
-const DUMMY_LIVE_CLASSES = [
-  {
-    id: 1,
-    courseId: 1,
-    title: 'Digital Marketing Mastery — Live Q&A',
-    instructor: 'Priya Sharma',
-    date: '2026-07-25',
-    time: '6:00 PM IST',
-    zoomLink: 'https://zoom.us/j/dummy-dm-123',
-    isActive: true,
-    category: 'Digital Marketing',
-  },
-  {
-    id: 2,
-    courseId: 3,
-    title: 'Physiotherapy Foundations — Clinical Demo',
-    instructor: 'Dr. Arvind Patel',
-    date: '2026-07-26',
-    time: '5:00 PM IST',
-    zoomLink: 'https://zoom.us/j/dummy-pt-456',
-    isActive: false,
-    category: 'Physiotherapy',
-  },
-  {
-    id: 3,
-    courseId: 4,
-    title: 'UI/UX Bootcamp — Live Design Review',
-    instructor: 'Neha Kapoor',
-    date: '2026-07-28',
-    time: '7:00 PM IST',
-    zoomLink: 'https://zoom.us/j/dummy-ux-789',
-    isActive: false,
-    category: 'UI/UX Design',
-  },
-];
 
 const DUMMY_CERTIFICATES = [
   {
@@ -210,111 +177,13 @@ export default function UserDashboard() {
     ? Math.round(courses.reduce((sum, c) => sum + (progressData[c.id] || 0), 0) / courses.length)
     : 0;
 
-  // File handle karne ke liye aur fir jaise image upload karne ke liye
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) setScreenshot(file);
-  };
+  
 
-  const handleDrag = (e) => {
-    const file = e.dataTransfer.files[0];
-    if (file) setScreenshot(file);
-  };
+  
 
-  const showToast = (type, text) => {
-    setToast({ type, text });
-    setTimeout(() => setToast(null), 3500);
-  };
+ 
 
-  const handleTicketSubmit = (e) => {
-    e.preventDefault();
-    const errors = validateTicketForm();
-    setTicketErrors(errors);
-
-    if (Object.keys(errors).length > 0) {
-      showToast('error', 'Please fix the errors in the form');
-      return;
-    }
-
-    // Dummy submit — no backend
-    showToast('success', 'Ticket submitted successfully! We\'ll get back to you soon.');
-    setTicketForm({ name: '', email: '', phone: '', issuecategory: 'Paymentissue', message: '' });
-    setTicketErrors({});
-    setScreenshot(null);
-    if (fileInputRef.current) fileInputRef.current.value = '';
-  };
-
-  // ── Sidebar ───────────────────────────────────────────────────────────────
-  const Sidebar = ({ mobile = false }) => (
-    <aside className={mobile
-      ? 'fixed inset-0 z-50 flex'
-      : 'w-64 bg-navy text-white h-full hidden lg:flex flex-col border-r border-white/10 shrink-0 overflow-y-auto border-t-2 border-navy'
-    }>
-      {mobile && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
-      )}
-      <div className={`${mobile ? 'relative z-10 w-72 max-w-[85vw] bg-navy flex flex-col h-full overflow-y-auto' : 'flex flex-col flex-1'}`}>
-        {/* User Profile */}
-        <div className="p-6 border-b border-white/10">
-          {mobile && (
-            <button onClick={() => setSidebarOpen(false)} className="absolute top-4 right-4 text-white/60 hover:text-white">
-              <X size={20} />
-            </button>
-          )}
-          <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary to-blue-700 flex items-center justify-center text-white font-bold text-lg shrink-0">
-              {user?.avatar || 'U'}
-            </div>
-            <div className="min-w-0">
-              <p className="font-bold text-white text-sm truncate">{user?.name || 'Learner'}</p>
-              <p className="text-white/50 text-xs truncate">{user?.email}</p>
-            </div>
-          </div>
-          {/* Mini Stats */}
-          <div className="flex gap-3 mt-4">
-            <div className="flex-1 bg-white/10 rounded-lg p-2 text-center">
-              <p className="text-lg font-bold text-white">{courses.length}</p>
-              <p className="text-white/50 text-xs">Courses</p>
-            </div>
-            <div className="flex-1 bg-white/10 rounded-lg p-2 text-center">
-              <p className="text-lg font-bold text-amber">{totalProgress}%</p>
-              <p className="text-white/50 text-xs">Progress</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Nav Items */}
-        <nav className="p-4 flex-1 space-y-1">
-          {NAV_ITEMS.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => { setActiveTab(item.id); if (mobile) setSidebarOpen(false); }}
-              className={`flex items-center gap-3 w-full px-4 py-3 text-left rounded-xl transition-all duration-200 text-sm font-medium ${activeTab === item.id
-                ? 'bg-primary text-white shadow-md shadow-primary/20'
-                : 'text-white/60 hover:bg-white/10 hover:text-white'
-                }`}
-            >
-              <item.icon size={18} />
-              {item.name}
-              {activeTab === item.id && <ChevronRight size={14} className="ml-auto" />}
-            </button>
-          ))}
-        </nav>
-
-        {/* Logout */}
-        <div className="p-4 border-t border-white/10">
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-red-400 hover:text-red-300 hover:bg-white/5 rounded-xl transition-colors"
-          >
-            <LogOut size={18} />
-            Sign Out
-          </button>
-        </div>
-      </div>
-    </aside>
-  );
-
+  
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="h-screen flex flex-col bg-surface font-sans overflow-hidden">
@@ -342,10 +211,24 @@ export default function UserDashboard() {
 
       <div className="flex flex-1 overflow-hidden w-full">
         {/* Desktop Sidebar */}
-        <Sidebar />
+        <Sidebar user={user} courses={courses} totalProgress={totalProgress} NAV_ITEMS={NAV_ITEMS} activeTab={activeTab} setActiveTab={setActiveTab} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} handleLogout={handleLogout}/>
 
         {/* Mobile Sidebar */}
-        {sidebarOpen && <Sidebar mobile />}
+        {sidebarOpen && (
+          <Sidebar
+            mobile
+            user={user}
+            courses={courses}
+            totalProgress={totalProgress}
+            NAV_ITEMS={NAV_ITEMS}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            sidebarOpen={sidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+            handleLogout={handleLogout}
+          />
+        )}
+
 
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto min-w-0">
@@ -381,7 +264,7 @@ export default function UserDashboard() {
             {activeTab === 'certificates' && <Certificates certificates={DUMMY_CERTIFICATES} setActiveTab={setActiveTab} completedCourses={completedCourses} />}
             {activeTab === 'referal' && <Referal user={user} />}
             {activeTab === 'helpDesk' && <HelpDesk />}
-            {activeTab === 'settings' &&  <Setting user={user} userName={userName} setUserName={setUserName} notifications={notifications} toggleNotif={toggleNotif} settingsSaved={settingsSaved} handleSaveSettings={handleSaveSettings} handleLogout={handleLogout}/>}
+            {activeTab === 'settings' && <Setting user={user} userName={userName} setUserName={setUserName} notifications={notifications} toggleNotif={toggleNotif} settingsSaved={settingsSaved} handleSaveSettings={handleSaveSettings} handleLogout={handleLogout} />}
           </div>
         </main>
       </div>

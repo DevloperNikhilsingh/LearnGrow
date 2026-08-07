@@ -30,7 +30,7 @@ export default function About() {
   ];
 
   const location = useLocation();
-    useEffect(() => {
+  useEffect(() => {
     if (location.hash) {
       const el = document.getElementById(location.hash.replace('#', ''));
       if (el) {
@@ -83,7 +83,7 @@ export default function About() {
             <div className="order-1 lg:order-2 space-y-5 sm:space-y-6">
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy">Our Story</h2>
               <p className="text-muted leading-relaxed text-base sm:text-lg">
-                Founded in 2025, LearnGrow started with a simple belief: traditional education isn't adapting fast enough to the modern world. We saw a gap between what is taught and what employers actually need.
+                Founded in 1999, LearnGrow started with a simple belief: traditional education isn't adapting fast enough to the modern world. We saw a gap between what is taught and what employers actually need.
               </p>
               <p className="text-muted leading-relaxed text-base sm:text-lg">
                 Today, we partner with industry leaders to craft practical, hands-on courses that bridge that gap. Whether you're pivoting your career or upskilling for a promotion, we are here to guide you every step of the way.
@@ -137,13 +137,13 @@ export default function About() {
         <Timeline />
 
         {/* Team Section */}
-        
+
         <section id='ourteam' className="py-14 sm:py-16 md:py-20 px-4 max-w-7xl mx-auto text-center">
           <div className="mb-10 sm:mb-12 md:mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy mb-3 sm:mb-4">Meet The Team</h2>
             <p className="text-base sm:text-lg text-muted max-w-2xl mx-auto px-2">The passionate educators and engineers behind LearnGrow.</p>
           </div>
-         <TeamCarousel team = {team}/>
+          <TeamCarousel team={team} />
         </section>
 
         {/* CTA */}

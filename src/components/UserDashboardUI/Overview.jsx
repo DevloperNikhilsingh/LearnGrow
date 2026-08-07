@@ -4,7 +4,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Video, Award, Target, ChevronRight } from 'lucide-react';
-import ProgressBar from '../../components/ui/ProgressBar';
+import ProgressBar from '../ui/ProgressBar';
 
 export default function Overview({ user, courses, liveClasses, progressData, totalProgress, activeLiveClass, setActiveTab, certificatesCount, activity }) {
   return (

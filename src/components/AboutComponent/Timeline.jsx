@@ -12,37 +12,37 @@ import { Rocket, Users, GraduationCap, Briefcase, Trophy, Target } from 'lucide-
 
 const MILESTONES = [
   {
-    year: '2021',
+    year: '1999',
     title: 'Our journey started',
-    text: 'We started with a simple mission — make quality, career-focused education accessible to everyone. A small team with a big vision.',
+    text: 'We started with a simple mission — make quality, career-focused education accessible to everyone. A small team with a big vision, beginning with foundational computer courses.',
     icon: Rocket,
     accent: '#F5A623', // brand yellow
   },
   {
-    year: '2022',
-    title: '1,500+ happy learners',
-    text: 'Our community grew fast as learners joined for Digital Marketing, Web Development, and Physiotherapy tracks.',
+    year: '2008',
+    title: 'Digital shift began',
+    text: 'As the internet reshaped careers, we introduced Digital Marketing and Web Development tracks to meet growing industry demand.',
     icon: Users,
     accent: '#2563EB', // brand blue
   },
   {
-    year: '2023',
+    year: '2015',
     title: 'Expert mentors joined',
-    text: '110+ industry experts came on board to teach practical, real-world, in-demand skills.',
+    text: '110+ industry experts came on board to teach practical, real-world, in-demand tech and design skills.',
     icon: GraduationCap,
     accent: '#22C55E', // green
   },
   {
-    year: '2024',
+    year: '2021',
     title: 'Placement-driven learning',
-    text: 'We introduced dedicated career support to help learners turn courses into real job offers.',
+    text: 'We introduced dedicated career support and UI/UX, Physiotherapy tracks to help learners turn courses into real job offers.',
     icon: Briefcase,
     accent: '#A855F7', // purple
   },
   {
-    year: '2025',
+    year: '2026',
     title: '25,000+ active students',
-    text: 'LearnGrow became a trusted name for learners across tech, design, marketing, and healthcare.',
+    text: 'LearnGrow became a trusted name for learners across tech, design, marketing, and healthcare — still growing strong.',
     icon: Trophy,
     accent: '#F5A623',
   },
