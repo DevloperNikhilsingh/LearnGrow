@@ -16,6 +16,8 @@ import CountUp from '../components/CountUp';
 import Faq from '../components/Faq';
 import ParticleNetwork from '../components/animation_style/ParticleNetwork';
 import TypewriterHeading from '../components/animation_style/TypeWriter';
+import {testimonial} from '../data/testimonial';
+
 
 const skillBadgesData = [
   {
@@ -71,34 +73,6 @@ const heroStats = [
   { label: 'Active Students', value: '1000+' }
 ];
 
-// const categoryMeta = {
-//   'digital-marketing': {
-//     icon: '/Digital Marketing.svg',
-//     bgColor: 'bg-blue-600',
-//     hoverBorder: 'hover:border-t-blue-600',
-//     students: '1,420 students'
-//   },
-//   'physiotherapy': {
-//     icon: Activity,
-//     bgColor: 'bg-emerald-600',
-//     hoverBorder: 'hover:border-t-emerald-600',
-//     students: '850 students'
-//   },
-//   'web-development': {
-//     icon: '/Coding.svg',
-//     bgColor: 'bg-orange-500',
-//     hoverBorder: 'hover:border-t-orange-500',
-//     students: '2,150 students'
-//   },
-//   'ui-ux-design': {
-//     icon: '/Designer.svg',
-//     bgColor: 'bg-purple-600',
-//     hoverBorder: 'hover:border-t-purple-600',
-//     students: '1,120 students'
-//   },
-
-// };
-
 const skillCards = [
   {
     to: '/courses?search=video-editing',
@@ -124,72 +98,12 @@ const skillCards = [
 
 
 
-const testimonials = [
-  {
-    name: 'Mohit Sharma',
-    role: 'Software Engineer',
-    company: 'TCS',
-    course: 'Full Stack Web Development',
-    avatar: '/testimonal.png',
-    video: '/Video_editing_2.mp4'
-  },
-  {
-    name: 'Rashneet Singh',
-    role: 'Marketing Executive',
-    company: 'Aashirvaad, B Natural',
-    course: 'Digital Marketing',
-    quote: 'LearnGrow Platform was truly a game-changer for me as I brought my design & Creativity skills to a professional level.',
-    avatar: '/testimonal_3.png',
-    video: '/SEO_2.mp4'
-  },
-  {
-    name: 'Akhilesh Bhardwaj',
-    role: 'Full Stack Web Development',
-    company: 'IPTECH',
-    course: 'Web Development',
-    quote: 'LearnGrow Platform was truly a game-changer for me as I brought my design & Creativity skills to a professional level.',
-    avatar: '/Akhilesh_4.png',
-    video: '/Video_editing_2.mp4',
-  },
-  {
-    name: 'Kunal Gwari',
-    role: 'Content Marketer',
-    company: 'boAt',
-    course: 'Content Marketing',
-    quote: 'Learning Platform gives you the ability to be persistent. I learned exactly what I needed to get a new role.',
-    avatar: '/testimonal.png',
-    video: '/SEO_2.mp4',
-  },
-  {
-    name: 'Riddhi Kalantari',
-    role: 'Assistant Manager',
-    company: "McDonald's",
-    course: 'Web Development',
-    quote: 'I loved the web development course. Within weeks, I had the skills to build real projects for my team.',
-    avatar: '/testimonal.png',
-    video: '/Video_editing_2.mp4',
-  },
-  {
-    name: 'Priya Sharma',
-    role: 'Digital Marketing Executive',
-    company: 'Nykaa',
-    course: 'Digital Marketing',
-    quote: 'Within 24 hours of finishing the course, I had a working strategy for my business.',
-    avatar: '/testimonal.png',
-    video: '/SEO_2.mp4',
-  },
-  {
-    name: 'Karan Verma',
-    role: 'Web Developer',
-    company: 'Zomato',
-    course: 'Web Development',
-    quote: 'The hands-on projects made it easy to apply everything I learned directly at my job.',
-    avatar: '/testimonal.png',
-    video: '/Video_editing_2.mp4',
-  },
-];
+
 
 export default function Home() {
+
+  console.log("hey this is testimonial data",testimonial)
+
   const [courses, setCourses] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -332,7 +246,7 @@ export default function Home() {
   }, []);
 
   // maxIndex is capped so the slider never scrolls past the last real card
-  const testimonialMaxIndex = Math.max(0, testimonials.length - testimonialVisibleCount);
+  const testimonialMaxIndex = Math.max(0, testimonial.length - testimonialVisibleCount);
 
   // Clamp current index whenever visible count changes (e.g. resize desktop -> mobile)
   useEffect(() => {
@@ -1056,7 +970,7 @@ export default function Home() {
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
             <div className="flex gap-6 animate-marquee w-max">
-              {[...testimonials, ...testimonials].map((item, index) => (
+              {[...testimonial, ...testimonial].map((item, index) => (
                 <div
                   key={index}
                   onClick={() => handleCardClick(index)}

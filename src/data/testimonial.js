@@ -1,4 +1,4 @@
-const testimonials = [
+export const  testimonial = [
   {
     name: 'Mohit Sharma',
     role: 'Software Engineer',
@@ -61,3 +61,4 @@ const testimonials = [
     video: '/Video_editing_2.mp4',
   },
 ];
+
