@@ -31,9 +31,9 @@ import Checkout from './pages/Checkout';
 
 // Cart
 import { CartProvider } from './context/CartContext';
-import ScrollToTop from './components/ScrollToTop';
+import ScrollToTop from './components/animation_style/ScrollToTop';
 import HelpCircle from './components/layout/HelpCircle';
-import Faq from './components/Faq';
+import Faq from './components/HomePageComponent/Faq';
 import AdminTestimonal from './pages/AdminTestimonal';
 
 const ProtectedRoute = ({ children, requireAdmin }) => {

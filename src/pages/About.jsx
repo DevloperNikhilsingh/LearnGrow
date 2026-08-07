@@ -4,9 +4,9 @@ import { Target, Lightbulb, Users, Shield, ArrowRight } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
-import WhyChooseUs from '../components/WhyChooseUs';
+import WhyChooseUs from '../components/HomePageComponent/WhyChooseUs';
 import CountUp from '../components/CountUp';
-import TeamCarousel from '../components/TeamCarousel';
+import TeamCarousel from '../components/AboutComponent/TeamCarousel';
 import { useEffect } from 'react';
 import Timeline from '../components/AboutComponent/Timeline'
 
