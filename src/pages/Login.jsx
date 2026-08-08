@@ -4,7 +4,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { BookOpen, Mail, Lock, ShieldCheck, User, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { BookOpen, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { login } from '../services/authService';
 
 export default function Login() {
@@ -12,24 +12,11 @@ export default function Login() {
   const location = useLocation();
   const returnTo = location.state?.returnTo || '/dashboard';
 
-  const [role, setRole] = useState('user'); // 'user' or 'admin'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const handleRoleSwitch = (newRole) => {
-    setRole(newRole);
-    setEmail('');
-    setPassword('');
-    setError('');
-    // Auto-fill admin credentials when admin tab selected
-    if (newRole === 'admin') {
-      setEmail('');
-      setPassword('');
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,16 +25,8 @@ export default function Login() {
 
     try {
       const user = await login({ email, password });
-      if (role === 'admin' && user.role !== 'admin') {
-        setError('Access denied. You are not an admin.');
-        setLoading(false);
-        return;
-      }
-      if (role === 'user' && user.role === 'admin') {
-        navigate('/admin');
-      } else {
-        navigate(user.role === 'admin' ? '/admin' : returnTo);
-      }
+      // role backend se aata hai, isi ke basis pe redirect decide hota hai
+      navigate(user.role === 'admin' ? '/admin' : returnTo);
     } catch (err) {
       setError(err.message || 'Login failed');
     } finally {
@@ -78,45 +57,11 @@ export default function Login() {
 
         {/* Card */}
         <div className="bg-white/[0.06] backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl p-8">
-          
-          {/* Role Switcher */}
-          <div className="flex bg-white/10 rounded-xl p-1 mb-8 gap-1">
-            <button
-              type="button"
-              onClick={() => handleRoleSwitch('user')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                role === 'user'
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-white/60 hover:text-white/80'
-              }`}
-            >
-              <User size={16} />
-              User Login
-            </button>
-            <button
-              type="button"
-              onClick={() => handleRoleSwitch('admin')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                role === 'admin'
-                  ? 'bg-amber text-navy shadow-md'
-                  : 'text-white/60 hover:text-white/80'
-              }`}
-            >
-              <ShieldCheck size={16} />
-              Admin Login
-            </button>
-          </div>
 
           {/* Heading */}
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-white">
-              {role === 'admin' ? 'Admin Portal' : 'Welcome back!'}
-            </h1>
-            <p className="text-white/50 text-sm mt-1">
-              {role === 'admin' 
-                ? 'Sign in with your admin credentials' 
-                : 'Log in to continue your learning journey'}
-            </p>
+            <h1 className="text-2xl font-bold text-white">Welcome back!</h1>
+            <p className="text-white/50 text-sm mt-1">Log in to continue your learning journey</p>
           </div>
 
           {/* Error */}
@@ -170,39 +115,28 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-semibold text-sm transition-all duration-200 active:scale-95 ${
-                role === 'admin'
-                  ? 'bg-amber text-navy hover:brightness-110 shadow-lg shadow-amber/20'
-                  : 'bg-primary text-white hover:bg-blue-700 shadow-lg shadow-primary/20'
-              } ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`w-full flex items-center justify-center gap-2 py-3 px-6 rounded-xl font-semibold text-sm transition-all duration-200 active:scale-95 bg-primary text-white hover:bg-blue-700 shadow-lg shadow-primary/20 ${
+                loading ? 'opacity-70 cursor-not-allowed' : ''
+              }`}
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
-                  {role === 'admin' ? 'Access Admin Panel' : 'Log In'}
+                  Log In
                   <ArrowRight size={16} />
                 </>
               )}
             </button>
           </form>
 
-          {/* Footer links — only for user */}
-          {role === 'user' && (
-            <p className="mt-6 text-center text-sm text-white/40">
-              Don't have an account?{' '}
-              <Link to="/signup" className="text-primary font-semibold hover:text-blue-400 transition-colors">
-                Register here
-              </Link>
-            </p>
-          )}
-
-          {/* Admin info note */}
-          {role === 'admin' && (
-            <p className="mt-6 text-center text-xs text-white/30">
-              Admin access is restricted. Contact system administrator for credentials.
-            </p>
-          )}
+          {/* Footer link */}
+          <p className="mt-6 text-center text-sm text-white/40">
+            Don't have an account?{' '}
+            <Link to="/signup" className="text-primary font-semibold hover:text-blue-400 transition-colors">
+              Register here
+            </Link>
+          </p>
         </div>
 
         {/* Bottom tag */}
