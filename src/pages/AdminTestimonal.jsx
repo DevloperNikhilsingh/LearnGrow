@@ -10,37 +10,36 @@ const initialTestimonialsData = [
     {
         id: 1,
         name: 'Mohit Sharma',
-        role: 'Software Engineer',
-        company: 'TCS',
         course: 'Full Stack Web Development',
+        quote: '"LearnGrow Platform was truly a game-changer for me as I brought my design & Creativity skills to a professional level."',
         avatar: '/testimonal.png',
+        video: '',
         status: 'PUBLISHED',
     },
     {
         id: 2,
         name: 'Rashneet Singh',
-        role: 'Marketing Executive',
-        company: 'Aashirvaad, B Natural',
         course: 'Digital Marketing',
+        quote: '"Learning Platform gives you the ability to be persistent. I learned exactly what I needed to get a new role."',
         avatar: '/testimonal_3.png',
+        video: '',
         status: 'PUBLISHED',
     },
     {
         id: 3,
         name: 'Riya Shah',
-        role: 'UI/UX Designer',
-        company: 'Hyatt Centric',
         course: 'UI/UX Design',
+        quote: '"I loved the web development course. Within weeks, I had the skills to build real projects for my team."',
         avatar: '/testimonal.png',
+        video: '',
         status: 'DRAFT',
     },
 ]
 
 const emptyForm = {
     name: '',
-    role: '',
-    company: '',
     course: '',
+    quote: '',
     avatar: '',
     video: '',
     status: 'DRAFT',
@@ -80,6 +79,18 @@ const AdminTestimonal = () => {
         setFormData((prev) => ({ ...prev, [name]: value }))
     }
 
+    // avatar image file select hone par uska naam/preview formData me store karta hai
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0]
+        setFormData((prev) => ({ ...prev, avatar: file ? file.name : '' }))
+    }
+
+    // video file select hone par uska naam formData me store karta hai (pehle ye connect hi nahi tha)
+    const handleVideoChange = (e) => {
+        const file = e.target.files[0]
+        setFormData((prev) => ({ ...prev, video: file ? file.name : '' }))
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
 
@@ -90,9 +101,8 @@ const AdminTestimonal = () => {
         const newTestimonial = {
             id: Date.now(),
             name: formData.name,
-            role: formData.role,
-            company: formData.company,
             course: formData.course,
+            quote: formData.quote,
             avatar: formData.avatar || '/testimonal.png',
             video: formData.video,
             status: formData.status,
@@ -148,12 +158,8 @@ const AdminTestimonal = () => {
                                         Person
                                     </th>
                                     <th className="text-left text-xs font-bold text-gray-500 uppercase tracking-wide px-6 py-4">
-                                        Company
-                                    </th>
-                                    <th className="text-left text-xs font-bold text-gray-500 uppercase tracking-wide px-6 py-4">
                                         Course
                                     </th>
-                                    
                                     <th className="text-left text-xs font-bold text-gray-500 uppercase tracking-wide px-6 py-4">
                                         Actions
                                     </th>
@@ -176,20 +182,14 @@ const AdminTestimonal = () => {
                                                     <p className="font-semibold text-[#1F1F1F] text-sm">
                                                         {item.name}
                                                     </p>
-                                                    <p className="text-xs text-gray-500">{item.role}</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-sm text-[#1F1F1F]">
-                                            {item.company}
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-[#1F1F1F]">
                                             {item.course}
                                         </td>
-                                        
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
-                                                
                                                 <button
                                                     className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-red-100 hover:text-red-600 text-gray-600 transition-colors"
                                                     aria-label="Delete"
@@ -247,36 +247,6 @@ const AdminTestimonal = () => {
 
                             <div>
                                 <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">
-                                    Role <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    name="role"
-                                    value={formData.role}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="e.g. Digital Marketing Executive"
-                                    className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">
-                                    Company <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    name="company"
-                                    value={formData.company}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="e.g. Nykaa"
-                                    className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">
                                     Course <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -292,15 +262,28 @@ const AdminTestimonal = () => {
 
                             <div>
                                 <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">
+                                    Testimonial Quote <span className="text-red-500">*</span>
+                                </label>
+                                <textarea
+                                    name="quote"
+                                    value={formData.quote}
+                                    onChange={handleChange}
+                                    required
+                                    rows={3}
+                                    placeholder='e.g. "LearnGrow Platform was truly a game-changer for me..."'
+                                    className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">
                                     Avatar Image Path
                                 </label>
                                 <input
                                     type="file"
-                                    accept='image*/'
+                                    accept="image/*"
                                     name="avatar"
-                                    value={formData.avatar}
-                                    onChange={handleChange}
-                                    placeholder="e.g. /testimonal.png"
+                                    onChange={handleAvatarChange}
                                     className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
                                 />
                             </div>
@@ -310,22 +293,22 @@ const AdminTestimonal = () => {
                                     Upload Video
                                 </label>
                                 <label
-
+                                    htmlFor="videoUpload"
                                     className="flex items-center justify-center gap-1.5 border-2 border-dashed border-border rounded px-2 py-1.5 text-xs text-muted hover:border-primary hover:bg-primary/5 cursor-pointer transition-colors w-full"
                                 >
                                     <Upload size={13} />
-                                    Upload video
+                                    {formData.video || 'Upload video'}
                                 </label>
 
                                 <input
+                                    id="videoUpload"
                                     type="file"
+                                    name="video"
                                     accept="video/*"
-                                    onChange={handleChange}
+                                    onChange={handleVideoChange}
                                     className="hidden"
                                 />
                             </div>
-
-                            
 
                             {/* Modal Footer */}
                             <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-2">
