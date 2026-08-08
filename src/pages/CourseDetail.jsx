@@ -96,7 +96,7 @@ export default function CourseDetail() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-surface overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-surface ">
       <Helmet>
         <title>{course.title} | LearnGrow</title>
         <meta name="description" content={course.shortDescription} />
