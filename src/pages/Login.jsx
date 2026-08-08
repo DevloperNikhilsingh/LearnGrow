@@ -26,8 +26,8 @@ export default function Login() {
     setError('');
     // Auto-fill admin credentials when admin tab selected
     if (newRole === 'admin') {
-      setEmail('admin@learngrow.in');
-      setPassword('admin123');
+      setEmail('');
+      setPassword('');
     }
   };
 

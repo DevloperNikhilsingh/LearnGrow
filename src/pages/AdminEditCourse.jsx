@@ -59,6 +59,16 @@ export default function AdminEditCourse() {
     }));
   };
 
+  const handleThumbnailChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setForm((prev) => ({
+        ...prev,
+        thumbnail: file,
+      }));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -92,36 +102,37 @@ export default function AdminEditCourse() {
       <AdminSidebar />
 
       <main className="flex-1 overflow-y-auto">
-        <div className="bg-white border-b border-border h-16 flex items-center justify-between pl-16 pr-8 lg:px-8 shadow-sm">
-          <div className="flex items-center gap-3">
+        <div className="bg-white border-b border-border h-16 flex items-center justify-between pl-16 pr-4 sm:pr-6 lg:px-8 shadow-sm">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
               onClick={() => navigate('/admin/courses')}
-              className="p-2 rounded hover:bg-surface text-muted hover:text-primary transition-colors"
+              className="p-2 rounded hover:bg-surface text-muted hover:text-primary transition-colors shrink-0"
               title="Back"
             >
               <ArrowLeft size={18} />
             </button>
-            <h1 className="text-xl font-bold text-[#1F1F1F]">Edit Course</h1>
+            <h1 className="text-lg sm:text-xl font-bold text-[#1F1F1F] truncate">Edit Course</h1>
           </div>
           <Button
             variant="primary"
             size="sm"
-            className="gap-1"
+            className="gap-1 shrink-0"
             onClick={handleSubmit}
             disabled={saving}
           >
-            <Save size={16} /> {saving ? 'Saving...' : 'Save Changes'}
+            <Save size={16} /> <span className="hidden sm:inline">{saving ? 'Saving...' : 'Save Changes'}</span>
+            <span className="sm:hidden">{saving ? '...' : 'Save'}</span>
           </Button>
         </div>
 
-        <div className="p-8 max-w-3xl mx-auto">
+        <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto">
           {error && (
             <div className="mb-4 p-3 rounded-md bg-red-50 text-red-600 text-sm border border-red-200">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="bg-white rounded-card shadow-sm border border-border p-6 space-y-5">
+          <form onSubmit={handleSubmit} className="bg-white rounded-card shadow-sm border border-border p-4 sm:p-6 space-y-5">
 
             <div>
               <label className="block mb-2 text-sm font-semibold text-[#1F1F1F]">Course Title</label>
@@ -135,35 +146,37 @@ export default function AdminEditCourse() {
               />
             </div>
 
-            <div>
-              <label className="block mb-2 text-sm font-semibold text-[#1F1F1F]">Instructor</label>
-              <input
-                type="text"
-                name="instructor"
-                value={form.instructor}
-                onChange={handleChange}
-                className="w-full p-2 border border-border rounded-md shadow-sm focus:outline-none focus:border-primary"
-              />
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <div>
+                <label className="block mb-2 text-sm font-semibold text-[#1F1F1F]">Instructor</label>
+                <input
+                  type="text"
+                  name="instructor"
+                  value={form.instructor}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-border rounded-md shadow-sm focus:outline-none focus:border-primary"
+                />
+              </div>
 
-            <div>
-              <label className="block mb-2 text-sm font-semibold text-[#1F1F1F]">Category</label>
-              <input
-                type="text"
-                name="categoryName"
-                value={form.categoryName}
-                onChange={handleChange}
-                className="w-full p-2 border border-border rounded-md shadow-sm focus:outline-none focus:border-primary"
-              />
+              <div>
+                <label className="block mb-2 text-sm font-semibold text-[#1F1F1F]">Category</label>
+                <input
+                  type="text"
+                  name="categoryName"
+                  value={form.categoryName}
+                  onChange={handleChange}
+                  className="w-full p-2 border border-border rounded-md shadow-sm focus:outline-none focus:border-primary"
+                />
+              </div>
             </div>
 
             <div>
               <label className="block mb-2 text-sm font-semibold text-[#1F1F1F]">Thumbnail URL</label>
               <input
-                type="text"
+                type="file"
+                accept="image/*"
                 name="thumbnail"
-                value={form.thumbnail}
-                onChange={handleChange}
+                onChange={handleThumbnailChange}
                 className="w-full p-2 border border-border rounded-md shadow-sm focus:outline-none focus:border-primary"
               />
             </div>
@@ -204,16 +217,17 @@ export default function AdminEditCourse() {
               ></textarea>
             </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-border">
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4 border-t border-border">
               <Button
                 type="button"
                 variant="secondary"
                 size="sm"
+                className="w-full sm:w-auto"
                 onClick={() => navigate('/admin/courses')}
               >
                 Cancel
               </Button>
-              <Button type="submit" variant="primary" size="sm" className="gap-1" disabled={saving}>
+              <Button type="submit" variant="primary" size="sm" className="gap-1 w-full sm:w-auto" disabled={saving}>
                 <Save size={16} /> {saving ? 'Saving...' : 'Save Changes'}
               </Button>
             </div>
