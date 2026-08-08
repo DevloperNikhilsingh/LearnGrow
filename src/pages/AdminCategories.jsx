@@ -77,7 +77,7 @@ function CategoryModal({ isOpen, onClose, onSubmit }) {
 
         <div>
           <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">Icon</label>
-          <div className="flex gap-2 mb-3">
+          <div className="flex flex-wrap gap-2 mb-3">
             <button type="button" id="icon-mode-url" onClick={() => setForm((f) => ({ ...f, iconMode: 'url' }))} className={urlBtn}>
               <Link2 size={13} /> URL
             </button>
@@ -98,14 +98,14 @@ function CategoryModal({ isOpen, onClose, onSubmit }) {
             <div
               id="cat-icon-upload-zone"
               onClick={() => fileRef.current && fileRef.current.click()}
-              className="border-2 border-dashed border-border rounded-btn p-6 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors group"
+              className="border-2 border-dashed border-border rounded-btn p-4 sm:p-6 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors group"
             >
               {form.iconPreview ? (
                 <img src={form.iconPreview} alt="preview" className="w-12 h-12 object-contain mb-2" />
               ) : (
                 <Upload size={28} className="text-muted mb-2 group-hover:text-primary transition-colors" />
               )}
-              <span className="text-xs text-muted group-hover:text-primary transition-colors">
+              <span className="text-xs text-muted group-hover:text-primary transition-colors text-center px-2">
                 {form.iconPreview ? 'Click to change' : 'Click to upload PNG or SVG'}
               </span>
               <input ref={fileRef} type="file" accept="image/png,image/svg+xml" className="hidden" onChange={handleIconFile} />
@@ -120,7 +120,7 @@ function CategoryModal({ isOpen, onClose, onSubmit }) {
               <button
                 key={c} type="button" title={c}
                 onClick={() => setForm((f) => ({ ...f, color: c }))}
-                className="w-7 h-7 rounded-full border-2 transition-transform hover:scale-110"
+                className="w-7 h-7 rounded-full border-2 transition-transform hover:scale-110 flex-shrink-0"
                 style={{
                   backgroundColor: c,
                   borderColor: form.color === c ? '#1F1F1F' : 'transparent',
@@ -129,16 +129,16 @@ function CategoryModal({ isOpen, onClose, onSubmit }) {
               />
             ))}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <input id="cat-color-picker" type="color" value={form.color}
               onChange={(e) => setForm((f) => ({ ...f, color: e.target.value }))}
-              className="w-10 h-10 rounded-lg cursor-pointer border border-border p-0.5" />
+              className="w-10 h-10 rounded-lg cursor-pointer border border-border p-0.5 flex-shrink-0" />
             <span className="text-sm font-mono text-muted">{form.color.toUpperCase()}</span>
             <span className="text-xs text-muted">or pick custom</span>
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 pt-2 border-t border-border">
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2 border-t border-border">
           <button type="button" onClick={onClose} className="px-4 py-2 rounded-btn text-sm font-medium border border-border hover:bg-surface transition-colors">Cancel</button>
           <button type="submit" id="cat-modal-submit" className="btn-primary text-sm">Add Category</button>
         </div>
@@ -149,14 +149,15 @@ function CategoryModal({ isOpen, onClose, onSubmit }) {
 
 function CategoryRow({ cat, onDelete }) {
   return (
-    <div className="flex items-center gap-4 bg-white border border-border rounded-card px-5 py-4 shadow-sm hover:shadow-md transition-shadow group animate-fadeIn">
-      <div className="w-1 h-12 rounded-full flex-shrink-0" style={{ backgroundColor: cat.color }} />
-      <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: cat.color + '1A' }}>
+    <div className="flex items-center gap-3 sm:gap-4 bg-white border border-border rounded-card px-3 sm:px-5 py-3 sm:py-4 shadow-sm hover:shadow-md transition-shadow group animate-fadeIn">
+      <div className="w-1 h-10 sm:h-12 rounded-full flex-shrink-0" style={{ backgroundColor: cat.color }} />
+      <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: cat.color + '1A' }}>
         {cat.iconUrl ? (
-          <img src={cat.iconUrl} alt={cat.name} className="w-6 h-6 object-contain" />
+          <img src={cat.iconUrl} alt={cat.name} className="w-5 h-5 sm:w-6 sm:h-6 object-contain" />
         ) : (
-          <Tag size={20} style={{ color: cat.color }} />
+          <Tag size={18} className="sm:hidden" style={{ color: cat.color }} />
         )}
+        {!cat.iconUrl && <Tag size={20} className="hidden sm:block" style={{ color: cat.color }} />}
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-semibold text-[#1F1F1F] text-sm truncate">{cat.name}</p>
@@ -169,7 +170,7 @@ function CategoryRow({ cat, onDelete }) {
         <span className="inline-block w-4 h-4 rounded-full border border-white shadow-sm" style={{ backgroundColor: cat.color }} />
         <span className="text-xs font-mono text-muted">{cat.color.toUpperCase()}</span>
       </div>
-      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
         <button onClick={() => onDelete(cat.id)} className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors">
           <Trash2 size={15} />
         </button>
@@ -198,15 +199,15 @@ export default function AdminCategories() {
     <div className="min-h-screen bg-surface flex">
       <Helmet><title>Categories | LearnGrow Admin</title></Helmet>
       <AdminSidebar />
-      <main className="flex-1 overflow-y-auto">
-        <div className="bg-white border-b border-border h-16 flex items-center pl-16 pr-8 lg:px-8 shadow-sm">
-          <h1 className="text-xl font-bold text-[#1F1F1F] flex-1">Categories</h1>
-          <button id="add-category-btn" onClick={() => setModalOpen(true)} className="btn-primary flex items-center gap-2 text-sm">
-            <Plus size={16} /> Add Category
+      <main className="flex-1 overflow-y-auto min-w-0">
+        <div className="bg-white border-b border-border min-h-16 flex flex-wrap items-center gap-3 pl-16 pr-4 py-3 sm:pr-8 lg:px-8 shadow-sm">
+          <h1 className="text-lg sm:text-xl font-bold text-[#1F1F1F] flex-1">Categories</h1>
+          <button id="add-category-btn" onClick={() => setModalOpen(true)} className="btn-primary flex items-center gap-2 text-sm whitespace-nowrap">
+            <Plus size={16} /> <span className="hidden xs:inline">Add Category</span><span className="xs:hidden">Add</span>
           </button>
         </div>
-        <div className="p-8 max-w-4xl mx-auto space-y-6">
-          <div className="flex items-center gap-2 text-sm text-muted">
+        <div className="p-4 sm:p-8 max-w-4xl mx-auto space-y-6">
+          <div className="flex items-center gap-2 text-sm text-muted flex-wrap">
             <Tag size={15} />
             <span>
               <strong className="text-[#1F1F1F]">{categories.length}</strong>{' '}
@@ -216,7 +217,7 @@ export default function AdminCategories() {
             </span>
           </div>
           {categories.length === 0 ? (
-            <div className="bg-white border border-dashed border-border rounded-card p-14 flex flex-col items-center justify-center text-center">
+            <div className="bg-white border border-dashed border-border rounded-card p-8 sm:p-14 flex flex-col items-center justify-center text-center">
               <Tag size={40} className="text-muted mb-4" />
               <p className="text-[#1F1F1F] font-semibold mb-1">No categories yet</p>
               <p className="text-muted text-sm mb-5">Click Add Category to get started.</p>

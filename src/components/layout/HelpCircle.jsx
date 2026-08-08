@@ -108,9 +108,9 @@ const HelpCircle = () => {
         }}
         aria-label="Need help? Contact us"
         style={{ top: `${top}px`, left: '10px', touchAction: 'none' }}
-        className='fixed z-50 pl-4 pr-5 py-3 rounded-full select-none
+        className='fixed z-50 pl-2 pr-3 py-1 rounded-full select-none
        cursor-grab active:cursor-grabbing bg-blue-600 text-white shadow-lg hover:bg-blue-700 flex items-center gap-2 transition-colors'>
-        <HelpCircleIcon size={20} />
+        <span>👋</span>
         <span className='text-sm font-semibold whitespace-nowrap'>Need help?</span>
       </div>
 

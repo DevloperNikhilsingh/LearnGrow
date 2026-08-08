@@ -56,19 +56,19 @@ export default function AdminCourses() {
 
       <AdminSidebar />
 
-      <main className="flex-1 overflow-y-auto">
-        <div className="bg-white border-b border-border h-16 flex items-center justify-between pl-16 pr-8 lg:px-8 shadow-sm">
-          <h1 className="text-xl font-bold text-[#1F1F1F]">Manage Courses</h1>
+      <main className="flex-1 overflow-y-auto min-w-0">
+        <div className="bg-white border-b border-border min-h-16 flex flex-wrap items-center justify-between gap-3 pl-16 pr-4 py-3 sm:pr-8 lg:px-8 shadow-sm">
+          <h1 className="text-lg sm:text-xl font-bold text-[#1F1F1F]">Manage Courses</h1>
           <Link to="/admin/courses/new">
-            <Button variant="primary" size="sm" className="gap-1"><Plus size={16}/> Add Course</Button>
+            <Button variant="primary" size="sm" className="gap-1"><Plus size={16}/> <span className="hidden xs:inline">Add Course</span><span className="xs:hidden">Add</span></Button>
           </Link>
         </div>
 
-        <div className="p-8 max-w-7xl mx-auto">
+        <div className="p-4 sm:p-8 max-w-7xl mx-auto">
           
           <div className="bg-white rounded-card shadow-sm border border-border overflow-hidden">
             <div className="p-4 border-b border-border flex justify-between items-center bg-gray-50/50">
-              <div className="relative w-72">
+              <div className="relative w-full sm:w-72">
                 <input
                   type="text"
                   value={searchTerm}
@@ -81,7 +81,7 @@ export default function AdminCourses() {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-[#1F1F1F]">
+              <table className="w-full text-left text-sm text-[#1F1F1F] min-w-[640px]">
                 <thead className="bg-surface text-muted uppercase font-semibold text-xs border-b border-border">
                   <tr>
                     <th className="px-6 py-4">Course</th>
@@ -100,7 +100,7 @@ export default function AdminCourses() {
                     <tr key={course.id} className="hover:bg-gray-50/50 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-4">
-                          <img src={course.thumbnail} alt="" className="w-16 h-10 object-cover rounded bg-gray-200" />
+                          <img src={course.thumbnail} alt="" className="w-16 h-10 object-cover rounded bg-gray-200 flex-shrink-0" />
                           <div>
                             <p className="font-semibold text-[#1F1F1F] line-clamp-1">{course.title}</p>
                             <p className="text-xs text-muted">{course.instructor}</p>

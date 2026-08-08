@@ -40,7 +40,7 @@ export default function EssentialSkills() {
         setCardWidthPercent(82); // mobile: 1 card + small peek of next
         setSkillVisibleCount(1);
       } else if (window.innerWidth < 1024) {
-        setCardWidthPercent(46); // tablet: 2 cards + small peek
+        setCardWidthPercent(34); // tablet: 2 cards + small peek
         setSkillVisibleCount(2);
       } else {
         setCardWidthPercent(32); // desktop: 3 cards, no peek
@@ -74,7 +74,7 @@ export default function EssentialSkills() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-center">
 
           {/* Left Text */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 ">
             <h2 className="text-3xl font-bold text-[#1F1F1F] mb-4 leading-snug">
               Learn <em className="italic">In-Demand</em><br />
               Skills and get ahead in your Career

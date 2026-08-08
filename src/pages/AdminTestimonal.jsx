@@ -114,16 +114,16 @@ const AdminTestimonal = () => {
 
             <AdminSidebar />
 
-            <main className="flex-1 overflow-y-auto">
+            <main className="flex-1 overflow-y-auto min-w-0">
                 {/* Header */}
-                <div className="bg-white border-b border-border h-16 flex items-center justify-between pl-16 pr-2 lg:px-8 shadow-sm">
-                    <h1 className="text-[18px] sm:text-xl font-bold text-[#1F1F1F]">Manage Testimonials</h1>
-                    <Button  variant="primary" size='[44px]'  className="gap-1 h-10 w-[177px]" onClick={handleOpenModal}>
-                        <Plus size={16} /> Add Testimonial
+                <div className="bg-white border-b border-border min-h-16 flex flex-wrap items-center justify-between gap-3 pl-16 pr-4 py-3 sm:pr-8 lg:px-8 shadow-sm">
+                    <h1 className="text-[16px] sm:text-xl font-bold text-[#1F1F1F]">Manage Testimonials</h1>
+                    <Button variant="primary" size='[44px]' className="gap-1 h-10 w-auto px-3 sm:w-[177px] whitespace-nowrap" onClick={handleOpenModal}>
+                        <Plus size={16} /> <span className="hidden xs:inline">Add Testimonial</span><span className="xs:hidden">Add</span>
                     </Button>
                 </div>
 
-                <div className="p-6 lg:p-8">
+                <div className="p-4 sm:p-6 lg:p-8">
                     {/* Search Bar */}
                     <div className="bg-white rounded-xl border border-border p-4 mb-6 shadow-sm">
                         <div className="relative max-w-md">
@@ -141,7 +141,7 @@ const AdminTestimonal = () => {
 
                     {/* Table */}
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left text-xs text-[#1F1F1F]">
+                        <table className="w-full text-left text-xs text-[#1F1F1F] min-w-[560px]">
                             <thead className='bg-surface text-muted font-semibold uppercase border-border border-b'>
                                 <tr className="bg-gray-50 border-b border-border">
                                     <th className="text-left text-xs font-bold text-gray-500 uppercase tracking-wide px-6 py-4">
@@ -217,7 +217,7 @@ const AdminTestimonal = () => {
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Modal Header */}
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-border sticky top-0 bg-white rounded-t-2xl">
+                        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border sticky top-0 bg-white rounded-t-2xl">
                             <h2 className="text-lg font-bold text-[#1F1F1F]">Add Testimonial</h2>
                             <button
                                 onClick={handleCloseModal}
@@ -229,7 +229,7 @@ const AdminTestimonal = () => {
                         </div>
 
                         {/* Modal Form */}
-                        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">
+                        <form onSubmit={handleSubmit} className="px-4 sm:px-6 py-5 space-y-4">
                             <div>
                                 <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">
                                     Name <span className="text-red-500">*</span>
@@ -291,9 +291,6 @@ const AdminTestimonal = () => {
                             </div>
 
                             <div>
-                                {/* <label>
-                                    Upload Image
-                                </label> */}
                                 <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">
                                     Avatar Image Path
                                 </label>
@@ -331,15 +328,15 @@ const AdminTestimonal = () => {
                             
 
                             {/* Modal Footer */}
-                            <div className="flex items-center justify-end gap-3 pt-2">
+                            <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-2">
                                 <button
                                     type="button"
                                     onClick={handleCloseModal}
-                                    className="px-4 py-2.5 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors"
+                                    className="w-full sm:w-auto px-4 py-2.5 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors"
                                 >
                                     Cancel
                                 </button>
-                                <Button type="submit" variant="primary" size="sm">
+                                <Button type="submit" variant="primary" size="sm" className="w-full sm:w-auto">
                                     Submit
                                 </Button>
                             </div>
@@ -350,7 +347,7 @@ const AdminTestimonal = () => {
 
             {/* Success Alert Toast */}
             {showSuccess && (
-                <div className="fixed top-6 right-6 z-[60] flex items-center gap-3 bg-white border border-green-200 shadow-lg rounded-xl px-5 py-4 animate-fade-in">
+                <div className="fixed top-4 right-4 left-4 sm:left-auto sm:top-6 sm:right-6 z-[60] flex items-center gap-3 bg-white border border-green-200 shadow-lg rounded-xl px-4 sm:px-5 py-3 sm:py-4 animate-fade-in">
                     <CheckCircle2 size={22} className="text-green-600 flex-shrink-0" />
                     <p className="text-sm font-semibold text-[#1F1F1F]">
                         Testimonial added successfully!

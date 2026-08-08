@@ -8,6 +8,8 @@ import CategoryTabs from '../course/CategoryTabs';
 import CourseCard from '../course/CourseCard';
 import { getCourses, getDynamicCategories } from '../../services/courseService';
 
+const MAX_VISIBLE_CATEGORIES = 4; // sirf pehle 4 category tabs dikhenge (All Courses ke alawa)
+
 export default function FeaturedCourses() {
   const [courses, setCourses] = useState([]);
   const [activeCategory, setActiveCategory] = useState(null);
@@ -16,7 +18,8 @@ export default function FeaturedCourses() {
   const [currentPage, setCurrentPage] = useState(1);
   const [coursesPerPage, setCoursesPerPage] = useState(8);
 
-  const categories = getDynamicCategories();
+  const allCategories = getDynamicCategories();
+  const categories = allCategories.slice(0, MAX_VISIBLE_CATEGORIES);
 
   useEffect(() => {
     const updateCoursesPerPage = () => {
@@ -27,7 +30,6 @@ export default function FeaturedCourses() {
     return () => window.removeEventListener('resize', updateCoursesPerPage);
   }, []);
 
-  // Reset to page 1 whenever the category filter or page size changes
   useEffect(() => {
     setCurrentPage(1);
   }, [activeCategory, coursesPerPage]);
