@@ -11,7 +11,7 @@ import { useCart } from '../../context/CartContext';
 
 export default function Navbar() {
 
-  const {cartCount} = useCart();
+  const { cartCount } = useCart();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isExploreOpen, setIsExploreOpen] = useState(false);
@@ -20,7 +20,7 @@ export default function Navbar() {
   const exploreRef = useRef(null);
   const user = getCurrentUser();
   const isLoggedIn = isAuthenticated();
-  
+
   const categories = getDynamicCategories();
 
   useEffect(() => {
@@ -76,7 +76,7 @@ export default function Navbar() {
               >
                 Explore <ChevronDown size={16} className={`transition-transform duration-200 ${isExploreOpen ? 'rotate-180' : ''}`} />
               </button>
-              
+
               {isExploreOpen && (
                 <div className="absolute top-full left-0 w-64 bg-white rounded-b-card shadow-card-hover border border-border overflow-hidden fade-in py-2 z-20">
                   {categories.map((cat) => (
@@ -101,11 +101,11 @@ export default function Navbar() {
                 </div>
               )}
             </div>
-            <Link to="/contact" className="hidden text-white font-medium text-sm md:hidden lg:block">
-            Contact
+            <Link to="/contact" className="hidden md:block text-white/90 hover:text-white font-medium text-sm transition-colors">
+              Contact
             </Link>
-            <Link to="/about" className="hidden text-white font-medium text-sm md:hidden lg:block">
-            About
+            <Link to="/about" className="hidden md:block text-white/90 hover:text-white font-medium text-sm transition-colors">
+              About
             </Link>
           </div>
 
@@ -128,8 +128,8 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-4">
             <Link to="/cart" className="text-white/90 hover:text-white transition-colors relative">
               <ShoppingCart size={20} />
-              {cartCount>0 &&(
-              <span className="absolute -top-1.5 -right-1.5 bg-amber text-navy text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">{cartCount}</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-amber text-navy text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">{cartCount}</span>
               )}
             </Link>
 
@@ -179,7 +179,7 @@ export default function Navbar() {
             />
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50" size={16} />
           </div>
-          
+
           <div className="space-y-2">
             <p className="text-white/50 text-xs font-semibold uppercase tracking-wider">Categories</p>
             {categories.map((cat) => (

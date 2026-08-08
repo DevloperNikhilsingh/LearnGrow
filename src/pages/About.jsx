@@ -9,6 +9,7 @@ import CountUp from '../components/CountUp';
 import TeamCarousel from '../components/AboutComponent/TeamCarousel';
 import { useEffect } from 'react';
 import Timeline from '../components/AboutComponent/Timeline'
+import instructors from '../data/instructors'; // ⚠️ adjust this path to match where instructors.js actually lives in your project
 
 export default function About() {
 
@@ -19,15 +20,13 @@ export default function About() {
     { icon: Shield, title: 'Integrity', desc: 'Transparent, honest, and committed to your success.' },
   ];
 
-  const team = [
-    { name: 'Sarah Jenkins', role: 'Founder & CEO', img: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=200&q=80' },
-    { name: 'David Chen', role: 'Head of Education', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80' },
-    { name: 'Priya Patel', role: 'Chief Product Officer', img: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80' },
-    { name: 'Marcus Johnson', role: 'Lead Instructor', img: '/Student_2.png' },
-    { name: 'Marcus Johnson', role: 'SEO Expert', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80' },
-    { name: 'Marcus Johnson', role: 'Lead Instructor', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80' },
-    { name: 'Marcus Johnson', role: 'Lead Instructor', img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80' },
-  ];
+  // team ab real instructors.js se generate ho raha hai, taaki slug hamesha match kare
+  const team = instructors.map(inst => ({
+    name: inst.name,
+    role: inst.title,
+    slug: inst.slug,
+    img: inst.photo || '', // abhi empty hai, jab real photo instructors.js me add karoge tab yahan se aa jayegi
+  }));
 
   const location = useLocation();
   useEffect(() => {
@@ -44,7 +43,7 @@ export default function About() {
     }
   }, [location]);
   return (
-    <div className="min-h-screen flex flex-col bg-surface font-sans overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-surface font-sans ">
       <Helmet>
         <title>About Us | LearnGrow</title>
         <meta name="description" content="Learn about our mission to empower learners worldwide." />

@@ -71,11 +71,11 @@ const Testimonal = () => {
 
   return (
     <section className="py-16 bg-[#F7F5F0] overflow-hidden">
-      <div className="max-w-7xl mx-auto mb-10">
-        <span className="inline-block text-xs px-1 font-bold tracking-[0.15em] text-amber uppercase mb-3">
-          Our Learners Work At
+      <div className="max-w-7xl mx-auto mb-10 px-2">
+        <span className="inline-block text-xs px-1 sm:px-3 font-bold tracking-[0.15em] text-amber uppercase mb-3">
+          Our Learners
         </span>
-        <h2 className="text-3xl sm:text-4xl font-bold text-[#1F1F1F] leading-tight max-w-xl">
+        <h2 className="text-3xl sm:text-4xl font-bold sm:px-2 text-[#1F1F1F] leading-tight max-w-xl">
           Trusted by growing professionals
         </h2>
       </div>

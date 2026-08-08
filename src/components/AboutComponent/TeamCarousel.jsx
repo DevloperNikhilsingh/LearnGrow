@@ -1,4 +1,5 @@
 ﻿import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Users, Rocket, GraduationCap, Globe2, Linkedin, Twitter, Mail } from 'lucide-react';
 
 const CARD_STYLES = [
@@ -17,6 +18,7 @@ const STATS = [
 ];
 
 export default function TeamCarousel({ team }) {
+  const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(Math.floor((team?.length ?? 1) / 2));
   const total = team.length;
 
@@ -119,6 +121,16 @@ export default function TeamCarousel({ team }) {
                             );
                           })}
                         </div>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/instructor/${member.slug}`);
+                          }}
+                          className="mt-4 px-5 py-2 rounded-full bg-white text-navy text-sm font-semibold hover:bg-primary hover:text-white transition-colors"
+                        >
+                          View Profile
+                        </button>
                       </>
                     )}
                   </div>
@@ -182,11 +194,11 @@ export default function TeamCarousel({ team }) {
   );
 }
 
-// Usage:
+// Usage — make sure each team member includes a `slug` matching your instructors data:
 // <TeamCarousel team={[
-//   { name: 'Priya Sharma', role: 'Head of Learning', bio: '...', img: '...' },
-//   { name: 'Rahul Mehta', role: 'Lead Developer', bio: '...', img: '...' },
-//   { name: 'Aman Verma', role: 'Founder & CEO', bio: '...', img: '...', links: ['linkedin','twitter','mail'] },
-//   { name: 'Neha Kapoor', role: 'Marketing Lead', bio: '...', img: '...' },
-//   { name: 'Arjun Nair', role: 'Support Manager', bio: '...', img: '...' },
+//   { name: 'Priya Sharma', role: 'Head of Learning', slug: 'priya-sharma', bio: '...', img: '...' },
+//   { name: 'Rahul Mehta', role: 'Lead Developer', slug: 'rahul-mehta', bio: '...', img: '...' },
+//   { name: 'Aman Verma', role: 'Founder & CEO', slug: 'aman-verma', bio: '...', img: '...', links: ['linkedin','twitter','mail'] },
+//   { name: 'Neha Kapoor', role: 'Marketing Lead', slug: 'neha-kapoor', bio: '...', img: '...' },
+//   { name: 'Arjun Nair', role: 'Support Manager', slug: 'arjun-nair', bio: '...', img: '...' },
 // ]} />

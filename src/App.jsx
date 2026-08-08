@@ -12,8 +12,6 @@ import UserDashboard from './pages/UserDashboard';
 import CoursePlayer from './pages/CoursePlayer';
 import InstructorProfile from './pages/InstructorProfile';
 import About from './pages/About';
-import HelpCenter from './pages/HelpCenter';
-
 
 // Admin Pages
 import AdminDashboard from './pages/AdminDashboard';
@@ -63,8 +61,6 @@ export default function App() {
       <Route path="/instructor/:id" element={<InstructorProfile />} />
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/help" element={<HelpCenter />} />
       <Route path="/checkout/:courseId" element={<Checkout />} />
       <Route path='/checkout' element={<Checkout />} />
 

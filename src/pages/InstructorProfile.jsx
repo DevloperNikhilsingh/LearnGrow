@@ -19,7 +19,7 @@ export default function InstructorProfile() {
 
   useEffect(() => {
     Promise.all([getInstructors(), getCourses()]).then(([instructors, allCourses]) => {
-      const found = instructors.find(i => i.id.toString() === id);
+      const found = instructors.find(i => i.slug === id);
       if (found) {
         setInstructor(found);
         setInstructorCourses(allCourses.filter(c => found.courses.includes(c.id)));

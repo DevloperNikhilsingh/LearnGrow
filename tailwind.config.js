@@ -4,6 +4,12 @@ export default {
     './index.html',
     './src/**/*.{js,jsx,ts,tsx}',
   ],
+  safelist: [
+    'bg-blue-600',
+    'bg-emerald-600',
+    'bg-amber-500',
+    'bg-primary',
+  ],
   theme: {
     extend: {
       fontFamily: {
