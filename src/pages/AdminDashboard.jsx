@@ -35,7 +35,7 @@ export default function AdminDashboard() {
         <div className="p-8 max-w-6xl mx-auto space-y-8">
           
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard 
               icon={Book} 
               label="Total Courses" 

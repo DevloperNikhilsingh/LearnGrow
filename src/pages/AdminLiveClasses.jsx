@@ -9,6 +9,7 @@ import Button from '../components/ui/Button';
 import Badge from '../components/ui/Badge';
 import Modal from '../components/ui/Modal';
 import { getAdminLiveClasses } from '../services/adminService';
+import { useNavigate } from 'react-router-dom';
 
 const EMPTY_FORM = {
   title: '',
@@ -26,10 +27,14 @@ export default function AdminLiveClasses() {
   const [form, setForm] = useState(EMPTY_FORM);
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getAdminLiveClasses().then(data => {
-      setClasses(data);
+      const saved = localStorage.getItem('liveClasses');
+      const finalData = saved ? JSON.parse(saved) : data;
+      setClasses(finalData);
+      if (!saved) localStorage.setItem('liveClasses', JSON.stringify(data));
       setLoading(false);
     });
   }, []);
@@ -79,11 +84,19 @@ export default function AdminLiveClasses() {
     };
 
     setTimeout(() => {
-      setClasses(prev => [newSession, ...prev]);
+      setClasses(prev => {
+        const updated = [newSession, ...prev];
+        localStorage.setItem('liveClasses', JSON.stringify(updated));
+        return updated;
+      });
       setSubmitting(false);
       closeModal();
     }, 500);
   };
+
+  const handleEdit = (id) => {
+      navigate(`/admin/live-classes/edit/${id}`);
+  }
 
   return (
     <div className="min-h-screen bg-surface flex">
@@ -160,11 +173,17 @@ export default function AdminLiveClasses() {
                       </td>
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2">
-                          <button className="p-1.5 text-muted hover:text-primary transition-colors bg-surface rounded" title="Edit"><Edit2 size={16} /></button>
+                          {!lc.isActive && (
+                            <button onClick={() => handleEdit(lc.id)} className="p-1.5 text-muted hover:text-primary transition-colors bg-surface rounded" title="Edit"><Edit2 size={16} /></button>
+                          )}
                           <button
                             className="p-1.5 text-muted hover:text-red-600 transition-colors bg-surface rounded"
                             title="Delete"
-                            onClick={() => setClasses(prev => prev.filter(c => c.id !== lc.id))}
+                            onClick={() => setClasses(prev => {
+                              const updated = prev.filter(c => c.id !== lc.id);
+                              localStorage.setItem('liveClasses', JSON.stringify(updated));
+                              return updated;
+                            })}
                           >
                             <Trash2 size={16} />
                           </button>

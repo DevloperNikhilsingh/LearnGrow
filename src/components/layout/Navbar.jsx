@@ -20,6 +20,8 @@ export default function Navbar() {
   const exploreRef = useRef(null);
   const user = getCurrentUser();
   const isLoggedIn = isAuthenticated();
+  const [showlogoutpopup, setShowlogoutpopup] = useState(false);
+  const avatarRef = useRef(null);
 
   const categories = getDynamicCategories();
 
@@ -40,6 +42,17 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [isDesktop, isExploreOpen]);
 
+  useEffect(() => {
+    if (!showlogoutpopup) return;
+    const handleOutsideClick = (e) => {
+      if (avatarRef.current && !avatarRef.current.contains(e.target)) {
+        setShowlogoutpopup(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [showlogoutpopup]);
+
   const handleSearch = (e) => {
     if (e.key === 'Enter' && searchQuery.trim()) {
       navigate(`/courses?search=${encodeURIComponent(searchQuery.trim())}`);
@@ -49,8 +62,10 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
+
+ 
 
   return (
     <nav className="bg-navy sticky top-0 z-40 border-b border-navy shadow-sm">
@@ -58,7 +73,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo & Explore */}
           <div className="flex items-center gap-6">
-            <Link to="/" className="flex items-center gap-2 text-white hover:text-amber transition-colors">
+            <Link to="/home#herosection" className="flex items-center gap-2 text-white hover:text-amber transition-colors">
               <BookOpen className="text-amber" size={28} />
               <span className="font-bold text-xl tracking-tight">LearnGrow</span>
             </Link>
@@ -134,16 +149,34 @@ export default function Navbar() {
             </Link>
 
             {isLoggedIn ? (
-              <div className="flex items-center gap-4 ml-2">
-                <Link to={user?.role === 'admin' ? '/admin' : '/dashboard'} className="text-white text-sm font-medium hover:text-amber transition-colors">
-                  {user?.role === 'admin' ? 'Admin Panel' : 'Dashboard'}
-                </Link>
-                <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold border border-white/20">
-                  {user?.avatar || 'U'}
-                </div>
-                <button onClick={handleLogout} className="text-white/70 hover:text-white text-sm transition-colors">
-                  Logout
+              <div className="relative ml-2" ref={avatarRef}>
+                <button
+                  onClick={() => setShowlogoutpopup(prev => !prev)}
+                  className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold border border-white/20 hover:brightness-110 transition-all"
+                >
+                  {(user?.name?.charAt(0) || user?.avatar || 'U').toUpperCase()}
                 </button>
+
+                {showlogoutpopup && (
+                  <div className="absolute top-full right-0 mt-2 w-44 bg-white rounded-card shadow-card-hover border border-border overflow-hidden fade-in py-1 z-20">
+                    <Link
+                      to={user?.role === 'admin' ? '/admin' : '/dashboard'}
+                      className="block px-4 py-2 text-sm text-[#1F1F1F] hover:bg-surface hover:text-primary transition-colors"
+                      onClick={() => setShowlogoutpopup(false)}
+                    >
+                      {user?.role === 'admin' ? 'Admin Panel' : 'Dashboard'}
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setShowlogoutpopup(false);
+                        handleLogout();
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-[#1F1F1F] hover:bg-surface hover:text-primary transition-colors"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="flex items-center gap-3 ml-2">

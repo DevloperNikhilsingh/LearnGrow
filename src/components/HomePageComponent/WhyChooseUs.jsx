@@ -139,10 +139,11 @@ export default function WhyChooseUs() {
           Why learners choose us
         </span>
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-navy leading-tight">
-          Built for people who actually <span className="text-amber">finish</span>
-          <br className="hidden sm:block" /> what they start
+          What sets us <span className="text-amber">apart</span>
+          <br className="hidden sm:block" /> in plain terms
         </h2>
       </div>
+     {/* What sets us apart, in plain terms */}
 
       <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] lg:grid-cols-[280px_1fr] gap-0 rounded-2xl overflow-hidden border border-black/5">
         {/* Left: story-style tab list */}

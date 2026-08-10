@@ -20,6 +20,7 @@ import AdminAddCourse from './pages/AdminAddCourse';
 import AdminEditCourse from './pages/AdminEditCourse';
 import AdminStudents from './pages/AdminStudents';
 import AdminLiveClasses from './pages/AdminLiveClasses';
+import AdminEditLiveClass from './pages/AdminEditLiveClass';
 import AdminCategories from './pages/AdminCategories';
 
 // Auth Guard Helpers
@@ -98,6 +99,10 @@ export default function App() {
       <Route 
         path="/admin/live-classes" 
         element={<ProtectedRoute requireAdmin><AdminLiveClasses /></ProtectedRoute>} 
+      />
+      <Route 
+        path="/admin/live-classes/edit/:id" 
+        element={<ProtectedRoute requireAdmin><AdminEditLiveClass /></ProtectedRoute>} 
       />
       <Route 
         path="/admin/categories" 

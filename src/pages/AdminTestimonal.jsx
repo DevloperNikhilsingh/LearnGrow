@@ -50,8 +50,8 @@ const StatusBadge = ({ status }) => {
     return (
         <span
             className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${isPublished
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-gray-100 text-gray-600'
+                ? 'bg-green-100 text-green-700'
+                : 'bg-gray-100 text-gray-600'
                 }`}
         >
             {status}
@@ -64,6 +64,7 @@ const AdminTestimonal = () => {
     const [testimonials, setTestimonials] = useState(initialTestimonialsData)
     const [formData, setFormData] = useState(emptyForm)
     const [showSuccess, setShowSuccess] = useState(false)
+    const [searchTerm, setSearchTerm] = useState('')
 
     const handleOpenModal = () => {
         setFormData(emptyForm)
@@ -116,6 +117,24 @@ const AdminTestimonal = () => {
         setTimeout(() => setShowSuccess(false), 3000)
     }
 
+    const handleDelete = (id) => {
+        // NOTE: Right now this just updates local state (frontend-only).
+        // Once the backend is ready, replace this with an API DELETE call,
+        // then refetch / update state from the server response.
+        if (window.confirm('Are you sure you want to delete this testimonial?')) {
+            setTestimonials((prev) => prev.filter((item) => item.id !== id))
+        }
+    }
+
+    // Filter logic — live search
+    const filteredtestimonal = testimonials.filter((testimonal) => {
+        const term = searchTerm.trim().toLowerCase()
+        if (!term) return true
+        return (
+            testimonal.name?.toLowerCase().includes(term) ||
+            testimonal.course?.toLowerCase().includes(term)
+        )
+    })
     return (
         <div className="min-h-screen bg-surface flex">
             <Helmet>
@@ -136,6 +155,7 @@ const AdminTestimonal = () => {
                 <div className="p-4 sm:p-6 lg:p-8">
                     {/* Search Bar */}
                     <div className="bg-white rounded-xl border border-border p-4 mb-6 shadow-sm">
+                        {/* Search Bar */}
                         <div className="relative max-w-md">
                             <Search
                                 size={18}
@@ -143,6 +163,14 @@ const AdminTestimonal = () => {
                             />
                             <input
                                 type="text"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}   // live search - har type par filter
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault()
+                                        setSearchTerm(e.target.value)   // enter dabane par bhi confirm
+                                    }
+                                }}
                                 placeholder="Search testimonials..."
                                 className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
                             />
@@ -166,7 +194,7 @@ const AdminTestimonal = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {testimonials.map((item) => (
+                                {filteredtestimonal.map((item) => (
                                     <tr
                                         key={item.id}
                                         className="border-b border-border last:border-0 hover:bg-gray-50/60 transition-colors"
@@ -191,6 +219,7 @@ const AdminTestimonal = () => {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
                                                 <button
+                                                    onClick={() => handleDelete(item.id)}
                                                     className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-red-100 hover:text-red-600 text-gray-600 transition-colors"
                                                     aria-label="Delete"
                                                 >
