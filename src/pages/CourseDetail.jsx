@@ -184,10 +184,10 @@ export default function CourseDetail() {
                 <span>{course.rating.toFixed(1)}</span>
               </motion.div>
               <motion.span variants={metaItemVariants} className="text-white/60">({course.reviewCount.toLocaleString()} ratings)</motion.span>
-              <motion.span variants={metaItemVariants} className="text-white/60 flex items-center gap-1"><Users size={15}/> {course.studentsEnrolled.toLocaleString()} students</motion.span>
+              <motion.span variants={metaItemVariants} className="text-white/60 flex items-center gap-1"><Users size={15} /> {course.studentsEnrolled.toLocaleString()} students</motion.span>
               <motion.span variants={metaItemVariants}>Created by <Link to={`/instructor/${course.instructorId}`} className="text-primary hover:underline">{course.instructor}</Link></motion.span>
-              <motion.span variants={metaItemVariants} className="text-white/60 flex items-center gap-1"><Clock size={15}/> Last updated {new Date(course.lastUpdated).toLocaleDateString()}</motion.span>
-              <motion.span variants={metaItemVariants} className="text-white/60 flex items-center gap-1"><Globe size={15}/> {course.language}</motion.span>
+              <motion.span variants={metaItemVariants} className="text-white/60 flex items-center gap-1"><Clock size={15} /> Last updated {new Date(course.lastUpdated).toLocaleDateString()}</motion.span>
+              <motion.span variants={metaItemVariants} className="text-white/60 flex items-center gap-1"><Globe size={15} /> {course.language}</motion.span>
             </motion.div>
           </div>
         </div>
@@ -211,9 +211,9 @@ export default function CourseDetail() {
               </div>
               <div className="flex gap-3 sm:gap-4 text-xs text-muted sm:ml-auto flex-wrap">
                 {course.rating > 0 && (
-                  <span className="flex items-center gap-1"><Star size={14} className="text-amber fill-amber"/> {course.rating.toFixed(1)} Rating</span>
+                  <span className="flex items-center gap-1"><Star size={14} className="text-amber fill-amber" /> {course.rating.toFixed(1)} Rating</span>
                 )}
-                <span className="flex items-center gap-1"><Users size={14}/> {(course.studentsEnrolled || 0).toLocaleString()} Students</span>
+                <span className="flex items-center gap-1"><Users size={14} /> {(course.studentsEnrolled || 0).toLocaleString()} Students</span>
               </div>
             </div>
 
@@ -224,11 +224,10 @@ export default function CourseDetail() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`px-1 mr-4 sm:mr-7 py-3.5 sm:py-4 font-semibold text-xs sm:text-sm transition-colors border-b-[3px] ${
-                      activeTab === tab.id
+                    className={`px-1 mr-4 sm:mr-7 py-3.5 sm:py-4 font-semibold text-xs sm:text-sm transition-colors border-b-[3px] ${activeTab === tab.id
                         ? 'border-primary text-primary'
                         : 'border-transparent text-muted hover:text-[#1F1F1F]'
-                    }`}
+                      }`}
                   >
                     {tab.label}
                   </button>
@@ -278,9 +277,9 @@ export default function CourseDetail() {
                           </p>
                           <div className="flex gap-3 sm:gap-4 text-sm text-muted mb-3 flex-wrap">
                             {course.rating > 0 && (
-                              <span className="flex items-center gap-1"><Star size={16} className="text-amber fill-amber"/> {course.rating.toFixed(1)} Rating</span>
+                              <span className="flex items-center gap-1"><Star size={16} className="text-amber fill-amber" /> {course.rating.toFixed(1)} Rating</span>
                             )}
-                            <span className="flex items-center gap-1"><Users size={16}/> {(course.studentsEnrolled || 0).toLocaleString()} Students</span>
+                            <span className="flex items-center gap-1"><Users size={16} /> {(course.studentsEnrolled || 0).toLocaleString()} Students</span>
                           </div>
                           <p className="text-sm text-[#1F1F1F] leading-relaxed">
                             {course.instructorBio || 'Passionate about teaching and helping students achieve their career goals. Dedicated to providing high-quality, practical content that you can apply immediately.'}

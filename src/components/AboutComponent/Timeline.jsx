@@ -5,14 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-/**
- * OurJourney — dark timeline section for the LearnGrow About page.
- * Alternating left/right cards on a glowing vertical line, styled to match
- * the LearnGrow navy + yellow/blue brand palette.
- *
- * Usage: import OurJourney from './OurJourney'; then <OurJourney /> inside
- * your About page. Section id="our-journey" so /about#our-journey scrolls here.
- */
+
 
 const MILESTONES = [
   {
