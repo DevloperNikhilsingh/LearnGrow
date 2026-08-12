@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Infinity, Lightbulb, Briefcase, IndianRupee, ArrowUpRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const FEATURES = [
   {
     id: 1,
     tag: '01',
     label: 'Lifetime access',
-    to:'/courses',
+    to: '/courses',
     title: 'Learn once, own it forever',
     desc: 'Buy once, learn forever. Every future update to your course comes at zero extra cost.',
     stats: [
@@ -21,7 +22,7 @@ const FEATURES = [
     id: 2,
     tag: '02',
     label: 'Real experts',
-    to:'/about#ourteam',
+    to: '/about#ourteam',
     title: 'Real experts, real skills',
     desc: 'Every instructor is a working practitioner — not a narrator reading slides.',
     stats: [
@@ -35,7 +36,7 @@ const FEATURES = [
     id: 3,
     tag: '03',
     label: 'Career support',
-    to:'/courses',
+    to: '/courses',
     title: 'Career support that shows up',
     desc: 'Resume reviews, mock interviews, and referrals — built into every course track.',
     stats: [
@@ -49,7 +50,7 @@ const FEATURES = [
     id: 4,
     tag: '04',
     label: 'Honest pricing',
-    to:'/courses',
+    to: '/courses',
     title: 'Honest pricing, no surprises',
     desc: 'No hidden fees, no surprise renewals. What you see at checkout is what you pay.',
     stats: [
@@ -127,14 +128,18 @@ export default function WhyChooseUs() {
   const Icon = current.icon;
   const isDark = !!current.dark;
 
-  const navigate=useNavigate()
+  const navigate = useNavigate();
 
   return (
-    <section
-      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20"
-      
-    >
-      <div className="mb-8 sm:mb-10 lg:mb-12 max-w-2xl mx-auto text-center">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+      {/* Heading - Framer scroll reveal */}
+      <motion.div
+        className="mb-8 sm:mb-10 lg:mb-12 max-w-2xl mx-auto text-center"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+      >
         <span className="inline-block text-xs font-semibold uppercase tracking-wider text-primary mb-3">
           Why learners choose us
         </span>
@@ -142,11 +147,10 @@ export default function WhyChooseUs() {
           What sets us <span className="text-amber">apart</span>
           <br className="hidden sm:block" /> in plain terms
         </h2>
-      </div>
-     {/* What sets us apart, in plain terms */}
+      </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-[240px_1fr] lg:grid-cols-[280px_1fr] gap-0 rounded-2xl overflow-hidden border border-black/5">
-        {/* Left: story-style tab list */}
+        {/* Left: story-style tab list - unchanged, simple */}
         <div className="bg-gray-100 p-2 sm:p-3 flex flex-row md:flex-col gap-2 md:gap-1 overflow-x-auto md:overflow-visible no-scrollbar md:border-r border-black/5">
           {FEATURES.map((f, i) => {
             const FIcon = f.icon;
@@ -170,7 +174,6 @@ export default function WhyChooseUs() {
                 </span>
                 <span className="min-w-0">
                   <span
-                  
                     className={`block text-[12px] md:text-sm font-medium whitespace-nowrap md:truncate ${isActive ? 'text-navy' : 'text-gray-500'
                       }`}
                   >
@@ -194,75 +197,80 @@ export default function WhyChooseUs() {
           })}
         </div>
 
-        {/* Right: interactive content panel */}
+        {/* Right: interactive content panel - Framer AnimatePresence for tab swap */}
         <div
           className={`relative p-6 sm:p-8 md:p-10 lg:p-12 flex items-center transition-colors duration-500 ${current.bg}`}
         >
           {isDark && <span className="absolute inset-0 bg-white/10 pointer-events-none" />}
           <div className="w-full relative">
-            <div
-              key={current.id}
-              className="animate-[fadeSlide_0.4s_ease]"
-            >
-              <div className="flex items-center gap-3 mb-4 sm:mb-6">
-                <span
-                  className={`w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-xl flex items-center justify-center shrink-0 ${isDark ? 'bg-navy/10' : 'bg-white/15'
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={current.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+              >
+                <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                  <span
+                    className={`w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-xl flex items-center justify-center shrink-0 ${isDark ? 'bg-navy/10' : 'bg-white/15'
+                      }`}
+                  >
+                    <Icon
+                      size={20}
+                      className={isDark ? 'text-navy sm:w-[22px] sm:h-[22px]' : 'text-white sm:w-[22px] sm:h-[22px]'}
+                      strokeWidth={1.5}
+                    />
+                  </span>
+                  <span
+                    className={`text-[11px] sm:text-xs uppercase tracking-wider font-medium ${isDark ? 'text-navy/70' : 'text-white/70'
+                      }`}
+                  >
+                    Step {current.tag}
+                  </span>
+                </div>
+
+                <h3
+                  className={`text-xl sm:text-2xl md:text-3xl font-bold mb-2.5 sm:mb-3 leading-tight ${isDark ? 'text-navy' : 'text-white'
                     }`}
                 >
-                  <Icon
-                    size={20}
-                    className={isDark ? 'text-navy sm:w-[22px] sm:h-[22px]' : 'text-white sm:w-[22px] sm:h-[22px]'}
-                    strokeWidth={1.5}
-                  />
-                </span>
-                <span
-                  className={`text-[11px] sm:text-xs uppercase tracking-wider font-medium ${isDark ? 'text-navy/70' : 'text-white/70'
+                  {current.title}
+                </h3>
+                <p
+                  className={`text-sm md:text-base max-w-md mb-6 sm:mb-8 leading-relaxed ${isDark ? 'text-navy/70' : 'text-white/75'
                     }`}
                 >
-                  Step {current.tag}
-                </span>
-              </div>
+                  {current.desc}
+                </p>
 
-              <h3
-                className={`text-xl sm:text-2xl md:text-3xl font-bold mb-2.5 sm:mb-3 leading-tight ${isDark ? 'text-navy' : 'text-white'
-                  }`}
-              >
-                {current.title}
-              </h3>
-              <p
-                className={`text-sm md:text-base max-w-md mb-6 sm:mb-8 leading-relaxed ${isDark ? 'text-navy/70' : 'text-white/75'
-                  }`}
-              >
-                {current.desc}
-              </p>
+                <div className="flex flex-wrap gap-6 sm:gap-8 mb-6 sm:mb-8">
+                  {current.stats.map((s) => (
+                    <div key={s.label}>
+                      <p
+                        className={`text-xl sm:text-2xl md:text-3xl font-bold tabular-nums ${isDark ? 'text-navy' : 'text-white'
+                          }`}
+                      >
+                        <AnimatedNumber value={s.value} decimal={s.decimal} suffix={s.suffix} />
+                      </p>
+                      <p className={`text-xs mt-1 ${isDark ? 'text-navy/60' : 'text-white/60'}`}>
+                        {s.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
 
-              <div className="flex flex-wrap gap-6 sm:gap-8 mb-6 sm:mb-8">
-                {current.stats.map((s) => (
-                  <div key={s.label}>
-                    <p
-                      className={`text-xl sm:text-2xl md:text-3xl font-bold tabular-nums ${isDark ? 'text-navy' : 'text-white'
-                        }`}
-                    >
-                      <AnimatedNumber value={s.value} decimal={s.decimal} suffix={s.suffix} />
-                    </p>
-                    <p className={`text-xs mt-1 ${isDark ? 'text-navy/60' : 'text-white/60'}`}>
-                      {s.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <button
-              onClick={() => navigate(current.to)}
-                className={`inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium transition-colors rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 ${isDark
-                    ? 'text-navy bg-navy/10 hover:bg-navy/20'
-                    : 'text-white bg-white/10 hover:bg-white/20'
-                  }`}
-              >
-                Explore {current.label.toLowerCase()}
-                <ArrowUpRight size={14} />
-              </button>
-            </div>
+                <button
+                  onClick={() => navigate(current.to)}
+                  className={`inline-flex items-center gap-1.5 text-xs sm:text-sm font-medium transition-colors rounded-full px-3.5 sm:px-4 py-1.5 sm:py-2 ${isDark
+                      ? 'text-navy bg-navy/10 hover:bg-navy/20'
+                      : 'text-white bg-white/10 hover:bg-white/20'
+                    }`}
+                >
+                  Explore {current.label.toLowerCase()}
+                  <ArrowUpRight size={14} />
+                </button>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* decorative index watermark */}
@@ -276,10 +284,6 @@ export default function WhyChooseUs() {
       </div>
 
       <style>{`
-        @keyframes fadeSlide {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>

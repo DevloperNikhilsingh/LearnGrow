@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Rocket, Users, GraduationCap, Briefcase, Trophy, Target } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 /**
  * OurJourney — dark timeline section for the LearnGrow About page.
@@ -49,6 +53,78 @@ const MILESTONES = [
 ];
 
 export default function OurJourney() {
+  const timelineRef = useRef(null);
+  const lineFillRef = useRef(null);
+  const lineFillMobileRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // GSAP: center line grows top-to-bottom, tied to scroll progress (scrub)
+      [lineFillRef.current, lineFillMobileRef.current].forEach((line) => {
+        if (!line) return;
+        gsap.fromTo(
+          line,
+          { scaleY: 0 },
+          {
+            scaleY: 1,
+            ease: 'none',
+            transformOrigin: 'top center',
+            scrollTrigger: {
+              trigger: timelineRef.current,
+              start: 'top 70%',
+              end: 'bottom 60%',
+              scrub: 0.6,
+            },
+          }
+        );
+      });
+
+      // GSAP: each milestone card slides in from alternating sides, node pops
+      const items = gsap.utils.toArray('[data-milestone]', timelineRef.current);
+      items.forEach((item, i) => {
+        const isLeft = i % 2 === 0;
+        const card = item.querySelector('[data-milestone-card]');
+        const node = item.querySelector('[data-milestone-node]');
+
+        gsap.fromTo(
+          card,
+          { opacity: 0, x: isLeft ? -60 : 60 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.7,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: item,
+              start: 'top 82%',
+              toggleActions: 'play none none none',
+            },
+          }
+        );
+
+        if (node) {
+          gsap.fromTo(
+            node,
+            { scale: 0, opacity: 0 },
+            {
+              scale: 1,
+              opacity: 1,
+              duration: 0.5,
+              ease: 'back.out(2)',
+              scrollTrigger: {
+                trigger: item,
+                start: 'top 82%',
+                toggleActions: 'play none none none',
+              },
+            }
+          );
+        }
+      });
+    }, timelineRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
       id="our-journey"
@@ -84,17 +160,30 @@ export default function OurJourney() {
         </div>
 
         {/* Timeline */}
-        <div className="relative">
-          {/* center glowing line — desktop only */}
+        <div ref={timelineRef} className="relative">
+          {/* center line track (faint base) — desktop only */}
           <div
+            className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[3px] -translate-x-1/2 rounded-full"
+            style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}
+          />
+          {/* center line fill — animates in on scroll */}
+          <div
+            ref={lineFillRef}
             className="hidden md:block absolute left-1/2 top-0 bottom-0 w-[3px] -translate-x-1/2 rounded-full"
             style={{
               background: 'linear-gradient(180deg, #F5A623 0%, #2563EB 50%, #22C55E 100%)',
               boxShadow: '0 0 20px rgba(245,166,35,0.35)',
             }}
           />
-          {/* mobile line */}
+
+          {/* mobile line track (faint base) */}
           <div
+            className="md:hidden absolute left-[27px] top-0 bottom-0 w-[2px]"
+            style={{ backgroundColor: 'rgba(255,255,255,0.06)' }}
+          />
+          {/* mobile line fill — animates in on scroll */}
+          <div
+            ref={lineFillMobileRef}
             className="md:hidden absolute left-[27px] top-0 bottom-0 w-[2px]"
             style={{ background: 'linear-gradient(180deg, #F5A623 0%, #2563EB 50%, #22C55E 100%)' }}
           />
@@ -104,9 +193,10 @@ export default function OurJourney() {
               const isLeft = i % 2 === 0;
               const Icon = m.icon;
               return (
-                <li key={m.year} className="relative md:flex md:items-center">
+                <li key={m.year} data-milestone className="relative md:flex md:items-center">
                   {/* center node — desktop only */}
                   <div
+                    data-milestone-node
                     className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center justify-center w-6 h-6 rounded-full border-4"
                     style={{
                       backgroundColor: m.accent,
@@ -116,6 +206,7 @@ export default function OurJourney() {
                   />
 
                   <div
+                    data-milestone-card
                     className={`w-full md:w-[calc(50%-40px)] pl-16 md:pl-0 ${
                       isLeft ? 'md:mr-auto md:pr-0' : 'md:ml-auto'
                     }`}
@@ -163,6 +254,7 @@ export default function OurJourney() {
 
                   {/* mobile node */}
                   <span
+                    data-milestone-node
                     className="md:hidden absolute left-[20px] top-6 w-3.5 h-3.5 rounded-full border-2"
                     style={{ backgroundColor: m.accent, borderColor: '#0A1128', boxShadow: `0 0 10px ${m.accent}` }}
                   />

@@ -4,11 +4,29 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import CategoryTabs from '../course/CategoryTabs';
 import CourseCard from '../course/CourseCard';
 import { getCourses, getDynamicCategories } from '../../services/courseService';
 
 const MAX_VISIBLE_CATEGORIES = 4; // sirf pehle 4 category tabs dikhenge (All Courses ke alawa)
+
+// Grid container + item variants - subtle stagger, not flashy
+const gridVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.06 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: 'easeOut' },
+  },
+};
 
 export default function FeaturedCourses() {
   const [courses, setCourses] = useState([]);
@@ -54,7 +72,14 @@ export default function FeaturedCourses() {
   return (
     <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        {/* Header - subtle scroll reveal */}
+        <motion.div
+          className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+        >
           <div>
             <h2 className="text-3xl font-bold text-[#1F1F1F] mb-1.5">Featured Courses</h2>
             <p className="text-muted text-[15px]">Learn from the best. Hand-picked courses for you.</p>
@@ -62,7 +87,7 @@ export default function FeaturedCourses() {
           <Link to="/courses" className="text-primary font-semibold flex items-center gap-1 hover:underline">
             View all courses <ArrowRight size={16} />
           </Link>
-        </div>
+        </motion.div>
 
         <div className="mb-8">
           <CategoryTabs
@@ -80,15 +105,26 @@ export default function FeaturedCourses() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 fade-in">
-              {paginatedCourses.length > 0 ? (
-                paginatedCourses.map((course) => (
-                  <CourseCard key={course.id} course={course} />
-                ))
-              ) : (
-                <p className="col-span-full text-center text-muted py-12">No courses found for this category.</p>
-              )}
-            </div>
+            {/* Grid re-animates lightly whenever category or page changes */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`${activeCategory}-${currentPage}`}
+                className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6"
+                variants={gridVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                {paginatedCourses.length > 0 ? (
+                  paginatedCourses.map((course) => (
+                    <motion.div key={course.id} variants={cardVariants}>
+                      <CourseCard course={course} />
+                    </motion.div>
+                  ))
+                ) : (
+                  <p className="col-span-full text-center text-muted py-12">No courses found for this category.</p>
+                )}
+              </motion.div>
+            </AnimatePresence>
 
             {totalCoursePages > 1 && (
               <div className="flex items-center justify-center flex-wrap gap-1.5 sm:gap-2 mt-10">

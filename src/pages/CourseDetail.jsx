@@ -1,10 +1,12 @@
 /**
  * pages/CourseDetail.jsx
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Star, Users, Clock, Globe, CheckCircle2, Shield, Smartphone, Award, PlayCircle, Send } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { gsap } from 'gsap';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import VideoPlayer from '../components/course/VideoPlayer';
@@ -18,6 +20,23 @@ import { isAuthenticated, getCurrentUser } from '../services/authService';
 import { enrollCourse } from '../services/userService';
 import { updateCourseReviews } from '../services/adminService';
 import { useCart } from '../context/CartContext';
+
+// Framer variants for the meta row (badge, rating, students, etc.)
+const metaContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.06, delayChildren: 0.25 },
+  },
+};
+
+const metaItemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: 'easeOut' },
+  },
+};
 
 export default function CourseDetail() {
   const { addToCart } = useCart();
@@ -36,6 +55,8 @@ export default function CourseDetail() {
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [reviewSuccess, setReviewSuccess] = useState(false);
 
+  const titleRef = useRef(null);
+
   useEffect(() => {
     getCourseBySlug(slug).then((data) => {
       setCourse(data);
@@ -43,6 +64,23 @@ export default function CourseDetail() {
       window.scrollTo(0, 0);
     });
   }, [slug]);
+
+  // GSAP: letter-by-letter reveal for the course title once it's loaded
+  useEffect(() => {
+    if (!course || !titleRef.current) return;
+    const letters = titleRef.current.querySelectorAll('[data-letter]');
+    gsap.fromTo(
+      letters,
+      { opacity: 0, y: 18 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.5,
+        ease: 'power3.out',
+        stagger: 0.02,
+      }
+    );
+  }, [course]);
 
   const handleEnroll = async () => {
     if (!isAuthenticated()) {
@@ -116,21 +154,41 @@ export default function CourseDetail() {
           </nav>
 
           <div className="max-w-3xl space-y-2.5 sm:space-y-3">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">{course.title}</h1>
+            {/* GSAP: letters animate in one by one */}
+            <h1
+              ref={titleRef}
+              className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight"
+              aria-label={course.title}
+            >
+              {course.title.split('').map((char, i) => (
+                <span key={i} data-letter className="inline-block" style={{ opacity: 0 }}>
+                  {char === ' ' ? '\u00A0' : char}
+                </span>
+              ))}
+            </h1>
+
             <p className="text-base sm:text-lg text-white/80">{course.shortDescription}</p>
 
-            <div className="flex items-center gap-x-3 gap-y-1.5 sm:gap-x-4 text-xs sm:text-sm font-medium flex-wrap pt-1">
-              {course.badge && <Badge label={course.badge} />}
-              <div className="flex items-center gap-1 text-amber">
+            {/* Framer: meta row staggers in after the title finishes */}
+            <motion.div
+              className="flex items-center gap-x-3 gap-y-1.5 sm:gap-x-4 text-xs sm:text-sm font-medium flex-wrap pt-1"
+              variants={metaContainerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {course.badge && (
+                <motion.div variants={metaItemVariants}><Badge label={course.badge} /></motion.div>
+              )}
+              <motion.div variants={metaItemVariants} className="flex items-center gap-1 text-amber">
                 <Star size={15} className="fill-amber" />
                 <span>{course.rating.toFixed(1)}</span>
-              </div>
-              <span className="text-white/60">({course.reviewCount.toLocaleString()} ratings)</span>
-              <span className="text-white/60 flex items-center gap-1"><Users size={15}/> {course.studentsEnrolled.toLocaleString()} students</span>
-              <span>Created by <Link to={`/instructor/${course.instructorId}`} className="text-primary hover:underline">{course.instructor}</Link></span>
-              <span className="text-white/60 flex items-center gap-1"><Clock size={15}/> Last updated {new Date(course.lastUpdated).toLocaleDateString()}</span>
-              <span className="text-white/60 flex items-center gap-1"><Globe size={15}/> {course.language}</span>
-            </div>
+              </motion.div>
+              <motion.span variants={metaItemVariants} className="text-white/60">({course.reviewCount.toLocaleString()} ratings)</motion.span>
+              <motion.span variants={metaItemVariants} className="text-white/60 flex items-center gap-1"><Users size={15}/> {course.studentsEnrolled.toLocaleString()} students</motion.span>
+              <motion.span variants={metaItemVariants}>Created by <Link to={`/instructor/${course.instructorId}`} className="text-primary hover:underline">{course.instructor}</Link></motion.span>
+              <motion.span variants={metaItemVariants} className="text-white/60 flex items-center gap-1"><Clock size={15}/> Last updated {new Date(course.lastUpdated).toLocaleDateString()}</motion.span>
+              <motion.span variants={metaItemVariants} className="text-white/60 flex items-center gap-1"><Globe size={15}/> {course.language}</motion.span>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -177,174 +235,200 @@ export default function CourseDetail() {
                 ))}
               </div>
 
-              {/* OVERVIEW TAB */}
-              {activeTab === 'overview' && (
-                <div className="p-4 sm:p-7 space-y-6 sm:space-y-8">
-                  <section>
-                    <h2 className="text-lg sm:text-xl font-bold text-[#1F1F1F] mb-4 sm:mb-5">What you'll learn</h2>
-                    <ul className="grid sm:grid-cols-2 gap-3 sm:gap-4">
-                      {course.whatYouLearn.map((item, i) => (
-                        <li key={i} className="flex items-start gap-2.5 sm:gap-3">
-                          <CheckCircle2 size={19} className="text-success flex-shrink-0 mt-0.5" />
-                          <span className="text-sm text-[#1F1F1F] leading-relaxed">{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
+              {/* Framer: smooth crossfade between tab panels */}
+              <AnimatePresence mode="wait">
+                {activeTab === 'overview' && (
+                  <motion.div
+                    key="overview"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3, ease: 'easeOut' }}
+                    className="p-4 sm:p-7 space-y-6 sm:space-y-8"
+                  >
+                    <section>
+                      <h2 className="text-lg sm:text-xl font-bold text-[#1F1F1F] mb-4 sm:mb-5">What you'll learn</h2>
+                      <ul className="grid sm:grid-cols-2 gap-3 sm:gap-4">
+                        {course.whatYouLearn.map((item, i) => (
+                          <li key={i} className="flex items-start gap-2.5 sm:gap-3">
+                            <CheckCircle2 size={19} className="text-success flex-shrink-0 mt-0.5" />
+                            <span className="text-sm text-[#1F1F1F] leading-relaxed">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
 
-                  <section>
-                    <h2 className="text-lg sm:text-xl font-bold text-[#1F1F1F] mb-3">Course Content</h2>
-                    <p className="text-[#1F1F1F] whitespace-pre-line leading-relaxed text-sm">
-                      {course.description}
-                    </p>
-                  </section>
-
-                  <section>
-                    <h2 className="text-lg sm:text-xl font-bold text-[#1F1F1F] mb-4">Instructor</h2>
-                    <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 items-start">
-                      <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-primary text-white flex items-center justify-center text-xl sm:text-2xl font-bold flex-shrink-0">
-                        {(course.instructor || 'IN').slice(0, 2).toUpperCase()}
-                      </div>
-                      <div className="min-w-0">
-                        <h3 className="text-base sm:text-lg font-bold text-[#1F1F1F] hover:text-primary cursor-pointer mb-1">{course.instructor}</h3>
-                        <p className="text-muted text-sm mb-3">
-                          {course.instructorTitle || 'Expert Instructor'}
-                        </p>
-                        <div className="flex gap-3 sm:gap-4 text-sm text-muted mb-3 flex-wrap">
-                          {course.rating > 0 && (
-                            <span className="flex items-center gap-1"><Star size={16} className="text-amber fill-amber"/> {course.rating.toFixed(1)} Rating</span>
-                          )}
-                          <span className="flex items-center gap-1"><Users size={16}/> {(course.studentsEnrolled || 0).toLocaleString()} Students</span>
-                        </div>
-                        <p className="text-sm text-[#1F1F1F] leading-relaxed">
-                          {course.instructorBio || 'Passionate about teaching and helping students achieve their career goals. Dedicated to providing high-quality, practical content that you can apply immediately.'}
-                        </p>
-                      </div>
-                    </div>
-                  </section>
-                </div>
-              )}
-
-              {/* CURRICULUM TAB */}
-              {activeTab === 'curriculum' && (
-                <div className="p-4 sm:p-7">
-                  <h2 className="text-lg sm:text-xl font-bold text-[#1F1F1F] mb-4">Curriculum</h2>
-                  <CurriculumAccordion curriculum={course.curriculum} />
-                </div>
-              )}
-
-              {/* REVIEWS TAB */}
-              {activeTab === 'reviews' && (
-                <div className="p-4 sm:p-7 space-y-5 sm:space-y-6">
-                  <h2 className="text-base sm:text-lg font-bold text-[#1F1F1F] flex items-center gap-2 flex-wrap">
-                    <Star className="text-amber fill-amber" size={20} />
-                    {course.rating > 0
-                      ? <>{course.rating.toFixed(1)} course rating • {course.reviewCount.toLocaleString()} reviews</>
-                      : <>No reviews yet</>}
-                  </h2>
-
-                  {course.reviews && course.reviews.length > 0 && (
-                    <div className="space-y-4">
-                      {course.reviews.map((review, i) => (
-                        <ReviewCard key={i} review={review} />
-                      ))}
-                    </div>
-                  )}
-
-                  <div className="border-t border-border pt-5 sm:pt-6">
-                    <h3 className="text-sm sm:text-base font-bold text-[#1F1F1F] mb-4">Leave a Review</h3>
-
-                    {!isAuthenticated() ? (
-                      <p className="text-sm text-muted">
-                        <Link to="/login" className="text-primary font-semibold hover:underline">Log in</Link> to leave a review.
+                    <section>
+                      <h2 className="text-lg sm:text-xl font-bold text-[#1F1F1F] mb-3">Course Content</h2>
+                      <p className="text-[#1F1F1F] whitespace-pre-line leading-relaxed text-sm">
+                        {course.description}
                       </p>
-                    ) : reviewSuccess ? (
-                      <div className="flex items-center gap-2 text-success font-medium text-sm">
-                        <CheckCircle2 size={18} /> Thank you! Your review has been submitted.
-                      </div>
-                    ) : (
-                      <form
-                        onSubmit={async (e) => {
-                          e.preventDefault();
-                          if (reviewRating === 0) { alert('Please select a star rating.'); return; }
-                          setReviewSubmitting(true);
+                    </section>
 
-                          const user = getCurrentUser();
-                          const initials = (user?.name || 'User')
-                            .split(' ')
-                            .map(w => w[0])
-                            .join('')
-                            .toUpperCase()
-                            .slice(0, 2);
-
-                          const review = {
-                            user: user?.name || 'Anonymous',
-                            avatar: initials,
-                            rating: reviewRating,
-                            comment: reviewComment.trim(),
-                            date: new Date().toISOString().split('T')[0],
-                          };
-
-                          updateCourseReviews(course.id, review);
-                          const updated = await getCourseBySlug(slug);
-                          setCourse(updated);
-
-                          setReviewComment('');
-                          setReviewRating(0);
-                          setReviewSubmitting(false);
-                          setReviewSuccess(true);
-                        }}
-                        className="space-y-4"
-                      >
-                        <div>
-                          <label className="block text-sm font-medium text-[#1F1F1F] mb-2">Your Rating *</label>
-                          <div className="flex gap-1">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <button
-                                key={star}
-                                type="button"
-                                onClick={() => setReviewRating(star)}
-                                onMouseEnter={() => setReviewHover(star)}
-                                onMouseLeave={() => setReviewHover(0)}
-                                className="p-0.5 transition-transform hover:scale-110"
-                              >
-                                <Star
-                                  size={26}
-                                  className={
-                                    star <= (reviewHover || reviewRating)
-                                      ? 'text-amber fill-amber'
-                                      : 'text-gray-300 fill-gray-300'
-                                  }
-                                />
-                              </button>
-                            ))}
+                    <section>
+                      <h2 className="text-lg sm:text-xl font-bold text-[#1F1F1F] mb-4">Instructor</h2>
+                      <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 items-start">
+                        <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-primary text-white flex items-center justify-center text-xl sm:text-2xl font-bold flex-shrink-0">
+                          {(course.instructor || 'IN').slice(0, 2).toUpperCase()}
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="text-base sm:text-lg font-bold text-[#1F1F1F] hover:text-primary cursor-pointer mb-1">{course.instructor}</h3>
+                          <p className="text-muted text-sm mb-3">
+                            {course.instructorTitle || 'Expert Instructor'}
+                          </p>
+                          <div className="flex gap-3 sm:gap-4 text-sm text-muted mb-3 flex-wrap">
+                            {course.rating > 0 && (
+                              <span className="flex items-center gap-1"><Star size={16} className="text-amber fill-amber"/> {course.rating.toFixed(1)} Rating</span>
+                            )}
+                            <span className="flex items-center gap-1"><Users size={16}/> {(course.studentsEnrolled || 0).toLocaleString()} Students</span>
                           </div>
+                          <p className="text-sm text-[#1F1F1F] leading-relaxed">
+                            {course.instructorBio || 'Passionate about teaching and helping students achieve their career goals. Dedicated to providing high-quality, practical content that you can apply immediately.'}
+                          </p>
                         </div>
+                      </div>
+                    </section>
+                  </motion.div>
+                )}
 
-                        <div>
-                          <label className="block text-sm font-medium text-[#1F1F1F] mb-1">Your Review</label>
-                          <textarea
-                            value={reviewComment}
-                            onChange={(e) => setReviewComment(e.target.value)}
-                            rows={3}
-                            placeholder="Share your experience with this course..."
-                            className="w-full border border-border rounded-btn px-3 py-2 text-sm focus:border-primary focus:outline-none"
-                          />
-                        </div>
+                {activeTab === 'curriculum' && (
+                  <motion.div
+                    key="curriculum"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3, ease: 'easeOut' }}
+                    className="p-4 sm:p-7"
+                  >
+                    <h2 className="text-lg sm:text-xl font-bold text-[#1F1F1F] mb-4">Curriculum</h2>
+                    <CurriculumAccordion curriculum={course.curriculum} />
+                  </motion.div>
+                )}
 
-                        <Button type="submit" variant="primary" size="sm" loading={reviewSubmitting}>
-                          <Send size={15} /> Submit Review
-                        </Button>
-                      </form>
+                {activeTab === 'reviews' && (
+                  <motion.div
+                    key="reviews"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3, ease: 'easeOut' }}
+                    className="p-4 sm:p-7 space-y-5 sm:space-y-6"
+                  >
+                    <h2 className="text-base sm:text-lg font-bold text-[#1F1F1F] flex items-center gap-2 flex-wrap">
+                      <Star className="text-amber fill-amber" size={20} />
+                      {course.rating > 0
+                        ? <>{course.rating.toFixed(1)} course rating • {course.reviewCount.toLocaleString()} reviews</>
+                        : <>No reviews yet</>}
+                    </h2>
+
+                    {course.reviews && course.reviews.length > 0 && (
+                      <div className="space-y-4">
+                        {course.reviews.map((review, i) => (
+                          <ReviewCard key={i} review={review} />
+                        ))}
+                      </div>
                     )}
-                  </div>
-                </div>
-              )}
+
+                    <div className="border-t border-border pt-5 sm:pt-6">
+                      <h3 className="text-sm sm:text-base font-bold text-[#1F1F1F] mb-4">Leave a Review</h3>
+
+                      {!isAuthenticated() ? (
+                        <p className="text-sm text-muted">
+                          <Link to="/login" className="text-primary font-semibold hover:underline">Log in</Link> to leave a review.
+                        </p>
+                      ) : reviewSuccess ? (
+                        <div className="flex items-center gap-2 text-success font-medium text-sm">
+                          <CheckCircle2 size={18} /> Thank you! Your review has been submitted.
+                        </div>
+                      ) : (
+                        <form
+                          onSubmit={async (e) => {
+                            e.preventDefault();
+                            if (reviewRating === 0) { alert('Please select a star rating.'); return; }
+                            setReviewSubmitting(true);
+
+                            const user = getCurrentUser();
+                            const initials = (user?.name || 'User')
+                              .split(' ')
+                              .map(w => w[0])
+                              .join('')
+                              .toUpperCase()
+                              .slice(0, 2);
+
+                            const review = {
+                              user: user?.name || 'Anonymous',
+                              avatar: initials,
+                              rating: reviewRating,
+                              comment: reviewComment.trim(),
+                              date: new Date().toISOString().split('T')[0],
+                            };
+
+                            updateCourseReviews(course.id, review);
+                            const updated = await getCourseBySlug(slug);
+                            setCourse(updated);
+
+                            setReviewComment('');
+                            setReviewRating(0);
+                            setReviewSubmitting(false);
+                            setReviewSuccess(true);
+                          }}
+                          className="space-y-4"
+                        >
+                          <div>
+                            <label className="block text-sm font-medium text-[#1F1F1F] mb-2">Your Rating *</label>
+                            <div className="flex gap-1">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <button
+                                  key={star}
+                                  type="button"
+                                  onClick={() => setReviewRating(star)}
+                                  onMouseEnter={() => setReviewHover(star)}
+                                  onMouseLeave={() => setReviewHover(0)}
+                                  className="p-0.5 transition-transform hover:scale-110"
+                                >
+                                  <Star
+                                    size={26}
+                                    className={
+                                      star <= (reviewHover || reviewRating)
+                                        ? 'text-amber fill-amber'
+                                        : 'text-gray-300 fill-gray-300'
+                                    }
+                                  />
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-[#1F1F1F] mb-1">Your Review</label>
+                            <textarea
+                              value={reviewComment}
+                              onChange={(e) => setReviewComment(e.target.value)}
+                              rows={3}
+                              placeholder="Share your experience with this course..."
+                              className="w-full border border-border rounded-btn px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                            />
+                          </div>
+
+                          <Button type="submit" variant="primary" size="sm" loading={reviewSubmitting}>
+                            <Send size={15} /> Submit Review
+                          </Button>
+                        </form>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Sticky Buy Card */}
-          <div className="hidden lg:block lg:sticky lg:top-5">
+          {/* RIGHT COLUMN: Sticky Buy Card - Framer entrance */}
+          <motion.div
+            className="hidden lg:block lg:sticky lg:top-5"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut', delay: 0.15 }}
+          >
             <div className="bg-white rounded-card shadow-2xl border border-border overflow-hidden">
               <div className="relative cursor-pointer group" onClick={() => setIsDemoModalOpen(true)}>
                 <img src={course.thumbnail} alt={course.title} className="w-full aspect-video object-cover" />
@@ -397,7 +481,7 @@ export default function CourseDetail() {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
         </div>
       </main>

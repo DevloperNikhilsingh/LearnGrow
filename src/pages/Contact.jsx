@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { motion } from 'framer-motion';
 import {
   Mail,
   Phone,
@@ -87,7 +88,12 @@ export default function Contact() {
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-amber rounded-full blur-[100px]" />
         </div>
 
-        <div className="relative max-w-4xl mx-auto text-center z-10">
+        <motion.div
+          className="relative max-w-4xl mx-auto text-center z-10"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+        >
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
             Let's Connect &amp;
             <br />
@@ -97,7 +103,7 @@ export default function Contact() {
             We'd love to hear from you! Whether you have a question, feedback, or just want to say hello — our team
             is here to help.
           </p>
-        </div>
+        </motion.div>
       </section>
 
       {/* Overlapping content card */}
@@ -196,13 +202,17 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <button
+                {/* Framer: interactive hover/tap scale on the submit button */}
+                <motion.button
                   type="submit"
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   className="w-full sm:w-auto bg-primary hover:bg-navy text-white font-semibold py-3.5 px-8 rounded-btn transition-colors duration-300 flex items-center justify-center gap-2 shadow-sm"
                 >
                   <Send size={18} />
                   Send Message
-                </button>
+                </motion.button>
               </form>
             </div>
 
@@ -236,15 +246,19 @@ export default function Contact() {
                   <h2 className="text-base sm:text-lg font-bold text-navy">Find Us on Map</h2>
                 </div>
                 <div className="w-full flex-1 rounded-btn overflow-hidden bg-surface relative min-h-[200px]">
-                  <a
+                  {/* Framer: interactive hover/tap scale on the maps link button */}
+                  <motion.a
                     href="https://maps.google.com/?q=New+Delhi,India"
                     target="_blank"
                     rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                     className="absolute top-3 left-3 z-10 inline-flex items-center gap-1.5 bg-white text-primary text-xs sm:text-sm font-medium px-3 py-2 rounded-btn shadow-sm hover:bg-surface transition-colors"
                   >
                     <ExternalLink size={14} />
                     Open in Google Maps
-                  </a>
+                  </motion.a>
                   <iframe
                     title="LearnGrow Location Map"
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d224346.5400494498!2d77.0688975!3d28.5272803!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfd5b347eb62d%3A0x52c2b7494e204dce!2sNew%20Delhi%2C%20Delhi!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"

@@ -5,15 +5,32 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams, Link } from 'react-router-dom';
 import { SearchX, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import FilterSidebar from '../components/course/FilterSidebar';
 import CourseCard from '../components/course/CourseCard';
 import { getFilteredCourses } from '../services/courseService';
 
+const gridVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.05 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.35, ease: 'easeOut' },
+  },
+};
+
 export default function CourseListing() {
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   // Initialize state from URL params
   const [filters, setFilters] = useState({
     search: searchParams.get('search') || '',
@@ -79,21 +96,26 @@ export default function CourseListing() {
 
       <Navbar />
 
-      {/* Page Header */}
-      <div className="bg-navy py-12 border-t border-white/10">
+      {/* Page Header - simple fade-in on load */}
+      <motion.div
+        className="bg-navy py-12 border-t border-white/10"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold text-white mb-2">Browse Courses</h1>
           <p className="text-white/70">Find the perfect course to advance your career.</p>
         </div>
-      </div>
+      </motion.div>
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         <div className="flex flex-col lg:flex-row gap-8">
-          
+
           {/* Sidebar */}
           <div className="w-full lg:w-64 flex-shrink-0">
             <div className="bg-white rounded-card shadow-sm border border-border lg:sticky lg:top-24 lg:p-5">
-              {/* NEW: Toggle header - visible only below lg breakpoint */}
+              {/* Toggle header - visible only below lg breakpoint */}
               <button
                 type="button"
                 onClick={() => setIsFilterOpen((prev) => !prev)}
@@ -108,17 +130,35 @@ export default function CourseListing() {
                 />
               </button>
 
-              {/* Filter content - collapsible on <lg, always open on lg+ */}
-              <div
-                id="filter-sidebar-content"
-                className={`${isFilterOpen ? 'block' : 'hidden'} lg:block px-5 pb-5 lg:p-0`}
-              >
-                <FilterSidebar 
-                  filters={filters} 
-                  onChange={handleFilterChange} 
-                  onReset={handleReset} 
+              {/* Filter content - Framer height animation on mobile, always visible on lg+ */}
+              <div className="lg:block hidden px-5 pb-5 lg:p-0">
+                <FilterSidebar
+                  filters={filters}
+                  onChange={handleFilterChange}
+                  onReset={handleReset}
                 />
               </div>
+
+              <AnimatePresence initial={false}>
+                {isFilterOpen && (
+                  <motion.div
+                    id="filter-sidebar-content"
+                    className="lg:hidden overflow-hidden"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  >
+                    <div className="px-5 pb-5">
+                      <FilterSidebar
+                        filters={filters}
+                        onChange={handleFilterChange}
+                        onReset={handleReset}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
@@ -131,7 +171,7 @@ export default function CourseListing() {
               </p>
               <div className="flex items-center gap-2">
                 <label htmlFor="sort" className="text-sm text-muted font-medium">Sort by:</label>
-                <select 
+                <select
                   id="sort"
                   value={filters.sort}
                   onChange={(e) => handleFilterChange({ ...filters, sort: e.target.value })}
@@ -146,7 +186,7 @@ export default function CourseListing() {
               </div>
             </div>
 
-            {/* Course Grid */}
+            {/* Course Grid - Framer replaces old fade-in class for smoother filter/sort transitions */}
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                 {[1, 2, 3, 4, 5, 6].map(i => (
@@ -154,13 +194,28 @@ export default function CourseListing() {
                 ))}
               </div>
             ) : courses.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 fade-in">
-                {courses.map((course) => (
-                  <CourseCard key={course.id} course={course} />
-                ))}
-              </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={JSON.stringify(filters)}
+                  className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+                  variants={gridVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  {courses.map((course) => (
+                    <motion.div key={course.id} variants={cardVariants}>
+                      <CourseCard course={course} />
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
             ) : (
-              <div className="bg-white rounded-card shadow-sm border border-border p-16 text-center fade-in flex flex-col items-center">
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: 'easeOut' }}
+                className="bg-white rounded-card shadow-sm border border-border p-16 text-center flex flex-col items-center"
+              >
                 <div className="h-20 w-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
                   <SearchX className="text-primary" size={40} />
                 </div>
@@ -172,7 +227,7 @@ export default function CourseListing() {
                   <button onClick={handleReset} className="bg-surface hover:bg-gray-200 text-[#1F1F1F] font-semibold py-2 px-6 rounded-btn transition-colors border border-border">Clear Search</button>
                   <Link to="/" className="bg-primary hover:bg-navy text-white font-semibold py-2 px-6 rounded-btn transition-colors">Browse All</Link>
                 </div>
-              </div>
+              </motion.div>
             )}
           </div>
         </div>

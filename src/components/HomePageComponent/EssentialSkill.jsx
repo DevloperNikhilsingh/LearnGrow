@@ -1,9 +1,14 @@
 /**
  * components/Home/EssentialSkills.jsx
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const skillCards = [
   {
@@ -32,6 +37,9 @@ export default function EssentialSkills() {
   const [skillStartIndex, setSkillStartIndex] = useState(0);
   const [cardWidthPercent, setCardWidthPercent] = useState(32); // desktop default
   const [skillVisibleCount, setSkillVisibleCount] = useState(3);
+
+  const sectionRef = useRef(null);
+  const cardsTrackRef = useRef(null);
 
   // Responsive card width -> controls how many cards + peek show on each device
   useEffect(() => {
@@ -68,13 +76,45 @@ export default function EssentialSkills() {
     setSkillStartIndex((prev) => Math.max(prev - 1, 0));
   };
 
+  // GSAP: staggered entrance for skill cards on scroll into view
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const cards = gsap.utils.toArray('[data-skill-card]', cardsTrackRef.current);
+
+      gsap.fromTo(
+        cards,
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out',
+          stagger: 0.12,
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 80%',
+            toggleActions: 'play none none none',
+          },
+        }
+      );
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section className="py-16 bg-white">
+    <section ref={sectionRef} className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-center">
 
-          {/* Left Text */}
-          <div className="lg:col-span-1 ">
+          {/* Left Text - Framer Motion scroll reveal */}
+          <motion.div
+            className="lg:col-span-1"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
+          >
             <h2 className="text-3xl font-bold text-[#1F1F1F] mb-4 leading-snug">
               Learn <em className="italic">In-Demand</em><br />
               Skills and get ahead in your Career
@@ -82,11 +122,12 @@ export default function EssentialSkills() {
             <p className="text-muted text-[15px] leading-relaxed">
               LearnGrow helps you build in-demand skills fast and advance your career in a changing job market.
             </p>
-          </div>
+          </motion.div>
 
           {/* Right Cards - Peek Carousel */}
           <div className="lg:col-span-3 overflow-hidden min-w-0">
             <div
+              ref={cardsTrackRef}
               className="flex gap-4 sm:gap-5 lg:gap-6 transition-transform duration-500 ease-out"
               style={{
                 transform: `translateX(calc(-${skillStartIndex} * (${cardWidthPercent}% + 1.25rem)))`,
@@ -96,6 +137,7 @@ export default function EssentialSkills() {
                 <Link
                   key={index}
                   to={card.to}
+                  data-skill-card
                   className="relative rounded-2xl overflow-hidden aspect-[4/5] group shadow-[0_1px_8px_rgba(0,0,0,0.10)] flex-shrink-0"
                   style={{ width: `${cardWidthPercent}%` }}
                 >
@@ -130,7 +172,7 @@ export default function EssentialSkills() {
               ))}
             </div>
 
-            {/* Pagination Controls */}
+            {/* Pagination Controls - simple, no animation library */}
             <div className="flex items-center justify-center gap-4 mt-8">
               <button
                 onClick={handleSkillPrev}

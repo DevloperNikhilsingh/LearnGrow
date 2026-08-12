@@ -1,33 +1,71 @@
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import { ArrowRight } from 'lucide-react'
-import { useRef } from 'react';
-import { getDynamicCategories } from '../../services/courseService';
-import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { getDynamicCategories } from '../../services/courseService'
+import { Link } from 'react-router-dom'
 
+gsap.registerPlugin(ScrollTrigger)
 
 const TopCategory = () => {
-
-    const categoryTrackRef = useRef(null);
-    const categories = getDynamicCategories();
+    const categoryTrackRef = useRef(null)
+    const sectionRef = useRef(null)
+    const categories = getDynamicCategories()
 
     const scrollCategories = (direction) => {
-        const track = categoryTrackRef.current;
-        if (!track) return;
-        const card = track.querySelector('[data-category-card]');
-        const cardWidth = card ? card.offsetWidth + 24 : 240; // card width + gap
-        track.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
-    };
+        const track = categoryTrackRef.current
+        if (!track) return
+        const card = track.querySelector('[data-category-card]')
+        const cardWidth = card ? card.offsetWidth + 24 : 240
+        track.scrollBy({ left: direction * cardWidth, behavior: 'smooth' })
+    }
 
+    // GSAP: staggered entrance for category cards on scroll
+    useEffect(() => {
+        const ctx = gsap.context(() => {
+            const cards = gsap.utils.toArray('[data-category-card]', categoryTrackRef.current)
+
+            gsap.fromTo(
+                cards,
+                { opacity: 0, y: 40 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.6,
+                    ease: 'power3.out',
+                    stagger: 0.12,
+                    scrollTrigger: {
+                        trigger: sectionRef.current,
+                        start: 'top 80%',
+                        toggleActions: 'play none none none',
+                    },
+                }
+            )
+        }, sectionRef)
+
+        return () => ctx.revert()
+    }, [categories.length])
 
     return (
-        <section className="py-16">
+        <section ref={sectionRef} className="py-16">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center max-w-2xl mx-auto mb-12">
+                {/* Framer Motion: heading fade-up on scroll into view */}
+                <motion.div
+                    className="text-center max-w-2xl mx-auto mb-12"
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.4 }}
+                    transition={{ duration: 0.6, ease: 'easeOut' }}
+                >
                     <h2 className="text-3xl font-bold text-[#1F1F1F] mb-3">Top Categories</h2>
-                    <p className="text-muted text-[15px] leading-relaxed">Explore our most popular learning paths designed for career growth.</p>
-                </div>
+                    <p className="text-muted text-[15px] leading-relaxed">
+                        Explore our most popular learning paths designed for career growth.
+                    </p>
+                </motion.div>
 
                 <div className="relative">
+                    {/* Simple buttons - only CSS hover, no motion animation */}
                     <button
                         onClick={() => scrollCategories(-1)}
                         aria-label="Scroll categories left"
@@ -65,9 +103,7 @@ const TopCategory = () => {
                                 </div>
                                 <h3 className="font-semibold text-lg text-[#1F1F1F] mb-2">{cat.name}</h3>
                                 <p className="text-sm text-muted line-clamp-2 mb-3">{cat.description}</p>
-                                <div className="text-xs text-muted font-medium">
-                                    {cat.students}
-                                </div>
+                                <div className="text-xs text-muted font-medium">{cat.students}</div>
                             </Link>
                         ))}
                     </div>

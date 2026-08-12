@@ -1,10 +1,12 @@
 /**
  * pages/CoursePlayer.jsx
  */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { ChevronLeft, CheckCircle2, Circle, Video, Radio, Menu, X, Check } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { gsap } from 'gsap';
 import VideoPlayer from '../components/course/VideoPlayer';
 import ProgressBar from '../components/ui/ProgressBar';
 import { getCourseBySlug } from '../services/courseService';
@@ -23,6 +25,8 @@ export default function CoursePlayer() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
 
+  const lessonTitleRef = useRef(null);
+
   useEffect(() => {
     const user = getCurrentUser();
     if (!user) {
@@ -37,7 +41,7 @@ export default function CoursePlayer() {
         return;
       }
       setCourse(data);
-      
+
       // Default to first lesson
       if (data.curriculum.length > 0 && data.curriculum[0].lessons.length > 0) {
         setActiveLesson(data.curriculum[0].lessons[0]);
@@ -46,15 +50,33 @@ export default function CoursePlayer() {
       // Mock loading completed lessons based on total progress %
       const currentProgress = await getCourseProgress(data.id);
       setProgress(currentProgress);
-      
+
       // Calculate how many lessons should be marked complete based on progress
       const allLessonIds = data.curriculum.flatMap(s => s.lessons.map(l => l.id));
       const numCompleted = Math.floor((currentProgress / 100) * allLessonIds.length);
       setCompletedLessons(allLessonIds.slice(0, numCompleted));
-      
+
       setLoading(false);
     });
   }, [slug, navigate]);
+
+  // GSAP: 3D flip-in with bounce for the active lesson title, replays every time lesson changes
+  useEffect(() => {
+    if (!activeLesson || !lessonTitleRef.current) return;
+    const letters = lessonTitleRef.current.querySelectorAll('[data-letter]');
+    gsap.fromTo(
+      letters,
+      { opacity: 0, rotateX: -90, y: 12, transformOrigin: '50% 100%' },
+      {
+        opacity: 1,
+        rotateX: 0,
+        y: 0,
+        duration: 0.6,
+        ease: 'back.out(1.7)',
+        stagger: 0.025,
+      }
+    );
+  }, [activeLesson]);
 
   const handleLessonSelect = (lesson) => {
     setActiveLesson(lesson);
@@ -88,8 +110,10 @@ export default function CoursePlayer() {
   }
 
   // Check if active lesson is a live class that is currently active
-  const isLessonLiveNow = activeLesson?.isLive && 
+  const isLessonLiveNow = activeLesson?.isLive &&
     liveClassesData.some(lc => lc.courseId === course.id && lc.isActive);
+
+  const isActiveDone = completedLessons.includes(activeLesson?.id);
 
   return (
     <div className="min-h-screen flex flex-col bg-surface overflow-hidden h-screen">
@@ -106,13 +130,13 @@ export default function CoursePlayer() {
           <div className="h-6 w-px bg-white/20 mx-2 hidden sm:block"></div>
           {/* <h1 className="font-semibold truncate max-w-[200px] sm:max-w-md">{course.title}</h1> */}
         </div>
-        
+
         <div className="flex items-center gap-6">
           <div className="hidden sm:flex items-center gap-3 w-48">
             <ProgressBar value={progress} className="w-full" showLabel={false} />
             <span className="text-sm font-semibold">{progress}%</span>
           </div>
-          <button 
+          <button
             className="lg:hidden text-white"
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           >
@@ -124,7 +148,7 @@ export default function CoursePlayer() {
       <div className="flex flex-1 overflow-hidden relative">
         {/* Main Content Area (Video) */}
         <main className={`flex-1 flex flex-col overflow-y-auto bg-white transition-all duration-300 ${isSidebarOpen ? 'lg:mr-80' : ''}`}>
-          
+
           {/* Video Player Area */}
           <div className="bg-black w-full aspect-video flex-shrink-0">
             {activeLesson?.isLive ? (
@@ -144,9 +168,9 @@ export default function CoursePlayer() {
                 )}
               </div>
             ) : (
-              <VideoPlayer 
-                src={activeLesson?.videoUrl} 
-                poster={course.thumbnail} 
+              <VideoPlayer
+                src={activeLesson?.videoUrl}
+                poster={course.thumbnail}
                 title={activeLesson?.title}
                 className="w-full h-full rounded-none"
               />
@@ -156,22 +180,55 @@ export default function CoursePlayer() {
           {/* Lesson Info & Tabs */}
           <div className="p-4 sm:p-8 max-w-4xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-              <h2 className="text-2xl font-bold text-[#1F1F1F]">{activeLesson?.title}</h2>
-              
-              <button 
+              {/* GSAP: letters flip in with bounce whenever the lesson changes */}
+              <h2
+                ref={lessonTitleRef}
+                className="text-2xl font-bold text-[#1F1F1F]"
+                style={{ perspective: 400 }}
+                aria-label={activeLesson?.title}
+              >
+                {activeLesson?.title?.split('').map((char, i) => (
+                  <span key={i} data-letter className="inline-block" style={{ opacity: 0 }}>
+                    {char === ' ' ? '\u00A0' : char}
+                  </span>
+                ))}
+              </h2>
+
+              <motion.button
                 onClick={() => handleToggleComplete(activeLesson.id)}
+                whileTap={{ scale: 0.94 }}
                 className={`flex items-center gap-2 px-4 py-2 rounded-btn font-semibold text-sm transition-colors border ${
-                  completedLessons.includes(activeLesson?.id) 
+                  isActiveDone
                   ? 'bg-success/10 text-success border-success/30'
                   : 'bg-white border-border text-[#1F1F1F] hover:bg-surface'
                 }`}
               >
-                {completedLessons.includes(activeLesson?.id) ? (
-                  <><Check size={18} /> Completed</>
-                ) : (
-                  <><Circle size={18} /> Mark as complete</>
-                )}
-              </button>
+                <AnimatePresence mode="wait" initial={false}>
+                  {isActiveDone ? (
+                    <motion.span
+                      key="done"
+                      initial={{ scale: 0.6, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.6, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="flex items-center gap-2"
+                    >
+                      <Check size={18} /> Completed
+                    </motion.span>
+                  ) : (
+                    <motion.span
+                      key="pending"
+                      initial={{ scale: 0.6, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.6, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="flex items-center gap-2"
+                    >
+                      <Circle size={18} /> Mark as complete
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.button>
             </div>
 
             {/* Tabs */}
@@ -181,8 +238,8 @@ export default function CoursePlayer() {
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-6 py-3 font-semibold text-sm capitalize transition-colors ${
-                    activeTab === tab 
-                    ? 'border-b-2 border-primary text-primary' 
+                    activeTab === tab
+                    ? 'border-b-2 border-primary text-primary'
                     : 'text-muted hover:text-[#1F1F1F]'
                   }`}
                 >
@@ -191,36 +248,59 @@ export default function CoursePlayer() {
               ))}
             </div>
 
-            {/* Tab Content */}
+            {/* Tab Content - Framer crossfade replaces old fade-in class */}
             <div className="text-[#1F1F1F] leading-relaxed">
-              {activeTab === 'overview' && (
-                <div className="space-y-4 fade-in">
-                  <h3 className="font-bold text-lg">About this lesson</h3>
-                  <p>This lesson covers the essential concepts related to {activeLesson?.title}. Make sure to take notes and follow along with any provided exercises.</p>
-                  <p className="text-muted text-sm mt-8 border-t border-border pt-4">Instructor: {course.instructor}</p>
-                </div>
-              )}
-              {activeTab === 'resources' && (
-                <div className="space-y-4 fade-in">
-                  <h3 className="font-bold text-lg">Downloadable Resources</h3>
-                  <div className="border border-border rounded-lg p-4 flex items-center justify-between bg-surface">
-                    <span className="font-medium">presentation_slides.pdf</span>
-                    <button className="text-primary font-semibold text-sm hover:underline">Download</button>
-                  </div>
-                </div>
-              )}
-              {activeTab === 'qna' && (
-                <div className="fade-in text-center py-8">
-                  <p className="text-muted">No questions asked yet for this lesson.</p>
-                  <button className="mt-4 btn-outline">Ask a Question</button>
-                </div>
-              )}
+              <AnimatePresence mode="wait">
+                {activeTab === 'overview' && (
+                  <motion.div
+                    key="overview"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    className="space-y-4"
+                  >
+                    <h3 className="font-bold text-lg">About this lesson</h3>
+                    <p>This lesson covers the essential concepts related to {activeLesson?.title}. Make sure to take notes and follow along with any provided exercises.</p>
+                    <p className="text-muted text-sm mt-8 border-t border-border pt-4">Instructor: {course.instructor}</p>
+                  </motion.div>
+                )}
+                {activeTab === 'resources' && (
+                  <motion.div
+                    key="resources"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    className="space-y-4"
+                  >
+                    <h3 className="font-bold text-lg">Downloadable Resources</h3>
+                    <div className="border border-border rounded-lg p-4 flex items-center justify-between bg-surface">
+                      <span className="font-medium">presentation_slides.pdf</span>
+                      <button className="text-primary font-semibold text-sm hover:underline">Download</button>
+                    </div>
+                  </motion.div>
+                )}
+                {activeTab === 'qna' && (
+                  <motion.div
+                    key="qna"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    className="text-center py-8"
+                  >
+                    <p className="text-muted">No questions asked yet for this lesson.</p>
+                    <button className="mt-4 btn-outline">Ask a Question</button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </main>
 
-        {/* Sidebar (Curriculum) */}
-        <aside 
+        {/* Sidebar (Curriculum) - unchanged, existing slide transition is fine */}
+        <aside
           className={`absolute lg:fixed right-0 top-16 bottom-0 w-80 bg-white border-l border-border flex flex-col transition-transform duration-300 z-10 ${
             isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
@@ -247,9 +327,9 @@ export default function CoursePlayer() {
                           }`}
                         >
                           <div className="mt-0.5">
-                            {isDone 
+                            {isDone
                               ? <CheckCircle2 size={16} className="text-success" />
-                              : lesson.isLive 
+                              : lesson.isLive
                                 ? <Radio size={16} className={isActive ? "text-primary" : "text-muted"} />
                                 : <Video size={16} className={isActive ? "text-primary" : "text-muted"} />
                             }
@@ -274,14 +354,20 @@ export default function CoursePlayer() {
             ))}
           </div>
         </aside>
-        
-        {/* Mobile Overlay */}
-        {isSidebarOpen && (
-          <div 
-            className="lg:hidden absolute inset-0 bg-black/50 z-0"
-            onClick={() => setIsSidebarOpen(false)}
-          />
-        )}
+
+        {/* Mobile Overlay - Framer fade */}
+        <AnimatePresence>
+          {isSidebarOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="lg:hidden absolute inset-0 bg-black/50 z-0"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
