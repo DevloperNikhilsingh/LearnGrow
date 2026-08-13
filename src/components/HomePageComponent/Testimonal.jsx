@@ -25,7 +25,7 @@ const Testimonal = () => {
     updateTestimonialWidth();
     window.addEventListener('resize', updateTestimonialWidth);
     return () => window.removeEventListener('resize', updateTestimonialWidth);
-  }, []);
+  }, []);0
 
   // maxIndex is capped so the slider never scrolls past the last real card
   const testimonialMaxIndex = Math.max(0, testimonial.length - testimonialVisibleCount);
