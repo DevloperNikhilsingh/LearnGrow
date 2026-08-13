@@ -21,6 +21,7 @@ export default function Overview({ user, courses, liveClasses, progressData, tot
             You've completed <span className="text-amber font-bold">{totalProgress}%</span> of your enrolled courses. Keep going!
           </p>
           <button
+            aria-label='continue learning'
             onClick={() => setActiveTab('courses')}
             className="mt-4 bg-amber text-navy text-sm font-semibold px-5 py-2 rounded-lg hover:brightness-110 transition-all flex items-center gap-2"
           >
@@ -77,7 +78,7 @@ export default function Overview({ user, courses, liveClasses, progressData, tot
       <div>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-[#1F1F1F]">Continue Learning</h3>
-          <button onClick={() => setActiveTab('courses')} className="text-primary text-sm font-semibold hover:underline flex items-center gap-1">
+          <button aria-label='view all detail' onClick={() => setActiveTab('courses')} className="text-primary text-sm font-semibold hover:underline flex items-center gap-1">
             View all <ChevronRight size={14} />
           </button>
         </div>

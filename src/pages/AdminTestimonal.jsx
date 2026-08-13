@@ -219,6 +219,7 @@ const AdminTestimonal = () => {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-2">
                                                 <button
+                                                    aria-label="delete testimonal"
                                                     onClick={() => handleDelete(item.id)}
                                                     className="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-red-100 hover:text-red-600 text-gray-600 transition-colors"
                                                     aria-label="Delete"
@@ -249,6 +250,7 @@ const AdminTestimonal = () => {
                         <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-border sticky top-0 bg-white rounded-t-2xl">
                             <h2 className="text-lg font-bold text-[#1F1F1F]">Add Testimonial</h2>
                             <button
+                            aria-label = "Close the modal"
                                 onClick={handleCloseModal}
                                 className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-500 transition-colors"
                                 aria-label="Close"
@@ -342,6 +344,7 @@ const AdminTestimonal = () => {
                             {/* Modal Footer */}
                             <div className="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-2">
                                 <button
+                                aria-label='Go back'
                                     type="button"
                                     onClick={handleCloseModal}
                                     className="w-full sm:w-auto px-4 py-2.5 rounded-lg text-sm font-semibold text-gray-600 hover:bg-gray-100 transition-colors"

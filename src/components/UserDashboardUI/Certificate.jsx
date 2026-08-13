@@ -52,7 +52,7 @@ export default function Certificates({ certificates, completedCourses, setActive
                     <p className="font-medium text-[#1F1F1F]">{new Date(cert.completedDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
                     <p>ID: {cert.credentialId}</p>
                   </div>
-                  <button className="flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-colors">
+                  <button aria-label='download' className="flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-semibold px-3 py-1.5 rounded-lg hover:bg-primary hover:text-white transition-colors">
                     <Download size={13} /> Download
                   </button>
                 </div>
@@ -65,7 +65,7 @@ export default function Certificates({ certificates, completedCourses, setActive
           <Award size={64} className="text-gray-200 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-[#1F1F1F] mb-2">No certificates yet</h3>
           <p className="text-muted max-w-sm mx-auto">Complete a course to earn your certificate and showcase your skills.</p>
-          <button onClick={() => setActiveTab('courses')} className="mt-6 btn-primary inline-block">
+          <button aria-label='go to my courses' onClick={() => setActiveTab('courses')} className="mt-6 btn-primary inline-block">
             Go to My Courses
           </button>
         </div>

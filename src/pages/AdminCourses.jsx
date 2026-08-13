@@ -117,6 +117,7 @@ export default function AdminCourses() {
                       <td className="px-6 py-4 text-right">
                         <div className="flex justify-end gap-2">
                           <button
+                          aria-label='edit course detail'
                             onClick={() => handleEdit(course.id)}
                             className="p-1.5 text-muted hover:text-primary transition-colors bg-surface rounded"
                             title="Edit"
@@ -124,6 +125,7 @@ export default function AdminCourses() {
                             <Edit2 size={16} />
                           </button>
                           <button 
+                          aria-label='delete course'
                             onClick={() => handleDelete(course.id, course.title)}
                             className="p-1.5 text-muted hover:text-red-600 transition-colors bg-surface rounded" 
                             title="Delete"

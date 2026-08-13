@@ -63,22 +63,22 @@ const Referal = () => {
             <span className='w-2 h-2 rounded-full bg-green-500 flex-shrink-0' />
             <span className='w-[110px] sm:w-auto text-sm text-gray-600 font-mono truncate'>myapp.com/ref/rahul90</span>
           </div>
-          <button className='flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:brightness-90 active:scale-95 flex-shrink-0' style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}>
+          <button aria-label='copy' className='flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-white transition-all hover:brightness-90 active:scale-95 flex-shrink-0' style={{ background: 'linear-gradient(135deg, #22c55e, #16a34a)' }}>
             <Copy size={15} />
             Copy
           </button>
         </div>
 
         <div className='w-full mt-4 grid grid-cols-3 gap-3'>
-          <button className='flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors text-sm font-semibold text-[#1a1a2e]'>
+          <button aria-label='whatsapp' className='flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors text-sm font-semibold text-[#1a1a2e]'>
             <BsWhatsapp size={16} className='text-green-500' />
             WhatsApp
           </button>
-          <button className='flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors text-sm font-semibold text-[#1a1a2e]'>
+          <button aria-label='email' className='flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors text-sm font-semibold text-[#1a1a2e]'>
             <MdEmail size={16} className='text-red-500' />
             Email
           </button>
-          <button className='flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors text-sm font-semibold text-[#1a1a2e]'>
+          <button aria-label='other option' className='flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-colors text-sm font-semibold text-[#1a1a2e]'>
             <MdOtherHouses size={16} className='text-purple-500' />
             More
           </button>

@@ -17,7 +17,7 @@ export default function FilterSidebar({ filters, onChange, onReset }) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-base font-semibold text-[#1F1F1F]">Filters</h2>
-        <button onClick={onReset} className="text-primary text-sm hover:underline">Clear all</button>
+        <button aria-label='clear all' onClick={onReset} className="text-primary text-sm hover:underline">Clear all</button>
       </div>
 
       {/* Category */}

@@ -86,6 +86,7 @@ export default function Navbar() {
               onMouseLeave={() => { if (isDesktop) setIsExploreOpen(false); }}
             >
               <button
+               aria-label='see all courses'
                 onClick={() => { if (!isDesktop) setIsExploreOpen(prev => !prev); }}
                 className="flex items-center gap-1 text-white/90 hover:text-white font-medium text-sm transition-colors py-2"
               >
@@ -151,6 +152,7 @@ export default function Navbar() {
             {isLoggedIn ? (
               <div className="relative ml-2" ref={avatarRef}>
                 <button
+                 aria-label='user'
                   onClick={() => setShowlogoutpopup(prev => !prev)}
                   className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-white text-sm font-bold border border-white/20 hover:brightness-110 transition-all"
                 >
@@ -167,6 +169,7 @@ export default function Navbar() {
                       {user?.role === 'admin' ? 'Admin Panel' : 'Dashboard'}
                     </Link>
                     <button
+
                       onClick={() => {
                         setShowlogoutpopup(false);
                         handleLogout();
@@ -191,7 +194,9 @@ export default function Navbar() {
             <Link to="/cart" className="text-white relative">
               <ShoppingCart size={20} />
             </Link>
-            <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white">
+            <button
+            aria-label='menu'
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-white">
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
@@ -232,7 +237,7 @@ export default function Navbar() {
               <Link to={user?.role === 'admin' ? '/admin' : '/dashboard'} className="block text-white font-medium" onClick={() => setIsMobileMenuOpen(false)}>
                 {user?.role === 'admin' ? 'Admin Panel' : 'My Dashboard'}
               </Link>
-              <button onClick={handleLogout} className="block text-white/70">Logout</button>
+              <button aria-label='logout' onClick={handleLogout} className="block text-white/70">Logout</button>
             </div>
           ) : (
             <div className="flex flex-col gap-2">

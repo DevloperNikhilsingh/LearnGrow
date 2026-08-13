@@ -79,8 +79,8 @@ const StudentEmailModal = ({ student, onClose }) => {
             <p className='text-red-500 text-xs '>{error.sendmessage}</p>
           )}
           <div className='w-full flex justify-end items-center gap-4'>
-            <button type='button' onClick={onClose} className='px-4 py-2 border border-border shadow-md text-black rounded-md'>Cancel</button>
-            <button type='button' onClick={handleSendEmail} className='px-4 py-2 border border-border shadow-md bg-primary text-white rounded-md'>Send Email</button>
+            <button aria-label='close-btn' type='button' onClick={onClose} className='px-4 py-2 border border-border shadow-md text-black rounded-md'>Cancel</button>
+            <button aria-label='send email' type='button' onClick={handleSendEmail} className='px-4 py-2 border border-border shadow-md bg-primary text-white rounded-md'>Send Email</button>
           </div>
         </form>
       </div>

@@ -255,6 +255,7 @@ export default function AdminAddCourse() {
         {/* Top Bar */}
         <div className="bg-white border-b border-border h-16 flex items-center pl-16 pr-8 lg:px-8 shadow-sm">
           <button
+          aria-label='previous'
             onClick={() => navigate(-1)}
             className="mr-4 text-muted hover:text-[#1F1F1F]"
           >
@@ -351,6 +352,7 @@ export default function AdminAddCourse() {
                     className="w-full aspect-video object-cover rounded-lg border border-border"
                   />
                   <button
+                  aria-label='close'
                     type="button"
                     onClick={removeThumbnail}
                     className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
@@ -397,6 +399,7 @@ export default function AdminAddCourse() {
                     className="w-full aspect-video object-cover rounded-lg border border-border bg-black"
                   />
                   <button
+                  aria-label='close'
                     type="button"
                     onClick={removeDemoVideo}
                     className="absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80 transition-colors"
@@ -455,6 +458,7 @@ export default function AdminAddCourse() {
                     className="flex-1 border border-border rounded-btn px-3 py-2 text-sm focus:border-primary focus:outline-none"
                   />
                   <button
+                  aria-label='close'
                     type="button"
                     onClick={() => removeLearnItem(index)}
                     className="text-muted hover:text-red-500 transition-colors p-1 flex-shrink-0"
@@ -551,6 +555,7 @@ export default function AdminAddCourse() {
                   </Button>
                   {formData.curriculum.length > 1 && (
                     <button
+                    aria-label='delete'
                       type="button"
                       onClick={() => removeSection(sIndex)}
                       className="text-muted hover:text-red-500 transition-colors p-1"
@@ -585,6 +590,7 @@ export default function AdminAddCourse() {
                               {lesson.videoFile ? lesson.videoFile.name : 'Video attached'}
                             </span>
                             <button
+                            aria-label='close'
                               type="button"
                               onClick={() => removeLessonVideo(sIndex, lIndex)}
                               className="text-muted hover:text-red-500 transition-colors flex-shrink-0"
@@ -630,6 +636,7 @@ export default function AdminAddCourse() {
                       </label>
                       {/* Remove lesson */}
                       <button
+                      aria-label='delete'
                         type="button"
                         onClick={() => removeLesson(sIndex, lIndex)}
                         className="text-muted hover:text-red-500 transition-colors p-1 flex-shrink-0"

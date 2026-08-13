@@ -19,6 +19,7 @@ export default function AuthPromptModal({ isOpen, onClose, returnTo, message }) 
           <Button
             variant="primary"
             className="w-full py-3"
+            aria-label="Create-Account"
             onClick={() => navigate('/signup', { state: { returnTo } })}
           >
             Create Account
@@ -26,12 +27,14 @@ export default function AuthPromptModal({ isOpen, onClose, returnTo, message }) 
           <Button
             variant="outline"
             className="w-full py-3"
+            aria-label='login'
             onClick={() => navigate('/login', { state: { returnTo } })}
           >
             I already have an account
           </Button>
           <button
             onClick={onClose}
+            aria-label='cancel'
             className="text-sm text-muted hover:text-[#1F1F1F] mt-1"
           >
             Cancel

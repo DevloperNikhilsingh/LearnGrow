@@ -51,6 +51,7 @@ export default function Cart() {
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
         <button
+         aria-label='go back'
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-muted hover:text-primary transition-colors mb-4 text-sm font-medium"
         >
@@ -82,6 +83,7 @@ export default function Cart() {
 
                       <div className="mt-4 flex items-center gap-4">
                         <button
+                        aria-label='delete course'
                           onClick={() => handleRemove(item.slug)}
                           className="text-primary text-sm font-medium hover:underline flex items-center gap-1"
                         >

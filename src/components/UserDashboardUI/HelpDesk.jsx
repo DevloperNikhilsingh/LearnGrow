@@ -245,7 +245,7 @@ export default function HelpDesk() {
               </div>
             </div>
 
-            <button type='submit' className='w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:brightness-90 active:scale-95'
+            <button aria-label='send message' type='submit' className='w-full py-3 rounded-xl text-sm font-bold text-white transition-all hover:brightness-90 active:scale-95'
               style={{ background: 'linear-gradient(135deg, #3b82f6, #2563eb)' }}>
               Submit Ticket
             </button>

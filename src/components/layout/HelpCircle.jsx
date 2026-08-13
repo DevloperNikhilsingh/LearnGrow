@@ -163,6 +163,7 @@ const HelpCircle = () => {
                 </div>
 
                 <button
+                 aria-label='send message'
                   onClick={handlesendIssue}
                   className='w-full rounded-md p-2 mt-5 bg-blue-500 text-white leading-4 font-bold flex justify-center items-center gap-2 hover:bg-blue-600 transition-colors'>
                   <Send size={17} /> Send

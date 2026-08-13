@@ -193,6 +193,7 @@ export default function Checkout() {
           {/* Modal Card */}
           <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-8 text-center fade-in">
             <button
+            aria-label="close"
               onClick={() => navigate('/dashboard')}
               className="absolute top-4 right-4 text-muted hover:text-[#1F1F1F] transition-colors"
               aria-label="Close"
@@ -224,12 +225,14 @@ export default function Checkout() {
 
             <div className="space-y-3">
               <button
+              aria-label='go to Dashboard'
                 onClick={() => navigate('/dashboard')}
                 className="w-full bg-amber text-[#1F1F1F] font-semibold py-3 rounded-xl hover:brightness-95 transition-all"
               >
                 Go to Dashboard
               </button>
               <button
+              aria-label='explore courses'
                 onClick={() => navigate('/courses')}
                 className="w-full border border-gray-300 text-[#1F1F1F] font-medium py-3 rounded-xl hover:bg-gray-50 transition-colors"
               >

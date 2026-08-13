@@ -97,6 +97,7 @@ export default function AdminStudents() {
                       <td className="px-6 py-4 text-muted">{new Date(student.joinedAt).toLocaleDateString()}</td>
                       <td className="px-6 py-4 text-right">
                         <button
+                        aria-label='send mail'
                         onClick={() => handleEmailClick(student)}
                         className="text-primary hover:underline flex items-center gap-1 justify-end w-full">
                           <Mail size={14}/> Email

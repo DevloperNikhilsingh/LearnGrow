@@ -35,7 +35,7 @@ export default function Setting({
             <div>
               <p className="font-semibold text-[#1F1F1F]">{user?.name}</p>
               <p className="text-sm text-muted">{user?.email}</p>
-              <button className="mt-2 text-xs text-primary font-semibold border border-primary/30 rounded-lg px-3 py-1 hover:bg-primary hover:text-white transition-colors">
+              <button aria-label='change photo' className="mt-2 text-xs text-primary font-semibold border border-primary/30 rounded-lg px-3 py-1 hover:bg-primary hover:text-white transition-colors">
                 Change Photo
               </button>
             </div>
@@ -114,10 +114,10 @@ export default function Setting({
 
         {/* Save Button */}
         <div className="flex gap-3">
-          <button onClick={handleSaveSettings} className="btn-primary px-8">
+          <button aria-label='save changes' onClick={handleSaveSettings} className="btn-primary px-8">
             Save Changes
           </button>
-          <button onClick={handleLogout} className="flex items-center gap-2 border border-red-200 text-red-500 font-semibold text-sm px-5 py-2.5 rounded-btn hover:bg-red-50 transition-colors">
+          <button aria-label='logout' onClick={handleLogout} className="flex items-center gap-2 border border-red-200 text-red-500 font-semibold text-sm px-5 py-2.5 rounded-btn hover:bg-red-50 transition-colors">
             <LogOut size={15} /> Sign Out
           </button>
         </div>

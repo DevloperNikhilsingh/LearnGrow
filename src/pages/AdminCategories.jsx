@@ -78,10 +78,10 @@ function CategoryModal({ isOpen, onClose, onSubmit }) {
         <div>
           <label className="block text-sm font-semibold text-[#1F1F1F] mb-1.5">Icon</label>
           <div className="flex flex-wrap gap-2 mb-3">
-            <button type="button" id="icon-mode-url" onClick={() => setForm((f) => ({ ...f, iconMode: 'url' }))} className={urlBtn}>
+            <button aria-label='url' type="button" id="icon-mode-url" onClick={() => setForm((f) => ({ ...f, iconMode: 'url' }))} className={urlBtn}>
               <Link2 size={13} /> URL
             </button>
-            <button type="button" id="icon-mode-upload" onClick={() => setForm((f) => ({ ...f, iconMode: 'upload' }))} className={uploadBtn}>
+            <button aria-label='upload images' type="button" id="icon-mode-upload" onClick={() => setForm((f) => ({ ...f, iconMode: 'upload' }))} className={uploadBtn}>
               <Upload size={13} /> Upload PNG/SVG
             </button>
           </div>
@@ -139,8 +139,8 @@ function CategoryModal({ isOpen, onClose, onSubmit }) {
         </div>
 
         <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2 border-t border-border">
-          <button type="button" onClick={onClose} className="px-4 py-2 rounded-btn text-sm font-medium border border-border hover:bg-surface transition-colors">Cancel</button>
-          <button type="submit" id="cat-modal-submit" className="btn-primary text-sm">Add Category</button>
+          <button aria-label='cancel' type="button" onClick={onClose} className="px-4 py-2 rounded-btn text-sm font-medium border border-border hover:bg-surface transition-colors">Cancel</button>
+          <button aria-label='add category' type="submit" id="cat-modal-submit" className="btn-primary text-sm">Add Category</button>
         </div>
       </form>
     </Modal>
@@ -171,7 +171,7 @@ function CategoryRow({ cat, onDelete }) {
         <span className="text-xs font-mono text-muted">{cat.color.toUpperCase()}</span>
       </div>
       <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-        <button onClick={() => onDelete(cat.id)} className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors">
+        <button aria-label='delete' onClick={() => onDelete(cat.id)} className="p-1.5 rounded-lg text-red-500 hover:bg-red-50 transition-colors">
           <Trash2 size={15} />
         </button>
       </div>
@@ -202,7 +202,7 @@ export default function AdminCategories() {
       <main className="flex-1 overflow-y-auto min-w-0">
         <div className="bg-white border-b border-border min-h-16 flex flex-wrap items-center gap-3 pl-16 pr-4 py-3 sm:pr-8 lg:px-8 shadow-sm">
           <h1 className="text-lg sm:text-xl font-bold text-[#1F1F1F] flex-1">Categories</h1>
-          <button id="add-category-btn" onClick={() => setModalOpen(true)} className="btn-primary flex items-center gap-2 text-sm whitespace-nowrap">
+          <button aria-label='add category' id="add-category-btn" onClick={() => setModalOpen(true)} className="btn-primary flex items-center gap-2 text-sm whitespace-nowrap">
             <Plus size={16} /> <span className="hidden xs:inline">Add Category</span><span className="xs:hidden">Add</span>
           </button>
         </div>
@@ -221,7 +221,7 @@ export default function AdminCategories() {
               <Tag size={40} className="text-muted mb-4" />
               <p className="text-[#1F1F1F] font-semibold mb-1">No categories yet</p>
               <p className="text-muted text-sm mb-5">Click Add Category to get started.</p>
-              <button onClick={() => setModalOpen(true)} className="btn-primary flex items-center gap-2 text-sm"><Plus size={15} /> Add Category</button>
+              <button aria-label='add category' onClick={() => setModalOpen(true)} className="btn-primary flex items-center gap-2 text-sm"><Plus size={15} /> Add Category</button>
             </div>
           ) : (
             <div className="space-y-3">

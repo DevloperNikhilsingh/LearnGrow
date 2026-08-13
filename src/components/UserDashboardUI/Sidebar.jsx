@@ -28,7 +28,7 @@ export default function Sidebar({
         {/* User Profile */}
         <div className="p-6 border-b border-white/10">
           {mobile && (
-            <button onClick={() => setSidebarOpen(false)} className="absolute top-4 right-4 text-white/60 hover:text-white">
+            <button aria-label='close' onClick={() => setSidebarOpen(false)} className="absolute top-4 right-4 text-white/60 hover:text-white">
               <X size={20} />
             </button>
           )}
@@ -58,6 +58,7 @@ export default function Sidebar({
         <nav className="p-4 flex-1 space-y-1">
           {NAV_ITEMS.map((item) => (
             <button
+            
               key={item.id}
               onClick={() => { setActiveTab(item.id); if (mobile) setSidebarOpen(false); }}
               className={`flex items-center gap-3 w-full px-4 py-3 text-left rounded-xl transition-all duration-200 text-sm font-medium ${activeTab === item.id
@@ -75,6 +76,7 @@ export default function Sidebar({
         {/* Logout */}
         <div className="p-4 border-t border-white/10">
           <button
+          aria-label='logout'
             onClick={handleLogout}
             className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-red-400 hover:text-red-300 hover:bg-white/5 rounded-xl transition-colors"
           >

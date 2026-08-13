@@ -227,7 +227,8 @@ export default function CourseDetail() {
             <div className="bg-white rounded-card shadow-card border border-border overflow-y-auto lg:flex-1">
               <div className="flex border-b border-border px-4 sm:px-7 sticky top-0 bg-white z-10 overflow-x-auto whitespace-nowrap">
                 {tabs.map(tab => (
-                  <button
+                  <button 
+                  aria-label='detail tab'
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={`px-1 mr-4 sm:mr-7 py-3.5 sm:py-4 font-semibold text-xs sm:text-sm transition-colors border-b-[3px] ${activeTab === tab.id

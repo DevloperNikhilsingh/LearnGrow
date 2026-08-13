@@ -323,6 +323,7 @@ export default function AdminLiveClasses() {
           {/* Action Buttons */}
           <div style={{display:'flex',justifyContent:'flex-end',gap:'10px',paddingTop:'8px',borderTop:'1px solid #e2e8f0'}}>
             <button
+            aria-label='cancel'
               type="button"
               onClick={closeModal}
               style={{padding:'8px 18px',fontSize:'0.875rem',fontWeight:500,color:'#666',background:'#f1f5f9',border:'none',borderRadius:'8px',cursor:'pointer'}}

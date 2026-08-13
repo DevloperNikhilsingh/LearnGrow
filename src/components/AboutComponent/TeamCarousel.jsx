@@ -123,6 +123,7 @@ export default function TeamCarousel({ team }) {
                         </div>
 
                         <button
+                        aria-label='View Profile'
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate(`/instructor/${member.slug}`);
@@ -145,6 +146,7 @@ export default function TeamCarousel({ team }) {
           })}
 
           <button
+          aria-label="previous"
             onClick={prev}
             aria-label="Previous"
             className="absolute left-0 sm:left-4 top-1/2 -translate-y-1/2 z-20 bg-white shadow-lg rounded-full p-3 hover:bg-primary hover:text-white transition-colors border border-border"
@@ -152,6 +154,7 @@ export default function TeamCarousel({ team }) {
             <ChevronLeft size={20} />
           </button>
           <button
+          aria-label="next"
             onClick={next}
             aria-label="Next"
             className="absolute right-0 sm:right-4 top-1/2 -translate-y-1/2 z-20 bg-white shadow-lg rounded-full p-3 hover:bg-primary hover:text-white transition-colors border border-border"

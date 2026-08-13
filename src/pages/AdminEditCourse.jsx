@@ -105,6 +105,7 @@ export default function AdminEditCourse() {
         <div className="bg-white border-b border-border h-16 flex items-center justify-between pl-16 pr-4 sm:pr-6 lg:px-8 shadow-sm">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
+            aria-label='back'
               onClick={() => navigate('/admin/courses')}
               className="p-2 rounded hover:bg-surface text-muted hover:text-primary transition-colors shrink-0"
               title="Back"

@@ -157,6 +157,7 @@ export default function WhyChooseUs() {
             const isActive = i === active;
             return (
               <button
+               
                 key={f.id}
                 onClick={() => handleSelect(i)}
                 className={`relative shrink-0 md:w-full text-left rounded-xl px-3 py-2 md:px-4 md:py-3 transition-all duration-200 flex items-center gap-2 md:gap-3 ${isActive ? 'bg-white shadow-sm' : 'hover:bg-white/60'

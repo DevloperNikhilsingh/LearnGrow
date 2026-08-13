@@ -102,6 +102,7 @@ export default function Login() {
                   className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 pl-10 pr-12 text-white placeholder-white/30 focus:outline-none focus:border-primary focus:bg-white/15 transition-all text-sm"
                 />
                 <button
+                aria-label='show password'
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition-colors"

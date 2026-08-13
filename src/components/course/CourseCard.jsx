@@ -242,7 +242,7 @@ export default function CourseCard({ course }) {
             </div>
 
             <div className="flex items-center gap-2">
-              <button onClick={() => addToCart(course)} className="flex-1 flex items-center justify-center gap-2 bg-navy text-white font-semibold py-2.5 rounded-lg hover:bg-[#1d3557] transition-colors text-sm">
+              <button aria-label='add to cart' onClick={() => addToCart(course)} className="flex-1 flex items-center justify-center gap-2 bg-navy text-white font-semibold py-2.5 rounded-lg hover:bg-[#1d3557] transition-colors text-sm">
                 <ShoppingCart size={15} />
                 Add to cart
               </button>

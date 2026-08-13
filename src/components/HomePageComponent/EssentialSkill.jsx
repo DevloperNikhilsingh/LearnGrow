@@ -175,6 +175,7 @@ export default function EssentialSkills() {
             {/* Pagination Controls - simple, no animation library */}
             <div className="flex items-center justify-center gap-4 mt-8">
               <button
+              aria-label='go to next'
                 onClick={handleSkillPrev}
                 disabled={skillStartIndex === 0}
                 className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
@@ -193,6 +194,7 @@ export default function EssentialSkills() {
               </div>
 
               <button
+              aria-label='go to previous'
                 onClick={handleSkillNext}
                 disabled={skillStartIndex === skillMaxIndex}
                 className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"

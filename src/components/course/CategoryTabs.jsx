@@ -8,6 +8,7 @@ export default function CategoryTabs({ categories, activeSlug, onSelect }) {
   return (
     <nav aria-label="Course categories" className="flex gap-2 flex-wrap">
       <button
+      aria-label='all-courses'
         onClick={() => onSelect(null)}
         className={`px-4 py-2 rounded-btn text-sm font-semibold border transition-all duration-200
           ${!activeSlug
@@ -21,6 +22,7 @@ export default function CategoryTabs({ categories, activeSlug, onSelect }) {
 
       {categories.map((cat) => (
         <button
+        aria-label='category-tab'
           key={cat.slug}
           onClick={() => onSelect(cat.slug)}
           className={`px-4 py-2 rounded-btn text-sm font-semibold border transition-all duration-200
