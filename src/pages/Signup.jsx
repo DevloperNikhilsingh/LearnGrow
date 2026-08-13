@@ -3,12 +3,14 @@
  */
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { BookOpen, Mail, Lock, User, Eye, EyeOff, ArrowRight, CheckCircle } from 'lucide-react';
 import { register } from '../services/authService';
 
 export default function Signup() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnTo = location.state?.returnTo;
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -34,7 +36,7 @@ export default function Signup() {
       setSuccess(true);
       // After 2 seconds, redirect to login page
       setTimeout(() => {
-        navigate('/login');
+        navigate('/login', { state: { returnTo } });
       }, 2000);
     } catch (err) {
       setError(err.message || 'Registration failed');
@@ -178,7 +180,7 @@ export default function Signup() {
 
               <p className="mt-6 text-center text-sm text-white/40">
                 Already have an account?{' '}
-                <Link to="/login" className="text-primary font-semibold hover:text-blue-400 transition-colors">
+                <Link to="/login" state={{ returnTo }} className="text-primary font-semibold hover:text-blue-400 transition-colors">
                   Log in here
                 </Link>
               </p>

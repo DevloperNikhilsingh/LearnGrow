@@ -45,7 +45,7 @@ export default function EssentialSkills() {
   useEffect(() => {
     const updateCardWidth = () => {
       if (window.innerWidth < 640) {
-        setCardWidthPercent(82); // mobile: 1 card + small peek of next
+        setCardWidthPercent(58); // mobile: 1 card + small peek of next
         setSkillVisibleCount(1);
       } else if (window.innerWidth < 1024) {
         setCardWidthPercent(34); // tablet: 2 cards + small peek

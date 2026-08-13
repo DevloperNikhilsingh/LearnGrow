@@ -10,14 +10,25 @@ import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import Button from '../components/ui/Button';
 import { useCart } from '../context/CartContext';
+import { isAuthenticated } from '../services/authService';
+import AuthPromptModal from '../components/course/AuthPromptModal';
 
 export default function Cart() {
   const navigate = useNavigate();
   const { cartItem, removeFromCart, cartTotal } = useCart();
   const [coupon, setCoupon] = useState('');
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
 
   const handleRemove = (slug) => {
     removeFromCart(slug);
+  };
+
+  const handleCheckout = () => {
+    if (!isAuthenticated()) {
+      setShowAuthPrompt(true);
+      return;
+    }
+    navigate("/checkout", { state: { courses: cartItem } });
   };
 
   const totalOriginalPrice = cartItem.reduce(
@@ -101,7 +112,7 @@ export default function Cart() {
                   </>
                 )}
 
-                <Button variant="primary" onClick={() => navigate("/checkout", { state: { courses: cartItem } })} className="w-full py-4 text-lg mb-6">
+                <Button variant="primary" onClick={handleCheckout} className="w-full py-4 text-lg mb-6">
                   Checkout
                 </Button>
 
@@ -125,6 +136,13 @@ export default function Cart() {
       </main>
 
       <Footer />
+
+      <AuthPromptModal
+        isOpen={showAuthPrompt}
+        onClose={() => setShowAuthPrompt(false)}
+        returnTo="/cart"
+        message="You need an account to checkout. It only takes a minute."
+      />
     </div>
   );
 }

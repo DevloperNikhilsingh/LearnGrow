@@ -20,6 +20,7 @@ import { isAuthenticated, getCurrentUser } from '../services/authService';
 import { enrollCourse } from '../services/userService';
 import { updateCourseReviews } from '../services/adminService';
 import { useCart } from '../context/CartContext';
+import AuthPromptModal from '../components/course/AuthPromptModal'
 
 // Framer variants for the meta row (badge, rating, students, etc.)
 const metaContainerVariants = {
@@ -47,6 +48,7 @@ export default function CourseDetail() {
   const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
   const [enrolling, setEnrolling] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  const [showAuthPrompt, setShowAuthPrompt] = useState(false);
 
   // Review form state
   const [reviewRating, setReviewRating] = useState(0);
@@ -82,6 +84,14 @@ export default function CourseDetail() {
     );
   }, [course]);
 
+  const requireAuth = (action) => {
+    if (!isAuthenticated()) {
+      setShowAuthPrompt(true);
+      return;
+    }
+    action();
+  };
+
   const handleEnroll = async () => {
     if (!isAuthenticated()) {
       navigate('/login', { state: { returnTo: `/course/${slug}` } });
@@ -98,10 +108,6 @@ export default function CourseDetail() {
       alert("Error enrolling. Please try again.");
       setEnrolling(false);
     }
-  };
-
-  const handleAddToCart = () => {
-    alert("Added to cart! (Mock)");
   };
 
   if (loading) {
@@ -456,10 +462,10 @@ export default function CourseDetail() {
                     </Button>
                   ) : (
                     <>
-                      <Button variant="primary" className="w-full py-4 text-lg" onClick={() => addToCart(course)}>
+                      <Button variant="primary" className="w-full py-4 text-lg" onClick={() => requireAuth(() => addToCart(course))}>
                         Add to Cart
                       </Button>
-                      <Button variant="outline" onClick={() => navigate(`/checkout/${course.id}`, { state: { course } })} className="w-full py-3">
+                      <Button variant="outline" onClick={() => requireAuth(() => navigate(`/checkout/${course.id}`, { state: { course } }))} className="w-full py-3">
                         Buy Now
                       </Button>
                     </>
@@ -506,10 +512,10 @@ export default function CourseDetail() {
               </Button>
             ) : (
               <>
-                <Button variant="outline" className="flex-1 py-2.5 sm:py-3 text-xs sm:text-base px-2 sm:px-4" onClick={() => addToCart(course)}>
+                <Button variant="outline" className="flex-1 py-2.5 sm:py-3 text-xs sm:text-base px-2 sm:px-4" onClick={() => requireAuth(() => addToCart(course))}>
                   Add to Cart
                 </Button>
-                <Button variant="primary" className="flex-1 py-2.5 sm:py-3 text-xs sm:text-base px-2 sm:px-4" onClick={() => navigate(`/checkout/${course.id}`, { state: { course } })}>
+                <Button variant="primary" className="flex-1 py-2.5 sm:py-3 text-xs sm:text-base px-2 sm:px-4" onClick={() => requireAuth(() => navigate(`/checkout/${course.id}`, { state: { course } }))}>
                   Buy Now
                 </Button>
               </>
@@ -525,6 +531,13 @@ export default function CourseDetail() {
           <VideoPlayer src={course.demoVideo} poster={course.thumbnail} title={course.title} />
         </div>
       </Modal>
+
+      <AuthPromptModal 
+      isOpen={showAuthPrompt}
+      onClose={() => setShowAuthPrompt(false)}
+      returnTo={`/course/${slug}`}
+      message="You need an account to purchase this course. It only takes a minute."
+      />
     </div>
   );
 }
