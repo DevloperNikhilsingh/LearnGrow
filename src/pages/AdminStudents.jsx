@@ -6,10 +6,15 @@ import { Helmet } from 'react-helmet-async';
 import { Search, Mail } from 'lucide-react';
 import AdminSidebar from '../components/admin/AdminSidebar';
 import { getStudents } from '../services/adminService';
+import StudentEmailModal from '../components/admin/StudentEmailModal';
 
 export default function AdminStudents() {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null)
+
 
   useEffect(() => {
     getStudents().then(data => {
@@ -18,10 +23,37 @@ export default function AdminStudents() {
     });
   }, []);
 
+  const hanleSearch = (e) => {
+      setSearchTerm(e.target.value);
+      
+  }
+
+ const filterData = students.filter((stu) => {
+      const term = searchTerm.trim().toLowerCase();
+      if (!term) return true;
+      return(
+        stu.name?.toLowerCase().includes(term)
+      )
+ })
+
+ const handleEmailClick = (student) => {
+     setSelectedStudent(student);
+     setShowMessageModal(true);
+ }
+
   return (
     <div className="min-h-screen bg-surface flex">
       <Helmet><title>Manage Students | Admin</title></Helmet>
       <AdminSidebar />
+
+      {showMessageModal && (
+        <StudentEmailModal 
+        student={selectedStudent}
+        onClose={() => setShowMessageModal(false)}
+        />
+      )}
+
+
 
       <main className="flex-1 overflow-y-auto">
         <div className="bg-white border-b border-border h-16 flex items-center pl-16 pr-8 lg:px-8 shadow-sm">
@@ -33,6 +65,8 @@ export default function AdminStudents() {
             <div className="p-4 border-b border-border bg-gray-50/50">
               <div className="relative w-72">
                 <input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                   type="text"
                   placeholder="Search students..."
                   className="w-full bg-white border border-border rounded-btn py-1.5 pl-9 pr-4 text-sm focus:outline-none focus:border-primary"
@@ -55,14 +89,16 @@ export default function AdminStudents() {
                 <tbody className="divide-y divide-border">
                   {loading ? (
                     <tr><td colSpan="5" className="p-8 text-center text-muted">Loading...</td></tr>
-                  ) : students.map((student) => (
+                  ) : filterData.map((student) => (
                     <tr key={student.id} className="hover:bg-gray-50/50 transition-colors">
                       <td className="px-6 py-4 font-semibold">{student.name}</td>
                       <td className="px-6 py-4 text-muted">{student.email}</td>
                       <td className="px-6 py-4 text-center font-bold">{student.enrolledCourses}</td>
                       <td className="px-6 py-4 text-muted">{new Date(student.joinedAt).toLocaleDateString()}</td>
                       <td className="px-6 py-4 text-right">
-                        <button className="text-primary hover:underline flex items-center gap-1 justify-end w-full">
+                        <button
+                        onClick={() => handleEmailClick(student)}
+                        className="text-primary hover:underline flex items-center gap-1 justify-end w-full">
                           <Mail size={14}/> Email
                         </button>
                       </td>
