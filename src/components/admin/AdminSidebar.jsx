@@ -3,7 +3,8 @@
  */
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Book, Users, Video, LogOut, BookOpen, Menu, X, Tag, Quote, Award, Star } from 'lucide-react';
+import { LayoutDashboard, Book, Users, Video, LogOut, BookOpen, Menu, X, Tag, Quote, Award, Star, GraduationCap } from 'lucide-react';
+import { path } from 'framer-motion/client';
 
 const navItems = [
   { path: '/admin', icon: LayoutDashboard, label: 'Dashboard', exact: true },
@@ -11,6 +12,8 @@ const navItems = [
   { path: '/admin/categories', icon: Tag, label: 'Categories' },
   { path: '/admin/students', icon: Users, label: 'Students' },
   { path: '/admin/live-classes', icon: Video, label: 'Live Classes' },
+  {path: '/admin/certificate', icon: Award, label: 'Certificate'},
+  {path: '/admin/instructor', icon: GraduationCap, lable: 'Instructor'},
   { path: '/admin/testimonal', icon: Star, label: 'Testimonal'}
 ];
 

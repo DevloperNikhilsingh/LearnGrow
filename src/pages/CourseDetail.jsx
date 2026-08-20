@@ -84,6 +84,8 @@ export default function CourseDetail() {
     );
   }, [course]);
 
+  // requireAuth is now used ONLY for purchase actions (Buy Now / Enroll),
+  // never for Add to Cart — guests can add to cart freely.
   const requireAuth = (action) => {
     if (!isAuthenticated()) {
       setShowAuthPrompt(true);
@@ -463,9 +465,11 @@ export default function CourseDetail() {
                     </Button>
                   ) : (
                     <>
-                      <Button variant="primary" className="w-full py-4 text-lg" onClick={() => requireAuth(() => addToCart(course))}>
+                      {/* Add to Cart: no login required — guests can add freely */}
+                      <Button variant="primary" className="w-full py-4 text-lg" onClick={() => addToCart(course)}>
                         Add to Cart
                       </Button>
+                      {/* Buy Now: login required */}
                       <Button variant="outline" onClick={() => requireAuth(() => navigate(`/checkout/${course.id}`, { state: { course } }))} className="w-full py-3">
                         Buy Now
                       </Button>
@@ -513,9 +517,11 @@ export default function CourseDetail() {
               </Button>
             ) : (
               <>
-                <Button variant="outline" className="flex-1 py-2.5 sm:py-3 text-xs sm:text-base px-2 sm:px-4" onClick={() => requireAuth(() => addToCart(course))}>
+                {/* Add to Cart: no login required — guests can add freely */}
+                <Button variant="outline" className="flex-1 py-2.5 sm:py-3 text-xs sm:text-base px-2 sm:px-4" onClick={() => addToCart(course)}>
                   Add to Cart
                 </Button>
+                {/* Buy Now: login required */}
                 <Button variant="primary" className="flex-1 py-2.5 sm:py-3 text-xs sm:text-base px-2 sm:px-4" onClick={() => requireAuth(() => navigate(`/checkout/${course.id}`, { state: { course } }))}>
                   Buy Now
                 </Button>

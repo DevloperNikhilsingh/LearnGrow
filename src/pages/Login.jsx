@@ -3,7 +3,7 @@
  */
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, replace } from 'react-router-dom';
 import { BookOpen, Mail, Lock, Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { login } from '../services/authService';
 
@@ -26,7 +26,13 @@ export default function Login() {
     try {
       const user = await login({ email, password });
       // role backend se aata hai, isi ke basis pe redirect decide hota hai
-      navigate(user.role === 'admin' ? '/admin' : returnTo);
+      let redirectPath = returnTo;
+      if(user.role === 'admin'){
+        redirectPath = '/admin';
+      } else if(user.role === 'instructor'){
+        redirectPath = '/instructordashboard'
+      }
+      navigate(redirectPath, {replace : true})
     } catch (err) {
       setError(err.message || 'Login failed');
     } finally {

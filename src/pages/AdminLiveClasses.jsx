@@ -1,6 +1,3 @@
-/**
- * pages/AdminLiveClasses.jsx
- */
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Plus, Radio, Video, Edit2, Trash2, CalendarClock, Link, User, BookOpen, Clock, Calendar } from 'lucide-react';

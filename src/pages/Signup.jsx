@@ -19,8 +19,12 @@ export default function Signup() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [role, setRole] = useState('student');
 
   const handleSubmit = async (e) => {
+
+    console.log('selected role is', role);
+
     e.preventDefault();
     setError('');
 
@@ -32,7 +36,7 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      await register({ name, email, password });
+      await register({ name, email, password, role });
       setSuccess(true);
       // After 2 seconds, redirect to login page
       setTimeout(() => {
@@ -156,9 +160,32 @@ export default function Signup() {
                 </div>
 
                 {/* Role info badge — always User */}
-                <div className="flex items-center gap-2 bg-primary/10 border border-primary/20 rounded-xl px-4 py-3">
-                  <User className="text-primary" size={16} />
-                  <span className="text-primary text-sm font-medium">Registering as: Student / User</span>
+                <div>
+                  <label className="block text-sm font-medium text-white/70 mb-1.5">Create Account as a</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setRole('student')}
+                      className={`flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-all ${role === 'student'
+                          ? 'bg-primary/15 border-primary text-primary'
+                          : 'bg-white/5 border-white/10 text-white/50 hover:border-white/20'
+                        }`}
+                    >
+                      <User size={16} /> Student
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setRole('instructor')}
+                      className={`flex items-center justify-center gap-2 py-3 rounded-xl border text-sm font-semibold transition-all ${role === 'instructor'
+                          ? 'bg-amber/15 border-amber text-amber'
+                          : 'bg-white/5 border-white/10 text-white/50 hover:border-white/20'
+                        }`}
+                    >
+                      <BookOpen size={16} /> Instructor
+                    </button>
+                  </div>
+                  
                 </div>
 
                 {/* Submit */}

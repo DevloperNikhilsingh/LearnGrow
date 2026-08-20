@@ -27,9 +27,6 @@ const TrustedByCompany = () => {
                   <img src="/Brand-5.png" alt="Company 2" className="max-h-16 max-w-full w-auto h-auto object-contain" />
                 </div>
                 <div className="flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100 w-44 h-24 shrink-0 p-4">
-                  <img src="/Brand-6.png" alt="Company 3" className="max-h-16 max-w-full w-auto h-auto object-contain" />
-                </div>
-                <div className="flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100 w-44 h-24 shrink-0 p-4">
                   <img src="/Brand-7.png" alt="Company 4" className="max-h-16 max-w-full w-auto h-auto object-contain" />
                 </div>
                 <div className="flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100 w-44 h-24 shrink-0 p-4">
@@ -75,9 +72,6 @@ const TrustedByCompany = () => {
                 </div>
                 <div className="flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100 w-44 h-24 shrink-0 p-4">
                   <img src="/Brand-5.png" alt="Company 2" className="max-h-16 max-w-full w-auto h-auto object-contain" />
-                </div>
-                <div className="flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100 w-44 h-24 shrink-0 p-4">
-                  <img src="/Brand-6.png" alt="Company 3" className="max-h-16 max-w-full w-auto h-auto object-contain" />
                 </div>
                 <div className="flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100 w-44 h-24 shrink-0 p-4">
                   <img src="/Brand-7.png" alt="Company 4" className="max-h-16 max-w-full w-auto h-auto object-contain" />
@@ -134,9 +128,6 @@ const TrustedByCompany = () => {
                   <img src="/Brand-5.png" alt="Company 2" className="max-h-16 max-w-full w-auto h-auto object-contain" />
                 </div>
                 <div className="flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100 w-44 h-24 shrink-0 p-4">
-                  <img src="/Brand-6.png" alt="Company 3" className="max-h-16 max-w-full w-auto h-auto object-contain" />
-                </div>
-                <div className="flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100 w-44 h-24 shrink-0 p-4">
                   <img src="/Brand-7.png" alt="Company 4" className="max-h-16 max-w-full w-auto h-auto object-contain" />
                 </div>
                 <div className="flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100 w-44 h-24 shrink-0 p-4">
@@ -185,9 +176,6 @@ const TrustedByCompany = () => {
                 </div>
                 <div className="flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100 w-44 h-24 shrink-0 p-4">
                   <img src="/Brand-5.png" alt="Company 2" className="max-h-16 max-w-full w-auto h-auto object-contain" />
-                </div>
-                <div className="flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100 w-44 h-24 shrink-0 p-4">
-                  <img src="/Brand-6.png" alt="Company 3" className="max-h-16 max-w-full w-auto h-auto object-contain" />
                 </div>
                 <div className="flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100 w-44 h-24 shrink-0 p-4">
                   <img src="/Brand-7.png" alt="Company 4" className="max-h-16 max-w-full w-auto h-auto object-contain" />

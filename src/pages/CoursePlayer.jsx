@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import { ChevronLeft, CheckCircle2, Circle, Video, Radio, Menu, X, Check } from 'lucide-react';
+import { ChevronLeft, CheckCircle2, Circle, Video, Radio, Menu, X, Check, Lock, FileCheck } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 import VideoPlayer from '../components/course/VideoPlayer';
@@ -25,6 +25,9 @@ export default function CoursePlayer() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
 
+  const [maxTimeReached, setMaxTimeReached] = useState(0);
+  const [canMarkComplete, setCanMarkComplete] = useState(false);
+
   const lessonTitleRef = useRef(null);
 
   useEffect(() => {
@@ -34,7 +37,6 @@ export default function CoursePlayer() {
       return;
     }
 
-    // Load course and progress
     getCourseBySlug(slug).then(async (data) => {
       if (!data) {
         navigate('/dashboard');
@@ -42,16 +44,13 @@ export default function CoursePlayer() {
       }
       setCourse(data);
 
-      // Default to first lesson
       if (data.curriculum.length > 0 && data.curriculum[0].lessons.length > 0) {
         setActiveLesson(data.curriculum[0].lessons[0]);
       }
 
-      // Mock loading completed lessons based on total progress %
       const currentProgress = await getCourseProgress(data.id);
       setProgress(currentProgress);
 
-      // Calculate how many lessons should be marked complete based on progress
       const allLessonIds = data.curriculum.flatMap(s => s.lessons.map(l => l.id));
       const numCompleted = Math.floor((currentProgress / 100) * allLessonIds.length);
       setCompletedLessons(allLessonIds.slice(0, numCompleted));
@@ -60,7 +59,6 @@ export default function CoursePlayer() {
     });
   }, [slug, navigate]);
 
-  // GSAP: 3D flip-in with bounce for the active lesson title, replays every time lesson changes
   useEffect(() => {
     if (!activeLesson || !lessonTitleRef.current) return;
     const letters = lessonTitleRef.current.querySelectorAll('[data-letter]');
@@ -78,14 +76,27 @@ export default function CoursePlayer() {
     );
   }, [activeLesson]);
 
+  useEffect(() => {
+    setMaxTimeReached(0);
+    setCanMarkComplete(false);
+  }, [activeLesson?.id]);
+
+  useEffect(() => {
+    if (activeLesson && completedLessons.includes(activeLesson.id)) {
+      setCanMarkComplete(true);
+    }
+  }, [activeLesson, completedLessons]);
+
   const handleLessonSelect = (lesson) => {
     setActiveLesson(lesson);
     if (window.innerWidth < 1024) {
-      setIsSidebarOpen(false); // Close sidebar on mobile after selection
+      setIsSidebarOpen(false);
     }
   };
 
   const handleToggleComplete = async (lessonId) => {
+    if (!completedLessons.includes(lessonId) && !canMarkComplete) return;
+
     let newCompleted;
     if (completedLessons.includes(lessonId)) {
       newCompleted = completedLessons.filter(id => id !== lessonId);
@@ -94,11 +105,38 @@ export default function CoursePlayer() {
     }
     setCompletedLessons(newCompleted);
 
-    // Update progress calculation
     const totalLessons = course.curriculum.reduce((acc, s) => acc + s.lessons.length, 0);
     const newProgress = Math.round((newCompleted.length / totalLessons) * 100);
     setProgress(newProgress);
     await updateProgress(course.id, newProgress);
+  };
+
+  const handleTimeUpdate = (e) => {
+    const video = e.target;
+    if (!video || !video.duration) return;
+    const current = video.currentTime;
+
+    if (current > maxTimeReached + 1) {
+      video.currentTime = maxTimeReached;
+      return;
+    }
+
+    if (current > maxTimeReached) {
+      setMaxTimeReached(current);
+    }
+
+    const percent = (current / video.duration) * 100;
+    if (percent >= 90 && !canMarkComplete) {
+      setCanMarkComplete(true);
+    }
+  };
+
+  const handleSeeking = (e) => {
+    const video = e.target;
+    if (!video) return;
+    if (video.currentTime > maxTimeReached + 1) {
+      video.currentTime = maxTimeReached;
+    }
   };
 
   if (loading || !course) {
@@ -109,11 +147,12 @@ export default function CoursePlayer() {
     );
   }
 
-  // Check if active lesson is a live class that is currently active
   const isLessonLiveNow = activeLesson?.isLive &&
     liveClassesData.some(lc => lc.courseId === course.id && lc.isActive);
 
   const isActiveDone = completedLessons.includes(activeLesson?.id);
+  const isCourseComplete = progress >= 100;
+  const isMarkButtonDisabled = !isActiveDone && !canMarkComplete;
 
   return (
     <div className="min-h-screen flex flex-col bg-surface overflow-hidden h-screen">
@@ -121,14 +160,12 @@ export default function CoursePlayer() {
         <title>{activeLesson?.title || course.title} | Player</title>
       </Helmet>
 
-      {/* Top Navbar */}
       <header className="bg-navy text-white h-16 flex items-center justify-between px-4 sm:px-6 flex-shrink-0 z-20 shadow-md">
         <div className="flex items-center gap-4">
           <Link to="/dashboard" className="text-white/70 hover:text-white transition-colors flex items-center gap-1">
             <ChevronLeft size={20} /> <span className="hidden sm:inline font-medium">Dashboard</span>
           </Link>
           <div className="h-6 w-px bg-white/20 mx-2 hidden sm:block"></div>
-          {/* <h1 className="font-semibold truncate max-w-[200px] sm:max-w-md">{course.title}</h1> */}
         </div>
 
         <div className="flex items-center gap-6">
@@ -146,10 +183,8 @@ export default function CoursePlayer() {
       </header>
 
       <div className="flex flex-1 overflow-hidden relative">
-        {/* Main Content Area (Video) */}
         <main className={`flex-1 flex flex-col overflow-y-auto bg-white transition-all duration-300 ${isSidebarOpen ? 'lg:mr-80' : ''}`}>
 
-          {/* Video Player Area */}
           <div className="bg-black w-full aspect-video flex-shrink-0">
             {activeLesson?.isLive ? (
               <div className="w-full h-full flex flex-col items-center justify-center bg-[#1F1F1F] text-white p-6 text-center relative overflow-hidden">
@@ -173,14 +208,14 @@ export default function CoursePlayer() {
                 poster={course.thumbnail}
                 title={activeLesson?.title}
                 className="w-full h-full rounded-none"
+                onTimeUpdate={handleTimeUpdate}
+                onSeeking={handleSeeking}
               />
             )}
           </div>
 
-          {/* Lesson Info & Tabs */}
           <div className="p-4 sm:p-8 max-w-4xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-              {/* GSAP: letters flip in with bounce whenever the lesson changes */}
               <h2
                 ref={lessonTitleRef}
                 className="text-2xl font-bold text-[#1F1F1F]"
@@ -196,11 +231,14 @@ export default function CoursePlayer() {
 
               <motion.button
                 onClick={() => handleToggleComplete(activeLesson.id)}
-                whileTap={{ scale: 0.94 }}
+                disabled={isMarkButtonDisabled}
+                whileTap={{ scale: isMarkButtonDisabled ? 1 : 0.94 }}
                 className={`flex items-center gap-2 px-4 py-2 rounded-btn font-semibold text-sm transition-colors border ${
                   isActiveDone
                   ? 'bg-success/10 text-success border-success/30'
-                  : 'bg-white border-border text-[#1F1F1F] hover:bg-surface'
+                  : isMarkButtonDisabled
+                    ? 'bg-white border-border text-muted cursor-not-allowed opacity-60'
+                    : 'bg-white border-border text-[#1F1F1F] hover:bg-surface'
                 }`}
               >
                 <AnimatePresence mode="wait" initial={false}>
@@ -214,6 +252,17 @@ export default function CoursePlayer() {
                       className="flex items-center gap-2"
                     >
                       <Check size={18} /> Completed
+                    </motion.span>
+                  ) : isMarkButtonDisabled ? (
+                    <motion.span
+                      key="locked"
+                      initial={{ scale: 0.6, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.6, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="flex items-center gap-2"
+                    >
+                      <Lock size={16} /> Watch video to unlock
                     </motion.span>
                   ) : (
                     <motion.span
@@ -231,9 +280,8 @@ export default function CoursePlayer() {
               </motion.button>
             </div>
 
-            {/* Tabs */}
             <div className="flex border-b border-border mb-6">
-              {['overview', 'resources', 'qna'].map(tab => (
+              {['overview', 'resources'].map(tab => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -243,12 +291,11 @@ export default function CoursePlayer() {
                     : 'text-muted hover:text-[#1F1F1F]'
                   }`}
                 >
-                  {tab === 'qna' ? 'Q&A' : tab}
+                  {tab}
                 </button>
               ))}
             </div>
 
-            {/* Tab Content - Framer crossfade replaces old fade-in class */}
             <div className="text-[#1F1F1F] leading-relaxed">
               <AnimatePresence mode="wait">
                 {activeTab === 'overview' && (
@@ -281,17 +328,28 @@ export default function CoursePlayer() {
                     </div>
                   </motion.div>
                 )}
-                {activeTab === 'qna' && (
+                {activeTab === 'test' && isCourseComplete && (
                   <motion.div
-                    key="qna"
+                    key="test"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.25, ease: 'easeOut' }}
-                    className="text-center py-8"
+                    className="text-center py-8 sm:py-10 px-4 border border-border rounded-lg bg-surface"
                   >
-                    <p className="text-muted">No questions asked yet for this lesson.</p>
-                    <button className="mt-4 btn-outline">Ask a Question</button>
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4 bg-primary/10">
+                      <FileCheck size={26} className="text-primary" />
+                    </div>
+                    <h3 className="font-bold text-lg mb-2">Final Assessment</h3>
+                    <p className="text-muted max-w-sm mx-auto mb-6">
+                      You've completed the course. Take the test to earn your certificate.
+                    </p>
+                    <button
+                      onClick={() => navigate(`/course/${slug}/test`)}
+                      className="btn-primary px-6 py-2.5 rounded-btn font-semibold text-sm"
+                    >
+                      Start Test
+                    </button>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -299,7 +357,6 @@ export default function CoursePlayer() {
           </div>
         </main>
 
-        {/* Sidebar (Curriculum) - unchanged, existing slide transition is fine */}
         <aside
           className={`absolute lg:fixed right-0 top-16 bottom-0 w-80 bg-white border-l border-border flex flex-col transition-transform duration-300 z-10 ${
             isSidebarOpen ? 'translate-x-0' : 'translate-x-full'
@@ -352,10 +409,40 @@ export default function CoursePlayer() {
                 </ul>
               </div>
             ))}
+
+            {/* Final Test - always last, locked until course is 100% complete */}
+            <div className="border-b border-border">
+              <div className="px-4 py-3 bg-surface/50 font-semibold text-sm text-[#1F1F1F]">
+                Final Assessment
+              </div>
+              <button
+                disabled={!isCourseComplete}
+                onClick={() => isCourseComplete && navigate(`/course/${slug}/test`)}
+                className={`w-full text-left px-4 py-3 flex items-start gap-3 transition-colors ${
+                  isCourseComplete ? 'hover:bg-surface cursor-pointer' : 'cursor-not-allowed'
+                }`}
+              >
+                <div className="mt-0.5">
+                  {isCourseComplete
+                    ? <FileCheck size={16} className="text-primary" />
+                    : <Lock size={16} className="text-muted" />
+                  }
+                </div>
+                <div className="flex-1">
+                  <p className={`text-sm font-medium ${isCourseComplete ? 'text-[#1F1F1F]' : 'text-muted'}`}>
+                    Course Test
+                  </p>
+                  <p className="text-xs text-muted mt-1">
+                    {isCourseComplete
+                      ? 'Available now'
+                      : 'Unlocks after completing all lessons'}
+                  </p>
+                </div>
+              </button>
+            </div>
           </div>
         </aside>
 
-        {/* Mobile Overlay - Framer fade */}
         <AnimatePresence>
           {isSidebarOpen && (
             <motion.div

@@ -1,13 +1,23 @@
-/**
- * components/layout/Navbar.jsx
- * Main navigation bar
- */
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, ShoppingCart, Menu, X, BookOpen, ChevronDown } from 'lucide-react';
 import { isAuthenticated, getCurrentUser, logout } from '../../services/authService';
 import { getDynamicCategories } from '../../services/courseService';
 import { useCart } from '../../context/CartContext';
+
+
+function getDashboardPath(user) {
+  if (user?.role === 'admin') return '/admin';
+  if (user?.role === 'instructor') return '/instructordashboard';
+  return '/dashboard';
+}
+
+function getDashboardLabel(user) {
+  if (user?.role === 'admin') return 'Admin Panel';
+  if (user?.role === 'instructor') return 'Instructor Dashboard';
+  return 'Dashboard';
+}
 
 export default function Navbar() {
 
@@ -65,7 +75,7 @@ export default function Navbar() {
     navigate('/');
   };
 
- 
+
 
   return (
     <nav className="bg-navy sticky top-0 z-40 border-b border-navy shadow-sm">
@@ -162,11 +172,11 @@ export default function Navbar() {
                 {showlogoutpopup && (
                   <div className="absolute top-full right-0 mt-2 w-44 bg-white rounded-card shadow-card-hover border border-border overflow-hidden fade-in py-1 z-20">
                     <Link
-                      to={user?.role === 'admin' ? '/admin' : '/dashboard'}
+                      to={getDashboardPath(user)}
                       className="block px-4 py-2 text-sm text-[#1F1F1F] hover:bg-surface hover:text-primary transition-colors"
                       onClick={() => setShowlogoutpopup(false)}
                     >
-                      {user?.role === 'admin' ? 'Admin Panel' : 'Dashboard'}
+                      {getDashboardLabel(user)}
                     </Link>
                     <button
 
@@ -193,6 +203,9 @@ export default function Navbar() {
           <div className="md:hidden flex items-center gap-4">
             <Link to="/cart" className="text-white relative">
               <ShoppingCart size={20} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-amber text-navy text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">{cartCount}</span>
+              )}
             </Link>
             <button
             aria-label='menu'
@@ -234,8 +247,8 @@ export default function Navbar() {
 
           {isLoggedIn ? (
             <div className="space-y-3">
-              <Link to={user?.role === 'admin' ? '/admin' : '/dashboard'} className="block text-white font-medium" onClick={() => setIsMobileMenuOpen(false)}>
-                {user?.role === 'admin' ? 'Admin Panel' : 'My Dashboard'}
+              <Link to={getDashboardPath(user)} className="block text-white font-medium" onClick={() => setIsMobileMenuOpen(false)}>
+                {getDashboardLabel(user)}
               </Link>
               <button aria-label='logout' onClick={handleLogout} className="block text-white/70">Logout</button>
             </div>

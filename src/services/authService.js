@@ -55,32 +55,29 @@ export async function login({ email, password }) {
 }
 
 /** Register a new user */
-export async function register({ name, email, password }) {
+export async function register({ name, email, password, role = 'student' }) {
   const registeredUsers = getRegisteredUsers();
 
-  // Check if email already exists
   const existingUser = registeredUsers.find((u) => u.email === email);
   if (existingUser) throw new Error('An account with this email already exists. Please log in.');
 
-  // Check admin email
   if (email === ADMIN_CREDENTIALS.email) throw new Error('This email is reserved. Please use a different email.');
 
   const newUser = {
     id: Date.now(),
     name,
     email,
-    password, // store password for mock login
-    role: 'student',
+    password,
+    role: role === 'instructor' ? 'instructor' : 'student',
     avatar: name.slice(0, 2).toUpperCase(),
-    enrolledCourses: [1, 3, 4], // give some sample enrolled courses for demo
-    progress: { 1: 60, 3: 30, 4: 10 }
+    enrolledCourses: role === 'instructor' ? [] : [1, 3, 4],
+    progress: role === 'instructor' ? {} : { 1: 60, 3: 30, 4: 10 }
   };
 
   registeredUsers.push(newUser);
   saveRegisteredUsers(registeredUsers);
 
-  // Do NOT auto-login after register — redirect to login page
-  return Promise.resolve({ name: newUser.name, email: newUser.email });
+  return Promise.resolve({ name: newUser.name, email: newUser.email, role: newUser.role });
 }
 
 /** Log out the current user */

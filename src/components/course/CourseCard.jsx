@@ -1,7 +1,7 @@
 /**
  * components/course/CourseCard.jsx
  */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Star, Users, Clock, BarChart3, CheckCircle2, Heart, ShoppingCart } from 'lucide-react';
 import Badge from '../ui/Badge';
@@ -18,11 +18,8 @@ function StarRating({ rating }) {
 
 export default function CourseCard({ course }) {
 
-  const {addToCart} = useCart();
-  const [isHovered, setIsHovered] = useState(false);
-  const [flyoutStyle, setFlyoutStyle] = useState({ top: 0, left: 0, side: 'right' });
-  const timeoutRef = useRef(null);
-  const cardRef = useRef(null);
+  const { addToCart } = useCart();
+  const [isFlipped, setIsFlipped] = useState(false);
 
   const {
     slug, title, thumbnail, badge, instructor, rating, reviewCount,
@@ -30,139 +27,79 @@ export default function CourseCard({ course }) {
     description, highlights, lastUpdated,
   } = course;
 
-  const FLYOUT_WIDTH = 300;
-  const FLYOUT_HEIGHT_ESTIMATE = 480;
-  const GAP = 12;
-  const EDGE_PADDING = 12;
-
-  const computeFlyoutPosition = () => {
-    const card = cardRef.current;
-    if (!card) return;
-    const rect = card.getBoundingClientRect();
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-
-    const navEl = document.querySelector('header, nav');
-    const navbarHeight = navEl ? navEl.getBoundingClientRect().height : 0;
-
-    let side = 'right';
-    let left = rect.right + GAP;
-    if (left + FLYOUT_WIDTH > viewportWidth - EDGE_PADDING) {
-      side = 'left';
-      left = rect.left - FLYOUT_WIDTH - GAP;
-    }
-    left = Math.max(EDGE_PADDING, Math.min(left, viewportWidth - FLYOUT_WIDTH - EDGE_PADDING));
-
-    let top = rect.top;
-    const minTop = navbarHeight + EDGE_PADDING;
-    const maxTop = viewportHeight - FLYOUT_HEIGHT_ESTIMATE - EDGE_PADDING;
-    top = Math.max(minTop, Math.min(top, Math.max(minTop, maxTop)));
-
-    setFlyoutStyle({ top, left, side });
-  };
-
-  const handleMouseEnter = () => {
-    clearTimeout(timeoutRef.current);
-    computeFlyoutPosition();
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => {
-      setIsHovered(false);
-    }, 150);
-  };
-
-  // Scroll hote hi flyout turant band kar do — mouse move na hone par bhi
-  useEffect(() => {
-    if (!isHovered) return;
-
-    const handleScroll = () => {
-      clearTimeout(timeoutRef.current);
-      setIsHovered(false);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isHovered]);
-
   return (
     <div
-      ref={cardRef}
-      className="relative h-full"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      className="relative h-full [perspective:1200px]"
+      onMouseEnter={() => setIsFlipped(true)}
+      onMouseLeave={() => setIsFlipped(false)}
     >
-      {/* Normal Card */}
-      <Link
-        to={`/course/${slug}`}
-        className="card h-full flex flex-col overflow-hidden group transition-shadow duration-200 hover:shadow-card-hover"
-        aria-label={`View course: ${title}`}
+      <div
+        className="relative h-full min-h-[380px] transition-transform duration-500 [transform-style:preserve-3d]"
+        style={{ transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
       >
-        <div className="relative overflow-hidden aspect-video bg-gray-100 shrink-0">
-          <img
-            src={thumbnail}
-            alt={`${title} course thumbnail`}
-            loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-          {badge && (
-            <div className="absolute top-2 left-2">
-              <Badge label={badge} />
+        {/* FRONT FACE — same as your normal card */}
+        <div className="absolute inset-0 [backface-visibility:hidden]">
+          <Link
+            to={`/course/${slug}`}
+            className="card h-full flex flex-col overflow-hidden group"
+            aria-label={`View course: ${title}`}
+          >
+            <div className="relative overflow-hidden aspect-video bg-gray-100 shrink-0">
+              <img
+                src={thumbnail}
+                alt={`${title} course thumbnail`}
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
+              {badge && (
+                <div className="absolute top-2 left-2">
+                  <Badge label={badge} />
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        <div className="flex flex-col flex-1 p-4 gap-2">
-          <h3 className="text-base font-semibold text-[#1F1F1F] line-clamp-2 leading-snug min-h-[2.75rem] group-hover:text-primary transition-colors">
-            {title}
-          </h3>
+            <div className="flex flex-col flex-1 p-4 gap-2">
+              <h3 className="text-base font-semibold text-[#1F1F1F] line-clamp-2 leading-snug min-h-[2.75rem]">
+                {title}
+              </h3>
 
-          <p className="text-caption text-muted">{instructor}</p>
+              <p className="text-caption text-muted">{instructor}</p>
 
-          <div className="flex items-center gap-3 text-caption text-muted">
-            <StarRating rating={rating} />
-            <span className="text-muted">({reviewCount.toLocaleString()})</span>
-            <span className="flex items-center gap-1">
-              <Clock size={11} /> {duration}
-            </span>
-          </div>
-
-          <p className="text-caption text-muted capitalize">{level}</p>
-
-          <div className="flex-1" />
-
-          <div className="flex items-center gap-3 pt-2 border-t border-border">
-            {isFree ? (
-              <span className="text-success font-bold text-base">Free</span>
-            ) : (
-              <>
-                <span className="text-[#1F1F1F] font-bold text-base">₹{price.toLocaleString()}</span>
-                <span className="text-muted line-through text-sm">₹{originalPrice.toLocaleString()}</span>
-                <span className="ml-auto text-success text-xs font-semibold">
-                  {Math.round(((originalPrice - price) / originalPrice) * 100)}% off
+              <div className="flex items-center gap-3 text-caption text-muted">
+                <StarRating rating={rating} />
+                <span className="text-muted">({reviewCount.toLocaleString()})</span>
+                <span className="flex items-center gap-1">
+                  <Clock size={11} /> {duration}
                 </span>
-              </>
-            )}
-          </div>
+              </div>
+
+              <p className="text-caption text-muted capitalize">{level}</p>
+
+              <div className="flex-1" />
+
+              <div className="flex items-center gap-3 pt-2 border-t border-border">
+                {isFree ? (
+                  <span className="text-success font-bold text-base">Free</span>
+                ) : (
+                  <>
+                    <span className="text-[#1F1F1F] font-bold text-base">₹{price.toLocaleString()}</span>
+                    <span className="text-muted line-through text-sm">₹{originalPrice.toLocaleString()}</span>
+                    <span className="ml-auto text-success text-xs font-semibold">
+                      {Math.round(((originalPrice - price) / originalPrice) * 100)}% off
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
+          </Link>
         </div>
-      </Link>
 
-      {/* Right-Side Hover Flyout (Udemy style) — flips to the left near the viewport edge, clears the fixed navbar */}
-      {isHovered && (
+        {/* BACK FACE — same content that used to be in the right-side flyout */}
         <div
-          className="hidden lg:block fixed w-[300px] bg-white rounded-lg shadow-2xl border border-border z-[60] animate-fadeInRight"
-          style={{ top: `${flyoutStyle.top}px`, left: `${flyoutStyle.left}px` }}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+          className="absolute inset-0 [backface-visibility:hidden] bg-white rounded-lg shadow-2xl border border-border overflow-y-auto"
+          style={{ transform: 'rotateY(180deg)' }}
         >
-          {flyoutStyle.side === 'right' ? (
-            <div className="absolute top-6 -left-2 w-4 h-4 bg-white border-l border-b border-border rotate-45"></div>
-          ) : (
-            <div className="absolute top-6 -right-2 w-4 h-4 bg-white border-r border-t border-border rotate-45"></div>
-          )}
-
-          <div className="p-5 relative">
+          <div className="p-5">
             <h3 className="font-bold text-[#1F1F1F] text-base mb-1.5 leading-snug">
               {title}
             </h3>
@@ -242,12 +179,20 @@ export default function CourseCard({ course }) {
             </div>
 
             <div className="flex items-center gap-2">
-              <button aria-label='add to cart' onClick={() => addToCart(course)} className="flex-1 flex items-center justify-center gap-2 bg-navy text-white font-semibold py-2.5 rounded-lg hover:bg-[#1d3557] transition-colors text-sm">
+              <button
+                aria-label="add to cart"
+                onClick={(e) => {
+                  e.preventDefault();
+                  addToCart(course);
+                }}
+                className="flex-1 flex items-center justify-center gap-2 bg-navy text-white font-semibold py-2.5 rounded-lg hover:bg-[#1d3557] transition-colors text-sm"
+              >
                 <ShoppingCart size={15} />
                 Add to cart
               </button>
               <button
                 aria-label="Add to wishlist"
+                onClick={(e) => e.preventDefault()}
                 className="w-10 h-10 flex items-center justify-center rounded-lg border border-border hover:bg-gray-50 transition-colors"
               >
                 <Heart size={16} className="text-[#1F1F1F]" />
@@ -262,7 +207,7 @@ export default function CourseCard({ course }) {
             </Link>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }
